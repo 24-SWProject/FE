@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
-import LogoImage from "../../assets/logo.png"
+import LogoImage from "../../assets/logo.png";
 export const LoginContainer = styled.div`
     display: flex;
     position: relative;
@@ -14,6 +14,9 @@ export const Logo = styled.div`
     background-image: url(${LogoImage});
     width: 200px;
     height: 250px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 `;
 export const Intro = styled.div` 
     display: flex;
