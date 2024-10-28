@@ -13,6 +13,8 @@ export const LoginContainer = styled.div`
 
 export const Logo = styled.div`
     background-image: url(${LogoImage});
+    margin: 0;
+    margin-top: 130px;
     width: 200px;
     height: 250px;
     background-size: contain;
@@ -23,14 +25,13 @@ export const Intro = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 77px;
     gap: 0px;
+    color: white;
     h6 {
         font-size: clamp(32px, 2vw, 100px);
-        font-weight: 600;
+        font-weight: 800;
         font-family: Pretendard, sans-serif;
-        text-align: left;
-        margin : 0px 0;
+        margin : 0;
     }
     p {
         font-weight: 500;
