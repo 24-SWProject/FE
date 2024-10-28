@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
 import LogoImage from "../../assets/logo.png";
+
 export const LoginContainer = styled.div`
     display: flex;
     position: relative;
