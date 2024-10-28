@@ -6,9 +6,10 @@ export const LoginContainer = styled.div`
     display: flex;
     position: relative;
     flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
+    align-items: center;
+    width: 70%;
     height: 100vh;
+    justify-content: center;
 `;
 
 export const Logo = styled.div`
@@ -170,7 +171,7 @@ export const LoginLine = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 100%;
+    width: 70%;
     height: 50px;
     border-radius: 10px;
     margin: 7.5px 0;
