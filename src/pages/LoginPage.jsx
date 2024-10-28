@@ -1,5 +1,8 @@
 //import React from "react";
 import * as S from "../styles/pages/Login.style";
+import naver from "../assets/Login/naver.png";
+import kakao from "../assets/Login/kakao.png";
+import google from "../assets/Login/google.png";
 
 export default function LoginPage() {
     return (
@@ -8,6 +11,20 @@ export default function LoginPage() {
             <S.Intro>
                 <h6>HERE FOR US</h6>
             </S.Intro>
+            <S.ModuleContainer>
+                <S.LoginLine className="naver">
+                    <img src={naver} alt="icon_naver" />
+                    <p> 네이버 계정으로 회원가입 </p>
+                </S.LoginLine>
+                <S.LoginLine className="kakao" >
+                    <img src={kakao} alt="icon_kakao"></img>
+                    <p>카카오 계정으로 회원가입</p>
+                </S.LoginLine>
+                <S.LoginLine className="google">
+                    <img src={google} alt="icon_google"></img>
+                    <p>Google 계정으로 회원가입</p>
+                </S.LoginLine>
+            </S.ModuleContainer>
         </S.LoginContainer>
     );
 }

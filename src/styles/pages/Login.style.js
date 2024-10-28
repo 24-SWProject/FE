@@ -15,7 +15,7 @@ export const Logo = styled.div`
     background-image: url(${LogoImage});
     margin: 0;
     margin-top: 130px;
-    width: 200px;
+    width: 100%;
     height: 250px;
     background-size: contain;
     background-repeat: no-repeat;
@@ -26,17 +26,16 @@ export const Intro = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 0px;
-    color: white;
     h6 {
         font-size: clamp(32px, 2vw, 100px);
         font-weight: 800;
         font-family: Pretendard, sans-serif;
         margin : 0;
+        color: #FFF8E3;
     }
     p {
         font-weight: 500;
         font-size: clamp(18px, 2vw, 56px);
-        /*font-size: 18px;*/
         font-family: Pretendard, sans-serif;
         text-align: left;
         margin-top : 0px;
@@ -176,7 +175,7 @@ export const LoginLine = styled.div`
     border-radius: 10px;
     margin: 7.5px 0;
     gap: 8px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 300;
     font-family: 'Pretendard', sans-serif;
 
