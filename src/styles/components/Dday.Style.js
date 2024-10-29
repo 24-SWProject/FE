@@ -46,6 +46,7 @@ export const DdayInfo = styled.div`
     padding: 0;
     justify-content: center;
     overflow: hidden;
+    color : #333333;
 
     .h3 {
         font-family: 'Pretendard', sans-serif;
