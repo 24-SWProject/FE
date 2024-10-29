@@ -52,12 +52,15 @@ export const CalendarItem = styled.div`
         color: #888888;
         min-width: 44px;
         background: none;
-        font-size: 18px;
+        font-size: 20px;
         padding: 0;
 
-        &:hover {
-            background: none;
-            color: #888888;
+        &:hover, &:focus {
+            background: none; 
+            color: #888888; 
+            outline: none; 
+            box-shadow: none;
+            border: none;
         }
     }
 
