@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
 export const DdayContainer = styled.div`
-    width: 90%;
+    width: 80%;
     height: 100px;
     background-color: #F5EEE6;
     position: relative;
-    margin: 0;
-    margin-top: 50px;
+    margin: 30px 0 10px 0;
     border-radius: 10px;
     border: 2px solid #FFFFFF;
     display: flex;
@@ -27,7 +26,7 @@ export const CoupleImage = styled.div`
     border-radius: 50%;
     overflow: hidden;
     position: relative;
-    margin-right: 10vw;;
+    margin-right: 10vw;
     left: 3vw;
     
     img {
@@ -46,6 +45,7 @@ export const DdayInfo = styled.div`
     align-items: center;
     padding: 0;
     justify-content: center;
+    overflow: hidden;
 
     .h3 {
         font-family: 'Pretendard', sans-serif;
