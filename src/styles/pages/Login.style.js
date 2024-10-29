@@ -173,7 +173,7 @@ export const LoginLine = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 50%;
+    width: 60%;
     height: 50px;
     border-radius: 10px;
     margin: 7.5px 0;
