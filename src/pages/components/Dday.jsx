@@ -6,7 +6,7 @@ export default function DdayComponent () {
         <S.DdayContainer>
             <S.CoupleImage></S.CoupleImage>
             <S.DdayInfo>
-                <h3>별명</h3>
+                <h2>별명</h2>
                 <p>D+날짜</p>
             </S.DdayInfo>
         </S.DdayContainer>
