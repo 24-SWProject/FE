@@ -11,7 +11,7 @@ export const LoginContainer = styled.div`
     height: 100vh;
     justify-content: center;
     margin: 0;
-    padding: 0
+    padding: 0;
 `;
 
 export const Logo = styled.div`
