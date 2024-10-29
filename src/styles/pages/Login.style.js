@@ -7,7 +7,7 @@ export const LoginContainer = styled.div`
     position: relative;
     flex-direction: column;
     align-items: center;
-    width: 70%;
+    width: 100%;
     height: 100vh;
     justify-content: center;
     margin: 0;
@@ -173,7 +173,7 @@ export const LoginLine = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 70%;
+    width: 50%;
     height: 50px;
     border-radius: 10px;
     margin: 7.5px 0;
