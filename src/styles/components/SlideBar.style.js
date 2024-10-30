@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import List from "/src/assets/List.png"
+import List from "/src/assets/list.png"
 
 export const ListIcon = styled.div`
     top: 20px;
