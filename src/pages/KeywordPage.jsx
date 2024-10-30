@@ -1,4 +1,5 @@
 import * as S from "../styles/pages/Keword.style"
+import Close from "./components/Close";
 
 export default function KeywordPage(){
     const qNumber = '1';
@@ -8,6 +9,7 @@ export default function KeywordPage(){
 
     return(
         <S.KeywordContainer>
+            <Close />
             <S.Question>Q{qNumber}. {question}</S.Question>
             <S.QBox>{choice1}</S.QBox>
             <S.QBox>{choice2}</S.QBox>

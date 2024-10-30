@@ -5,7 +5,7 @@ export const DdayContainer = styled.div`
     height: 100px;
     background-color: #F5EEE6;
     position: relative;
-    margin: 30px 0 10px 0;
+    margin: 70px 0 10px 0;
     border-radius: 10px;
     border: 2px solid #FFFFFF;
     display: flex;
