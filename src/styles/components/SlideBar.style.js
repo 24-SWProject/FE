@@ -16,7 +16,7 @@ export const ListIcon = styled.div`
     background-size: contain;
     color: white;
     margin-bottom : 20px;
-    z-index : 10;
+    z-index : 1;
 
 `;
 export const SlideBarContainer = styled.div`
@@ -30,7 +30,7 @@ export const SlideBarContainer = styled.div`
     right: 0;
     bottom: 0;
     transition: 0.4s ease;
-    z-index: 1;
+    z-index: 5;
 `;
 
 export const Overlay = styled.div`
@@ -43,4 +43,36 @@ export const Overlay = styled.div`
     display: flex;
     justify-content: flex-end; /* SlideBar가 오른쪽에 위치 */
     z-index: 9;
+`;
+
+export const BarContext = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 90%;
+    height: 30%;
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    margin-top: 5vh;
+`;
+
+export const MenuItem = styled.div`
+    white-space: nowrap;
+    font-size: 20px;
+    font-family: Pretendard, sans-serif;
+    font-weight: 600;
+    color: #444444;
+`;
+
+export const Withdraw = styled.div`
+    font-size: 15px;
+    font-family: Pretendard, sans-serif;
+    font-weight: 600;
+    color: #777777;
+    text-decoration: underline;
+    cursor: pointer;
+    width: 90%;
+    position: absolute;
+    bottom: 20px;
 `;

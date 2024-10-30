@@ -23,7 +23,13 @@ export default function SlideBar() {
             {isOpen && (
                 <S.Overlay onClick={closeSlideBar}>
                     <S.SlideBarContainer onClick={(e) => e.stopPropagation()}>
-                        {/* SlideBar 내용 */}
+                    <S.BarContext>
+                        <S.MenuItem>프로필 설정</S.MenuItem>
+                        <S.MenuItem>데이트 기록</S.MenuItem>
+                        <S.MenuItem>북마크</S.MenuItem>
+                        
+                    </S.BarContext>
+                    <S.Withdraw>탈퇴하기</S.Withdraw>
                     </S.SlideBarContainer>
                 </S.Overlay>
             )}
