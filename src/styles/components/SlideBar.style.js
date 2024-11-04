@@ -63,6 +63,7 @@ export const MenuItem = styled.div`
     font-family: Pretendard, sans-serif;
     font-weight: 600;
     color: #444444;
+    cursor: pointer;
 `;
 
 export const Withdraw = styled.div`

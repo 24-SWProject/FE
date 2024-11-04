@@ -3,6 +3,7 @@ import './App.css';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import KeywordPage from './pages/KeywordPage';
+import ProfileSet from './pages/ProfilePage';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: '/choice',
     element: <KeywordPage />
+  },
+  {
+    path: '/profileSet',
+    element: <ProfileSet />
   },
 ]);
 

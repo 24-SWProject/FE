@@ -10,8 +10,9 @@ export const DdayContainer = styled.div`
     border: 2px solid #FFFFFF;
     display: flex;
     align-items: center;
+    justify-content: center; /* 가운데 정렬 추가 */
     padding: 10px;
-    
+
     &.Copy {
          flex-direction: column;
          justify-content: center;
@@ -26,8 +27,7 @@ export const CoupleImage = styled.div`
     border-radius: 50%;
     overflow: hidden;
     position: relative;
-    margin-right: 10vw;
-    left: 3vw;
+    left: -15%;
     
     img {
         width: 100%;
@@ -43,10 +43,9 @@ export const DdayInfo = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0;
-    justify-content: center;
+    justify-content: center; /* 가운데 정렬 */
     overflow: hidden;
-    color : #333333;
+    color: #333333;
 
     .h3 {
         font-family: 'Pretendard', sans-serif;
@@ -63,7 +62,7 @@ export const DdayInfo = styled.div`
     }
     
     .p {
-        padding : 0;
+        padding: 0;
         margin-top: 0;
         font-size: 20px;
         color: #444444;
