@@ -43,43 +43,45 @@ export const CoupleImage = styled.button`
     }
 `;
 
-export const InputField = styled.input`
+export const FormContainer = styled.form`
     width: 80%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    padding: 40px 0;
+    flex-direction: column;
+`;
+
+export const InputField = styled.input`
+    width: 100%;
     height: 45px;
     padding: 10px;
     margin-bottom: 30px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #333333;
-    font-family: 'Pretendard', sans-serif;
-    background-color: #ffffff;
-    text-align: flex-start;
-    box-sizing: border-box;
-    outline: none;
-    &::placeholder {
-        color: #cccccc;
-    }
-`;
-
-export const DateInput = styled.input`
-    width: 80%;
-    height: 45px;
     display: flex;
-    align-items: center;
-    background-color: #ffffff;
-    border-radius: 10px;
-    padding: 10px;
-    box-sizing: border-box;
-    outline: none;
-    text-align: flex-start;
     border: none;
+    border-radius: 10px;
     font-size: 16px;
     color: #333333;
     font-family: 'Pretendard', sans-serif;
+    background-color: #ffffff;
+    text-align: flex-start;
+    box-sizing: border-box;
+    outline: none;
+
     &::placeholder {
-        color: #cccccc;
+        color: ${({ type }) => (type === "date" ? "#333" : "#ccc")};
     }
+
+    /* 달력 아이콘(캘린더 버튼) 스타일 수정 */
+    &[type="date"]::-webkit-calendar-picker-indicator {
+        background-color: #fff;
+        color: #ccc;
+        padding: 5px;
+        border-radius: 3px;
+        cursor: pointer;
+        position: absolute;
+        right: 15%;
+  }
 `;
 
 export const SetButton = styled.button`
@@ -88,7 +90,7 @@ export const SetButton = styled.button`
     align-items: center;
     background-color: #B4D6CD;
     border-radius: 10px;
-    padding: 10px;
+    padding: 0px;
     box-sizing: border-box;
     outline: none;
     border: none;
@@ -100,10 +102,8 @@ export const SetButton = styled.button`
     border: 2px solid white;
 `;
 
-export const CalendarIcon = styled.div`
-    width: 25px;
-    background-image: url("/assets/Date_fill.png");
-    background-size: cover;
-    background-position: center;
-    margin-left: 10px;
+export const ErrorMessage = styled.span`
+    color: #fff;
+    min-height: 16px;
+    font-size: 15px
 `;

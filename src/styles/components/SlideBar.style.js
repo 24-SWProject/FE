@@ -64,6 +64,9 @@ export const MenuItem = styled.div`
     font-weight: 600;
     color: #444444;
     cursor: pointer;
+    &:hover, &:active {
+        color: #FFDA76;
+    }
 `;
 
 export const Withdraw = styled.div`

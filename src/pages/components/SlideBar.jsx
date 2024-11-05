@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import * as S from "../../styles/components/SlideBar.style";
 
 export default function SlideBar() {
@@ -24,7 +25,7 @@ export default function SlideBar() {
                 <S.Overlay onClick={closeSlideBar}>
                     <S.SlideBarContainer onClick={(e) => e.stopPropagation()}>
                     <S.BarContext>
-                        <S.MenuItem>프로필 설정</S.MenuItem>
+                        <S.MenuItem as={Link} to="/profileSet">프로필 설정</S.MenuItem>
                         <S.MenuItem>데이트 기록</S.MenuItem>
                         <S.MenuItem>북마크</S.MenuItem>
                         
