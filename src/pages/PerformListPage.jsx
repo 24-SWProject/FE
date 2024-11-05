@@ -1,6 +1,7 @@
 import { useState } from "react";
-import Card from "../components/Card";
-import * as S from "../styles/pages/Perform.style";
+import Card from "./components/Card";
+import * as S from "../styles/pages/Perfom.style";
+import Close from "./components/Close";
 
 export default function PerformListPage() {
     const today = new Date();
@@ -34,7 +35,8 @@ export default function PerformListPage() {
     ];
 
     return (
-        <S.PageContainer>
+        <S.PerformContainer>
+            <Close />
             <S.Header>
                 <button onClick={() => handleDateChange(-1)}>&lt;</button>
                 <span>{date} 공연 & 전시회 정보</span>
@@ -43,6 +45,6 @@ export default function PerformListPage() {
             {events.map((event, index) => (
                 <Card key={index} event={event} /> // event 객체로 전달
             ))}
-        </S.PageContainer>
+        </S.PerformContainer>
     );
 }

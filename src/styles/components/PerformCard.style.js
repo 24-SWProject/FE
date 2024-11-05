@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Bookmark from "../../assets/Bookmark.png";
+import BookmarkFill from "../../assets/Bookmark_fill.png";
 
 export const CardContainer = styled.div`
     width: 80%;
@@ -46,6 +48,13 @@ export const DateText = styled.p`
     margin: 5px 0 10px 0;
 `;
 
+export const BottomDiv = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+
 export const LinkButton = styled.button`
     width: 50px;
     padding: 5px 10px;
@@ -57,7 +66,7 @@ export const LinkButton = styled.button`
     cursor: pointer;
     margin-top: 5px;
     font-family: 'Pretendard', sans-serif;
-
+    margin-left : 10px;
     &:hover {
         background-color: #96c478;
     }
@@ -66,13 +75,17 @@ export const LinkButton = styled.button`
 export const BookmarkIcon = styled.button`
     width: 24px;
     height: 24px;
-    background-color: ${({ isActive }) => (isActive ? "#444444" : "transparent")};
-    mask: url('/path/to/bookmark-icon.svg') no-repeat center / contain;
+    background-image: url(${({ isActive }) => (isActive ? BookmarkFill : Bookmark)});
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-image 0.3s;
 
     &:hover {
-        background-color: ${({ isActive }) => (isActive ? "#333333" : "#bbbbbb")};
+        background-image: url(${({ isActive }) => (isActive ? BookmarkFill : Bookmark)});
+        background-color: none;
     }
 `;
