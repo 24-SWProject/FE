@@ -26,7 +26,7 @@ export default function SlideBar() {
                     <S.SlideBarContainer onClick={(e) => e.stopPropagation()}>
                     <S.BarContext>
                         <S.MenuItem as={Link} to="/profileSet">프로필 설정</S.MenuItem>
-                        <S.MenuItem>데이트 기록</S.MenuItem>
+                        <S.MenuItem as={Link} to="/recording"> 데이트 기록</S.MenuItem>
                         <S.MenuItem as={Link} to="/performList">공연&전시 정보</S.MenuItem>
                         <S.MenuItem>북마크</S.MenuItem>
                         

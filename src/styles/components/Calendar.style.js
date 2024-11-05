@@ -94,11 +94,11 @@ export const CalendarItem = styled.div`
     }
 
     .react-calendar__tile--now {
-        background-color: rgba(255, 182, 193, 0.5);
-        color: #FFFFFF;
+        background-color: none;
+        border: 2px dotted #333;
+        color: #4A4A4A;
         border-radius: 50%;
         font-weight: bold;
-        border: none;
     }
 
     .react-calendar__tile--active {

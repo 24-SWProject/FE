@@ -5,6 +5,7 @@ import MainPage from './pages/MainPage';
 import KeywordPage from './pages/KeywordPage';
 import ProfileSet from './pages/ProfilePage';
 import PerformListPage from './pages/PerformListPage';
+import RecordPage from './pages/RecordPage';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/performList',
     element: <PerformListPage />
+  },
+  {
+    path: '/recording',
+    element: <RecordPage />
   },
 ]);
 
