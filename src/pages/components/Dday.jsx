@@ -18,7 +18,6 @@ export function InviteComponent() {
 
     const handleCopyClick = () => {
         setIsCopied(true); // 버튼 클릭 시 상태 업데이트
-        // 여기에서 실제로 링크를 복사하는 기능을 추가할 수도 있음
     };
 
     return (

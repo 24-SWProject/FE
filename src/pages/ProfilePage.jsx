@@ -3,10 +3,14 @@ import { useForm } from 'react-hook-form';
 import Close from "./components/Close";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
 
 export default function ProfileSet() {
+    const [profileImage, setProfileImage] = useState(null); // 선택된 이미지 URL 저장
     const onSubmit = (data) => {
-        console.log("제출된 데이터: ",data);
+        console.log("제출된 데이터: ", data);
+        console.log("선택된 이미지 파일: ", profileImage);
+        // 폼 데이터 처리 로직 (예: 서버에 이미지와 데이터를 함께 전송)
     };
 
     const schema = yup.object().shape({
@@ -22,36 +26,53 @@ export default function ProfileSet() {
             .required("사귄 날짜는 필수 입력사항입니다."),
     });
 
-    const {
-        register,
-        handleSubmit,
-        formState: {errors, isValid},
-    } = useForm({
+    const { register, handleSubmit, formState: { errors, isValid } } = useForm({
         resolver: yupResolver(schema),
         mode: "onChange"
-    })
+    });
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setProfileImage(URL.createObjectURL(file)); // 선택된 이미지 미리보기 URL 설정
+        }
+    };
 
     return (
         <S.ProfileContainer>
             <Close />
             <S.Title>커플 프로필 설정</S.Title>
-            <S.CoupleImage />
+            <S.CoupleImage onClick={() => document.getElementById("imageUpload").click()}>
+                {profileImage ? (
+                    <img src={profileImage} alt="프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                ) : (
+                    <span>이미지 선택</span>
+                )}
+            </S.CoupleImage>
+            <input
+                id="imageUpload"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+            />
+            
             <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
                 <S.InputField 
                     placeholder="Couple Nickname" 
-                    {...register("nickname", { required: "닉네임을 입력해 주세요" })}
+                    {...register("nickname")}
                 />
                 {errors.nickname && <S.ErrorMessage>{errors.nickname.message}</S.ErrorMessage>}
 
                 <S.InputField
                     type="date" 
                     placeholder="Dating Date (YYYY-MM-DD)" 
-                    {...register("datingDate", { required: "사귄 날짜를 입력해 주세요" })}
+                    {...register("datingDate")}
                 />
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
+
                 <S.SetButton type="submit" disabled={!isValid}>프로필 설정</S.SetButton>
             </S.FormContainer>
-            
         </S.ProfileContainer>
     );
 }

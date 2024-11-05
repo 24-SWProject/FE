@@ -29,17 +29,20 @@ export const CoupleImage = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    cursor: pointer;
-    background-size: cover;
-    background-position: center;
-    border: 2px solid white;
     margin-bottom: 50px;
-    font-family: 'Pretendard', sans-serif;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
 
-    svg {
-        font-size: 24px;
-        color: #ffffff;
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    span {
+        color: #ccc;
     }
 `;
 
