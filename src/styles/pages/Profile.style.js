@@ -70,6 +70,7 @@ export const InputField = styled.input`
     text-align: flex-start;
     box-sizing: border-box;
     outline: none;
+    min-width: 300px;
 
     &::placeholder {
         color: ${({ type }) => (type === "date" ? "#333" : "#ccc")};
