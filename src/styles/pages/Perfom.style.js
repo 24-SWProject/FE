@@ -9,6 +9,7 @@ export const PerformContainer = styled.div`
     align-items: center;
     margin: 0;
     gap : 20px;
+    position: relative;
 `;
 
 export const Header = styled.div`

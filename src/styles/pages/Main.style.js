@@ -6,9 +6,8 @@ export const MainContainer = styled.div`
     position: relative;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    
     min-height: 100vh;
     padding: 10px 0;
     overflow-y: auto;
-    
 `;

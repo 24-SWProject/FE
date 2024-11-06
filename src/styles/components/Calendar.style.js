@@ -80,13 +80,15 @@ export const CalendarItem = styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 40px;
+        width: 40px;
+        aspect-ratio: 1/1;
         font-size: 16px;
         border-radius: 50%;
         border: none;
         color: #4A4A4A;
         background-color: #FFFFFF;
         transition: all 0.2s ease-in-out;
+        padding: 0;
 
         &:hover {
             background-color: rgba(0, 41, 255, 0.1);
@@ -99,6 +101,7 @@ export const CalendarItem = styled.div`
         color: #4A4A4A;
         border-radius: 50%;
         font-weight: bold;
+        padding: 0;
     }
 
     .react-calendar__tile--active {

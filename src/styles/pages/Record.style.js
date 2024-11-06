@@ -6,5 +6,6 @@ export const RecordContainer = styled.div`
     flex-direction: column;
     padding-top: 80px;
     display: flex;
-    align-item: center;
+    align-items: center;
+    position: relative;
 `;

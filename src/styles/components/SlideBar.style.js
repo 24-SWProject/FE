@@ -25,7 +25,7 @@ export const SlideBarContainer = styled.div`
     min-width: 100px;
     height: 100vh;
     display: flex;
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
@@ -34,7 +34,7 @@ export const SlideBarContainer = styled.div`
 `;
 
 export const Overlay = styled.div`
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;

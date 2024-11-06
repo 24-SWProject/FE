@@ -1,10 +1,12 @@
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import * as S from '../../styles/components/Calendar.style';
+import Close from './Close';
 
 export default function RecordCalendar() {
     return (
         <S.CalendarContainer>
+            <Close />
             <S.CalendarItem>
                 <Calendar
                     locale="ko-KR" // 한국어 설정
