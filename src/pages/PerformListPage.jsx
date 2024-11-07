@@ -12,7 +12,9 @@ export default function PerformListPage() {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         const formattedDate = newDate.toISOString().split("T")[0];
-        setDate(formattedDate);
+        if (newDate >= today) {
+            setDate(formattedDate);
+        }
         console.log(date);
     };
 
