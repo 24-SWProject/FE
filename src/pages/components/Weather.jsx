@@ -1,28 +1,44 @@
-import * as S from "../../styles/components/Weather.style";
-import cloudIcon from "../../assets/Weather/cloud.png";
-import sunIcon from "../../assets/Weather/daySunny.png";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import * as S from '../../styles/components/Weather.style';
 
-const weatherData = [
-    { day: "TODAY", icon: sunIcon, temp: "13 / 28" },
-    { day: "SUN", icon: sunIcon, temp: "13 / 28" },
-    { day: "MON", icon: cloudIcon, temp: "13 / 28" },
-    { day: "TUE", icon: sunIcon, temp: "13 / 28" },
-    { day: "WED", icon: cloudIcon, temp: "13 / 28" },
-    { day: "TUR", icon: sunIcon, temp: "13 / 28" },
-    { day: "FRI", icon: cloudIcon, temp: "13 / 28" },
-];
+const Weather = () => {
+    const [weatherData, setWeatherData] = useState(null);
 
-export default function Weather() {
+    useEffect(() => {
+        const fetchWeatherData = async () => {
+            try {
+                const response = await axios.get(
+                    `https://api.openweathermap.org/data/2.5/weather?id=1835847&appid=${import.meta.env.VITE_WEATHER_API_KEY}&lang=kr&units=metric`
+                );
+                setWeatherData(response.data);
+            } catch (error) {
+                console.error("Error fetching weather data", error);
+            }
+        };
+        fetchWeatherData();
+    }, []);
+
+    if (!weatherData) return <S.WeatherContainer>Loading...</S.WeatherContainer>;
+
+    const { main, weather, name } = weatherData;
+    const temperature = Math.round(main.temp);
+    const weatherDescription = weather[0].description;
+    const weatherIcon = weather[0].icon;
+
     return (
         <S.WeatherContainer>
-            <S.WeatherIntro>이번주 날씨</S.WeatherIntro>
-            {weatherData.map((item, index) => (
-                <S.DayWeather key={index}>
-                    <h5>{item.day}</h5>
-                    <img src={item.icon} alt={`${item.day} icon`} />
-                    <p>{item.temp}</p>
-                </S.DayWeather>
-            ))}
+            <S.WeatherIcon 
+                src={`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`} 
+                alt={weatherDescription} 
+            />
+            <S.WeatherInfo>
+                <S.City>{name}</S.City>
+                <S.Temp>{temperature}°C</S.Temp>
+                <S.Description>{weatherDescription}</S.Description>
+            </S.WeatherInfo>
         </S.WeatherContainer>
     );
-}
+};
+
+export default Weather;

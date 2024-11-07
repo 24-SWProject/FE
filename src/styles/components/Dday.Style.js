@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const DdayContainer = styled.div`
     width: 80%;
-    height: 100px;
+    aspect-ratio: 3/1;
     background-color: #F5EEE6;
     position: relative;
     margin: 70px 0 10px 0;
@@ -12,6 +12,8 @@ export const DdayContainer = styled.div`
     align-items: center;
     justify-content: center; /* 가운데 정렬 추가 */
     padding: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 
     &.Copy {
          flex-direction: column;

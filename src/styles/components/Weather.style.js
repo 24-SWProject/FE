@@ -1,61 +1,48 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const WeatherContainer = styled.div`
     width: 80%;
-    height: 500px;
-    background-color: #FFAEAE;
-    border-radius: 20px;
-    border: 2px White solid;
-    padding : 0px;
-    margin-bottom : 20px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    justify-content: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #F5EEE6;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    gap : 3rem;
 `;
 
-export const WeatherIntro = styled.div`
+export const WeatherIcon = styled.img`
+    width: 100px;
+    height: 100px;
+    
+`;
+
+export const WeatherInfo = styled.div`
+    text-align: center;
+    color: #444;
+`;
+
+export const Temp = styled.h1`
+    font-size: 1.7rem;
+    margin: 10px 0 10px 0;
+    color: #444;
+    padding: 0;
+`;
+
+export const Description = styled.p`
+    font-size: 1.3rem;
+    margin: 5px 0;
+    text-transform: capitalize;
+`;
+
+export const City = styled.p`
+    font-size: 1.2rem;
+    color: #555;
     padding: 0;
     margin: 0;
-    width: 100%;
-    color: white;
-    flex-direction: column;
-    align-items: center;
-    font-family: Pretendard, sans-serif;
-    font-weight: 700;
-    font-size: 25px;
-    padding : 0;
-    margin-top: 20px;
-    margin-bottom: 10px;
 `;
-
-export const DayWeather = styled.div`
-    width: 90%;
-    display: flex;
-    align-items: center;
-    gap: 50px;
-    color: white;
-    font-family: Pretendard, sans-serif;
-    margin-top: 20px;
-    justify-content: center;
-
-    h5 {
-        font-weight: 600;
-        font-size: 22px; 
-        width: 60px;
-        margin: 0;
-    }
-
-    img {
-        width: 40px;
-        height: auto;
-    }
-
-    p {
-        font-weight: 500;
-        font-size: 20px; 
-        margin: 0;
-    }
-`;
-
