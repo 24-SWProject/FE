@@ -73,15 +73,14 @@ export const InputField = styled.input`
     min-width: 300px;
 
     &::placeholder {
-        color: ${({ type }) => (type === "date" ? "#333" : "#ccc")};
+        color: #ccc;
     }
 
     &[type="date"] {
-        width: 100%; /* 여기서 원하는 고정 너비를 설정하세요 */
-        height: 45px; /* 높이 고정 */
+        width: 100%; 
+        height: 45px;
     }
 
-    /* 달력 아이콘(캘린더 버튼) 스타일 수정 */
     &[type="date"]::-webkit-calendar-picker-indicator {
         background-color: #fff;
         color: #ccc;
