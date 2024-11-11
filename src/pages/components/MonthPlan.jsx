@@ -8,10 +8,7 @@ export default function MonthPlan({ todos, onEdit, onDelete }) {
                 <S.TodoRow key={index}>
                     <S.Date>
                         {typeof todo.date === "object" && todo.date instanceof Date
-                            ? todo.date.toLocaleDateString("ko-KR", {
-                                  month: "2-digit",
-                                  day: "2-digit",
-                              })
+                            ? todo.date.toISOString().split("T")[0] // YYYY-MM-DD 형식으로 변환
                             : todo.date}
                     </S.Date>
                     <S.Task>{todo.task}</S.Task>

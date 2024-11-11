@@ -10,8 +10,9 @@ export default function Modal({ onClose, onAdd, initialDate, existingTodo }) {
 
     useEffect(() => {
         if (existingTodo) {
-            setDate(existingTodo.date); // 기존 할 일의 날짜 설정
-            setTask(existingTodo.task); // 기존 할 일의 내용 설정
+            console.log(" existing date: ", existingTodo.date)
+            setDate(existingTodo.date || ""); // 기존 할 일의 날짜 설정
+            setTask(existingTodo.task || ""); // 기존 할 일의 내용 설정
         } else if (initialDate) {
             setDate(initialDate); // 새로 추가할 때는 선택된 날짜 설정
         }
