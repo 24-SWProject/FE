@@ -41,7 +41,7 @@ export const Overlay = styled.div`
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5); /* 어두운 반투명 배경 */
     display: flex;
-    justify-content: flex-end; /* SlideBar가 오른쪽에 위치 */
+    justify-content: flex-end;
     z-index: 9;
 `;
 
