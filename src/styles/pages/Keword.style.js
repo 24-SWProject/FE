@@ -11,7 +11,7 @@ export const KeywordContainer = styled.div`
 `;
 
 export const Question = styled.div`
-    margin-top: 33vh;
+    margin-top: 30vh;
     width: 90%;
     font-size: 30px;
     font-weight: 700;
@@ -19,6 +19,9 @@ export const Question = styled.div`
     color: #333333;
     text-align: center;
     white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+    word-break: keep-all;
     margin-bottom: 20px;
 `;
 
