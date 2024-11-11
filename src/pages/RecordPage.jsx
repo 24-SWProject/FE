@@ -1,10 +1,10 @@
-// RecordPage.jsx
 import { useState } from "react";
 import * as S from "../styles/pages/Record.style";
 import CalendarComponent from "./components/CalendarComponent";
 import Close from "./components/Close";
 import MonthPlan from "./components/MonthPlan";
 import Modal from "./components/TodoModal";
+import RecordCalendar from "./components/RecordCalendar";
 
 export default function RecordPage() {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -46,13 +46,13 @@ export default function RecordPage() {
     return (
         <S.RecordContainer>
             <Close />
-            <CalendarComponent />
+            <RecordCalendar />
             <MonthPlan todos={todos} onEdit={handleEditTodo} onDelete={handleDeleteTodo} />
             {isModalOpen && (
                 <Modal
                     onClose={() => setModalOpen(false)}
                     onAdd={handleAddOrEditTodo}
-                    existingTodo={editIndex !== null ? todos[editIndex] : null}
+                    existingTodo={editIndex !== null ? todos[editIndex] : null} // existingTodo 전달
                 />
             )}
         </S.RecordContainer>
