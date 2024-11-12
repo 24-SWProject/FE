@@ -6,6 +6,7 @@ import KeywordPage from './pages/KeywordPage';
 import ProfileSet from './pages/ProfilePage';
 import PerformListPage from './pages/PerformListPage';
 import RecordPage from './pages/RecordPage';
+import GuChoice from './pages/GuChoice';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: '/recording',
     element: <RecordPage />
+  },
+  {
+    path: '/guChoice',
+    element: <GuChoice />
   },
 ]);
 

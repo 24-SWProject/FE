@@ -6,15 +6,15 @@ export const KeywordContainer = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-    align-items: center;
     justify-content: flex-start;
+    align-items: center;
+    padding-top: 20vh;
 `;
 
 export const Question = styled.div`
-    margin-top: 30vh;
     width: 90%;
     font-size: 30px;
-    font-weight: 700;
+    font-weight: 600;
     font-family: Pretendard, sans-serif;
     color: #333333;
     text-align: center;
@@ -22,7 +22,7 @@ export const Question = styled.div`
     word-wrap: break-word;
     overflow-wrap: break-word; 
     word-break: keep-all;
-    margin-bottom: 20px;
+    margin-bottom: 10vh;
 `;
 
 export const QBox = styled.button`

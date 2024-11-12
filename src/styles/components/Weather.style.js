@@ -6,7 +6,7 @@ export const WeatherContainer = styled.div`
     justify-content: center;
     margin: 20px 0;
     padding: 10px;
-    background-color: #F5EEE6;
+    background-color: #F3D7CA;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     border: 2px solid white;
