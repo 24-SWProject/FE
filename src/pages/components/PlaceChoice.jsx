@@ -34,7 +34,7 @@ const PlaceChoice = () => {
                         key={index}
                         path={polygon.path}
                         strokeWeight={1}
-                        strokeColor="#ccc"
+                        strokeColor="#888"
                         strokeOpacity={0.8}
                         fillColor={selectedDistrict === polygon.name ? '#FFDA76' : '#fff'}
                         fillOpacity={0.5}
