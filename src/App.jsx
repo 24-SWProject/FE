@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
-import KeywordPage from './pages/KeywordPage';
 import ProfileSet from './pages/ProfilePage';
 import PerformListPage from './pages/PerformListPage';
 import RecordPage from './pages/RecordPage';
@@ -19,7 +18,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/choice',
-    element: <KeywordPage />
+    element: <GuChoice />
   },
   {
     path: '/profileSet',
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
   {
     path: '/recording',
     element: <RecordPage />
-  },
-  {
-    path: '/guChoice',
-    element: <GuChoice />
   },
 ]);
 
