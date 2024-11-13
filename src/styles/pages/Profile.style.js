@@ -13,7 +13,7 @@ export const ProfileContainer = styled.div`
 
 export const Title = styled.h2`
     font-size: 24px;
-    color: #FFFFFF;
+    color: #333;
     font-family: 'Pretendard', sans-serif;
     margin: 0;
     margin-top: 100px;

@@ -9,6 +9,24 @@ export const KeywordContainer = styled.div`
     justify-content: flex-start;
     align-items: center;
     padding-top: 20vh;
+    box-sizing: border-box;
+    font-family: Pretendard, sans-serif;
+`;
+
+export const Description = styled.div`
+    width: 90%;
+    height: auto;
+    font-size: 17px;
+    font-weight: 500;
+    color: #444;
+    text-align: center;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+    word-break: keep-all;
+    margin-bottom: 1vh;
+    padding: 20px;
+    box-sizing: border-box;
 `;
 
 export const Question = styled.div`
@@ -16,13 +34,13 @@ export const Question = styled.div`
     font-size: 30px;
     font-weight: 600;
     font-family: Pretendard, sans-serif;
-    color: #333333;
+    color: #444;
     text-align: center;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word; 
     word-break: keep-all;
-    margin-bottom: 10vh;
+    margin-bottom: 3vh;
 `;
 
 export const QBox = styled.button`

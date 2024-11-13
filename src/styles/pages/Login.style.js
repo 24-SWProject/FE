@@ -33,7 +33,8 @@ export const Intro = styled.div`
         font-weight: 800;
         font-family: Pretendard, sans-serif;
         margin : 0;
-        color: #FFF8E3;
+        margin-top: 2vh;
+        color: #FFADAD;
     }
     p {
         font-weight: 500;

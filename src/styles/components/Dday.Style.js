@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const DdayContainer = styled.div`
     width: 80%;
     aspect-ratio: 3/1;
-    background-color: #F5EEE6;
+    background-color: #f5f5dc;
     position: relative;
     margin: 70px 0 10px 0;
     border-radius: 10px;

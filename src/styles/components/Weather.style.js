@@ -6,7 +6,7 @@ export const WeatherContainer = styled.div`
     justify-content: center;
     margin: 20px 0;
     padding: 10px;
-    background-color: #F3D7CA;
+    background-color: #E6A4B4;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     border: 2px solid white;
@@ -24,13 +24,13 @@ export const WeatherIcon = styled.img`
 
 export const WeatherInfo = styled.div`
     text-align: center;
-    color: #444;
+    color: #fff;
 `;
 
-export const Temp = styled.h1`
-    font-size: 1.7rem;
+export const Temp = styled.h2`
+    font-size: 1.5rem;
     margin: 10px 0 10px 0;
-    color: #444;
+    color: #fff;
     padding: 0;
 `;
 
@@ -42,7 +42,7 @@ export const Description = styled.p`
 
 export const City = styled.p`
     font-size: 1.2rem;
-    color: #555;
+    color: #fff;
     padding: 0;
     margin: 0;
 `;

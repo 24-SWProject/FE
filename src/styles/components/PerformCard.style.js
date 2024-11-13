@@ -4,7 +4,7 @@ import BookmarkFill from "../../assets/Bookmark_fill.png";
 
 export const CardContainer = styled.div`
     width: 80%;
-    background-color: #f5eee6;
+    background-color: #E6A4B4;
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -16,7 +16,7 @@ export const CardContainer = styled.div`
 export const CardImage = styled.div`
     width: 100px;
     height: 100px;
-    background-color: #dddddd;
+    background-color: #444;
     border-radius: 8px;
     overflow: hidden;
     margin-right: 15px;
@@ -37,14 +37,14 @@ export const CardContent = styled.div`
 
 export const Title = styled.h2`
     font-size: 16px;
-    color: #333333;
+    color: #fff;
     font-family: 'Pretendard', sans-serif;
     margin: 0;
 `;
 
 export const DateText = styled.p`
     font-size: 14px;
-    color: #777777;
+    color: #fff;
     margin: 5px 0 10px 0;
 `;
 

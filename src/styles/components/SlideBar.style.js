@@ -20,7 +20,7 @@ export const ListIcon = styled.div`
 
 `;
 export const SlideBarContainer = styled.div`
-    background-color: #FFF8E3;
+    background-color: #f5f5dc;
     width: 40%;
     min-width: 100px;
     height: 100vh;

@@ -4,13 +4,16 @@ import Close from "./components/Close";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileSet() {
     const [profileImage, setProfileImage] = useState(null); // 선택된 이미지 URL 저장
+    const navigate = useNavigate();
+
     const onSubmit = (data) => {
         console.log("제출된 데이터: ", data);
         console.log("선택된 이미지 파일: ", profileImage);
-        // 폼 데이터 처리 로직 (예: 서버에 이미지와 데이터를 함께 전송)
+        navigate('/main');
     };
 
     const schema = yup.object().shape({
@@ -71,7 +74,7 @@ export default function ProfileSet() {
                 />
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
 
-                <S.SetButton type="submit" disabled={!isValid}>프로필 설정</S.SetButton>
+                <S.SetButton type="submit" disabled={!isValid} >프로필 설정</S.SetButton>
             </S.FormContainer>
         </S.ProfileContainer>
     );

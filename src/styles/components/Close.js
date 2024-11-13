@@ -13,7 +13,6 @@ export const btnContainer = styled.div`
     background-image: url(${Close});
     background-repeat: no-repeat;
     background-size: contain;
-    color: white;
     margin-bottom : 20px;
     z-index : 10;
 `;

@@ -22,7 +22,7 @@ const PlaceChoice = () => {
     }, []);
 
     return (
-        <div style={{ width: '90%', aspectRatio: '4/3', margin: 'auto', marginTop: '10px'}}>
+        <div style={{ width: '90%', aspectRatio: '4/3', margin: '0 auto', marginTop: '10px'}}>
             <Map
                 appkey={import.meta.env.VITE_KAKAO_MAP_API}
                 center={{ lat: 37.5665, lng: 126.9780 }}

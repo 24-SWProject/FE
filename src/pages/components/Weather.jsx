@@ -12,6 +12,8 @@ const Weather = () => {
                     `https://api.openweathermap.org/data/2.5/weather?id=1835847&appid=${import.meta.env.VITE_WEATHER_API_KEY}&lang=kr&units=metric`
                 );
                 setWeatherData(response.data);
+                console.log("weather data: ", response.data);
+                localStorage.setItem('weatherDescription', response.data.weather[0].description);
             } catch (error) {
                 console.error("Error fetching weather data", error);
             }
