@@ -6,6 +6,7 @@ import ProfileSet from './pages/ProfilePage';
 import PerformListPage from './pages/PerformListPage';
 import RecordPage from './pages/RecordPage';
 import GuChoice from './pages/GuChoice';
+import KeywordPage from './pages/KeywordPage';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: '/choice',
     element: <GuChoice />
+  },
+  {
+    path: '/keyword',
+    element: <KeywordPage />
   },
   {
     path: '/profileSet',

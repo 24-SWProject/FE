@@ -9,11 +9,11 @@ const Weather = () => {
         const fetchWeatherData = async () => {
             try {
                 const response = await axios.get(
-                    `https://api.openweathermap.org/data/2.5/weather?id=1835847&appid=${import.meta.env.VITE_WEATHER_API_KEY}&lang=kr&units=metric`
+                    `https://api.openweathermap.org/data/2.5/weather?id=1835847&appid=${import.meta.env.VITE_WEATHER_API_KEY}&lang=en&units=metric`
                 );
                 setWeatherData(response.data);
                 console.log("weather data: ", response.data);
-                localStorage.setItem('weatherDescription', response.data.weather[0].description);
+                localStorage.setItem('weatherDescription', response.data.weather[0].main);
             } catch (error) {
                 console.error("Error fetching weather data", error);
             }
@@ -25,7 +25,7 @@ const Weather = () => {
 
     const { main, weather, name } = weatherData;
     const temperature = Math.round(main.temp);
-    const weatherDescription = weather[0].description;
+    const weatherDescription = weather[0].main;
     const weatherIcon = weather[0].icon;
 
     return (

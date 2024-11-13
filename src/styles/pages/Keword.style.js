@@ -8,14 +8,14 @@ export const KeywordContainer = styled.div`
     position: relative;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 20vh;
+    padding-top: 15vh;
     box-sizing: border-box;
     font-family: Pretendard, sans-serif;
 `;
 
 export const Description = styled.div`
     width: 90%;
-    height: auto;
+    height: 120px;
     font-size: 17px;
     font-weight: 500;
     color: #444;
@@ -32,10 +32,10 @@ export const Description = styled.div`
 export const Question = styled.div`
     width: 90%;
     font-size: 30px;
-    font-weight: 600;
+    font-weight: 700;
+    height: 150px;
     font-family: Pretendard, sans-serif;
     color: #444;
-    text-align: center;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word; 
@@ -52,7 +52,7 @@ export const QBox = styled.button`
     font-weight: 600;
     color: #333333;
     border-radius: 20px;
-    background-color: #FFFFFF;
+    background-color: ${({ isSelected }) => (isSelected ? '#FFDA76' : '#FFFFFF')};
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) inset;
     text-align: center;
     overflow: hidden;
