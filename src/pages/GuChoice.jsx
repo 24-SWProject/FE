@@ -65,7 +65,7 @@ export default function GuChoice() {
                 <Map
                     appkey={import.meta.env.VITE_KAKAO_MAP_API}
                     center={{ lat: 37.5665, lng: 126.9780 }}
-                    level={9} // mapLevel을 줌 레벨로 설정
+                    level={9} 
                     style={{ width: '100%', height: '100%' }}
                 >
                     {polygons.map((polygon, index) => (

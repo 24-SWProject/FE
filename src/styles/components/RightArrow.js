@@ -3,8 +3,8 @@ import Arrow from '../../assets/Arrow_right.png'
 
 export const RightArrow = styled.div`
     position: absolute;
-    bottom: 30px;
-    right: 20px;
+    top: 20px;
+    right: 10px;
     padding: 0;
     border: none;
     cursor: pointer;

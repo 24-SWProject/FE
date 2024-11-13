@@ -8,7 +8,7 @@ export const KeywordContainer = styled.div`
     position: relative;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 15vh;
+    padding-top: 8vh;
     box-sizing: border-box;
     font-family: Pretendard, sans-serif;
 `;
@@ -30,7 +30,7 @@ export const Description = styled.div`
 `;
 
 export const Question = styled.div`
-    width: 90%;
+    width: 80%;
     font-size: 30px;
     font-weight: 700;
     height: 150px;
@@ -60,4 +60,22 @@ export const QBox = styled.button`
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+`;
+
+export const SetButton = styled.button`
+    width: 80%;
+    height: 45px;
+    align-items: center;
+    background-color: #B4D6CD;
+    border-radius: 10px;
+    padding: 0px;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    font-size: 20px;
+    color: #333333;
+    font-family: 'Pretendard', sans-serif;
+    position: absolute;
+    bottom: 50px;
+    border: 2px solid white;
 `;
