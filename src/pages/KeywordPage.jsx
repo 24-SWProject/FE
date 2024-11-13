@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import * as S from "../styles/pages/Keword.style";
+import { useState, useEffect } from 'react';
+import * as S from "../styles/pages/Keyword.style";
 import Close from "./components/Close";
 import { RightArrow } from '../styles/components/RightArrow';
 
 export default function KeywordPage() {
-    // 질문과 선택지를 정의한 기본 객체
     const initialQuestionsData = [
         { question: "실내와 실외 중 어디에서 데이트를 할 건가요?", choices: ["실내", "실외"] },
         { question: "오늘은 어떤 분위기의 데이트를 하고 싶나요?", choices: ["조용한", "활기찬", "로맨틱한", "캐주얼한", "자연친화적인"] },
@@ -13,22 +12,26 @@ export default function KeywordPage() {
     ];
 
     const [questionsData, setQuestionsData] = useState(initialQuestionsData);
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 현재 질문 인덱스
-    const [selectedChoice, setSelectedChoice] = useState(null); // 선택된 답변 인덱스
-    const [answers, setAnswers] = useState([]); // 선택한 답변을 저장하는 배열
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedChoice, setSelectedChoice] = useState(null);
+    const [answers, setAnswers] = useState([]);
 
-    // 선택한 답변을 관리하고 localStorage에 저장
+    useEffect(() => {
+        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+        setAnswers(savedAnswers);
+    }, []);
+
     const handleChoiceClick = (index) => {
         setSelectedChoice(index);
         const currentAnswer = questionsData[currentQuestionIndex].choices[index];
-        localStorage.setItem(`answer_${currentQuestionIndex}`, currentAnswer); // 답변을 localStorage에 저장
+        const updatedAnswers = [...answers, currentAnswer];
+        setAnswers(updatedAnswers);
+        localStorage.setItem('answers', JSON.stringify(updatedAnswers));
     };
 
-    // 다음 질문으로 넘어가기
     const handleRightArrowClick = () => {
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
-
-        // 첫 번째 질문에서 "실내" 또는 "실외" 선택에 따라 마지막 질문을 추가
+        
         if (currentQuestionIndex === 0) {
             if (currentAnswer === "실내") {
                 setQuestionsData(prevQuestions => [
@@ -43,15 +46,23 @@ export default function KeywordPage() {
             }
         }
 
-        // 현재 답변을 저장하고 다음 질문으로 이동
-        setAnswers([...answers, currentAnswer]);
-        setSelectedChoice(null); // 선택 초기화
-
+        setSelectedChoice(null);
         if (currentQuestionIndex < questionsData.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1); // 다음 질문으로 이동
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else {
-            // 마지막 질문에 도달하면 완료 처리
             alert("모든 질문이 완료되었습니다!");
+        }
+    };
+
+    const handleAiRecommendation = () => {
+        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+
+        if (savedAnswers.length < questionsData.length + 1) {
+            alert("모든 질문에 답해주세요.");
+        } else {
+            console.log("Selected Answers:", savedAnswers);
+            alert("AI 코스 추천을 받습니다!");
+            localStorage.removeItem('answers');
         }
     };
 
@@ -66,14 +77,14 @@ export default function KeywordPage() {
                     key={index}
                     isSelected={selectedChoice === index}
                     onClick={() => handleChoiceClick(index)}
-                    style={{
-                        backgroundColor: selectedChoice === index ? '#FFDA76' : '#FFFFFF'
-                    }}
                 >
                     {choice}
                 </S.QBox>
             ))}
             <RightArrow onClick={handleRightArrowClick} />
+            {currentQuestionIndex === questionsData.length - 1 && (
+                <S.SetButton onClick={handleAiRecommendation}>AI 코스 추천 받기</S.SetButton>
+            )}
         </S.KeywordContainer>
     );
 }

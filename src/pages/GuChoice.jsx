@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Map, Polygon, MapTypeControl, ZoomControl } from 'react-kakao-maps-sdk';
 import { RightArrow } from "../styles/components/RightArrow";
-import * as S from "../styles/pages/Keword.style";
+import * as S from "../styles/pages/Keyword.style";
 import Close from "./components/Close";
 import { useNavigate } from 'react-router-dom';
 
@@ -13,8 +13,6 @@ export default function GuChoice() {
 
     useEffect(() => {
         const weatherDescription = localStorage.getItem('weatherDescription');
-
-        // 날씨 설명에 따른 메시지 매핑 객체
         const weatherMessages = {
             "Clear": "오늘 하늘이 맑고 쾌청합니다. \n야외 활동을 하기에 좋은 날이네요!",
             "few clouds": "하늘에 약간의 구름이 있지만, 대체로 맑고 쾌청한 날씨입니다. \n가벼운 산책이나 야외 활동을 즐기기에 딱 좋아요.",
@@ -32,7 +30,7 @@ export default function GuChoice() {
     }, []);
 
     useEffect(() => {
-        fetch('./seoul_gson.geojson') // public 폴더 내 위치 확인
+        fetch('./seoul_gson.geojson')
             .then((response) => response.json())
             .then((data) => {
                 const loadedPolygons = data.features.map((feature) => {
@@ -49,8 +47,9 @@ export default function GuChoice() {
 
     const handleRightArrowClick = () => {
         if (selectedDistrict) {
-            navigate("/keyword"); // 선택된 구가 있을 때만 이동
-            localStorage.removeItem('weatherDescription');
+            const answers = [selectedDistrict]; // 선택된 구 이름을 배열에 저장
+            localStorage.setItem('answers', JSON.stringify(answers));
+            navigate("/keyword");
         } else {
             alert("구를 선택해주세요.");
         }
