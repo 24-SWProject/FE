@@ -1,6 +1,7 @@
 import * as S from "../styles/pages/Main.style"
 import CalendarComponent from "./components/CalendarComponent";
 import { InviteComponent } from "./components/Dday"; //DdayComponent, 
+import MovieInfo from "./components/MovieInfo";
 import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
@@ -18,6 +19,7 @@ export default function MainPage () {
             <InviteComponent />
             {/* <DdayComponent /> */}
             <ToAI />
+            <MovieInfo />
             <Weather />
             <CalendarComponent onDateChange={setSelectedDate} />
             <PerformComponent selectedDate={selectedDate} />
