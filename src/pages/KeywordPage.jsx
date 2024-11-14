@@ -30,18 +30,20 @@ export default function KeywordPage() {
     };
 
     const handleRightArrowClick = () => {
+        if (selectedChoice === null) return;
+
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
         
         if (currentQuestionIndex === 0) {
             if (currentAnswer === "실내") {
                 setQuestionsData(prevQuestions => [
                     ...prevQuestions,
-                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "행사"] }
+                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
                 ]);
             } else if (currentAnswer === "실외") {
                 setQuestionsData(prevQuestions => [
                     ...prevQuestions,
-                    { question: "이 중 어디를 가고 싶은가요?", choices: ["행사", "야경", "강변", "산", "포토존", "거리"] }
+                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
                 ]);
             }
         }
@@ -81,7 +83,9 @@ export default function KeywordPage() {
                     {choice}
                 </S.QBox>
             ))}
-            <RightArrow onClick={handleRightArrowClick} />
+            {currentQuestionIndex < questionsData.length - 1 && selectedChoice !== null && (
+                <RightArrow onClick={handleRightArrowClick} />
+            )}
             {currentQuestionIndex === questionsData.length - 1 && (
                 <S.SetButton onClick={handleAiRecommendation}>AI 코스 추천 받기</S.SetButton>
             )}

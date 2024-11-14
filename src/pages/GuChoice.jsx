@@ -50,6 +50,7 @@ export default function GuChoice() {
             const answers = [selectedDistrict]; // 선택된 구 이름을 배열에 저장
             localStorage.setItem('answers', JSON.stringify(answers));
             navigate("/keyword");
+            localStorage.removeItem('weatherDescription');
         } else {
             alert("구를 선택해주세요.");
         }
