@@ -2,11 +2,12 @@ import styled from "styled-components";
 
 export const CalendarContainer = styled.div`
     width: 80%;
-    max-width: 400px;
+    aspect-ratio: 1/1;
+    min-width: 300px;
     margin: 10px auto 30px;
     padding: 10px;
     background-color: #FFFFFF;
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1) inset;
     font-family: 'Pretendard', sans-serif;
 `;
