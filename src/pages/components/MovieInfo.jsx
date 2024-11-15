@@ -23,7 +23,7 @@ const MovieInfo = () => {
                         rating: movie.audiAcc.toLocaleString(), // 누적 관객수를 문자열로 변환
                         genre: "장르 정보 없음", // API에서 제공되지 않음
                         duration: "정보 없음", // API에서 제공되지 않음
-                        cast: movie.movieCd, // API에서 제공되지 않음
+                        cast: "정보 없음", // API에서 제공되지 않음
                         posterUrl: "", // 포스터 URL이 없는 경우 빈 문자열
                     }));
                     setMovies(top10Movies);

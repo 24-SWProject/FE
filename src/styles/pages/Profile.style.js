@@ -79,6 +79,12 @@ export const InputField = styled.input`
     &[type="date"] {
         width: 100%; 
         height: 45px;
+        appearance: none; // 기본 브라우저 설정 제거
+        text-align: start;
+
+        &::placeholder {
+            color: #ccc;
+        }
     }
 
     &[type="date"]::-webkit-calendar-picker-indicator {
@@ -89,7 +95,7 @@ export const InputField = styled.input`
         cursor: pointer;
         position: absolute;
         right: 15%;
-  }
+    }
 `;
 
 export const SetButton = styled.button`

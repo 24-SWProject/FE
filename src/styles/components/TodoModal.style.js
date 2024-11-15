@@ -37,12 +37,16 @@ export const Input = styled.input`
     }
 
     &[type="date"] {
-        appearance: none; /* 기본 브라우저 스타일 제거 */
+        appearance: none; // 기본 브라우저 설정 제거
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-color: #fff; /* 배경색 설정 */
-        color: #000; /* 글자색 설정 */
+        background-color: #fff; 
+        color: #000; 
         text-align: start; 
+
+        &::placeholder {
+            color: #ccc;
+        }
     }
 `;
 

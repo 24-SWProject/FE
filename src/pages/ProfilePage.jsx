@@ -69,7 +69,7 @@ export default function ProfileSet() {
 
                 <S.InputField
                     type="date" 
-                    placeholder="Dating Date (YYYY-MM-DD)" 
+                    placeholder="사귄 날짜 (YYYY-MM-DD)" 
                     {...register("datingDate")}
                 />
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
