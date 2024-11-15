@@ -2,15 +2,13 @@ import { useState, useEffect } from "react";
 import * as S from "../../styles/components/TodoModal.style";
 
 export default function Modal({ onClose, onAdd, initialDate, existingTodo }) {
-    const [date, setDate] = useState("");
-    const [task, setTask] = useState("");
+    const [date, setDate] = useState(initialDate || (existingTodo ? existingTodo.date : ""));
+    const [task, setTask] = useState(existingTodo ? existingTodo.task : "");
 
-    // 오늘 날짜를 'YYYY-MM-DD' 형식으로 설정
     const today = new Date().toISOString().split("T")[0];
 
     useEffect(() => {
         if (existingTodo) {
-            console.log(" existing date: ", existingTodo.date)
             setDate(existingTodo.date || ""); // 기존 할 일의 날짜 설정
             setTask(existingTodo.task || ""); // 기존 할 일의 내용 설정
         } else if (initialDate) {

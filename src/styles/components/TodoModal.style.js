@@ -35,6 +35,15 @@ export const Input = styled.input`
     ::placeholder {
         color: #ccc;
     }
+
+    &[type="date"] {
+        appearance: none; /* 기본 브라우저 스타일 제거 */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #fff; /* 배경색 설정 */
+        color: #000; /* 글자색 설정 */
+        text-align: start; 
+    }
 `;
 
 export const ButtonContainer = styled.div`
