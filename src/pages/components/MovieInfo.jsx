@@ -6,50 +6,33 @@ const MovieInfo = () => {
 
     useEffect(() => {
         const fetchMovies = async () => {
-            // 예시 데이터. 실제 데이터는 API에서 가져올 수 있습니다.
-            const sampleMovies = [
-                {
-                    title: "청설",
-                    releaseDate: "2024.11.06",
-                    rating: 8.41,
-                    genre: "드라마",
-                    duration: "109분",
-                    cast: "홍정호, 노윤서, 김민주, 정영주, 정혜영",
-                    posterUrl: "poster1.jpg"
-                },
-                {
-                    title: "글래디에이터 2",
-                    releaseDate: "2024.11.13",
-                    rating: 8.08,
-                    genre: "액션, 드라마",
-                    duration: "148분",
-                    cast: "폴 메스칼, 페드로 파스칼, 덴젤 워싱턴",
-                    posterUrl: "poster2.jpg"
-                },
-                {
-                    title: "청설",
-                    releaseDate: "2024.11.06",
-                    rating: 8.41,
-                    genre: "드라마",
-                    duration: "109분",
-                    cast: "홍정호, 노윤서, 김민주, 정영주, 정혜영",
-                    posterUrl: "poster1.jpg"
-                },
-                {
-                    title: "글래디에이터 2",
-                    releaseDate: "2024.11.13",
-                    rating: 8.08,
-                    genre: "액션, 드라마",
-                    duration: "148분",
-                    cast: "폴 메스칼, 페드로 파스칼, 덴젤 워싱턴",
-                    posterUrl: "poster2.jpg"
-                },
-                // 더 많은 영화 데이터 추가 가능
-            ];
-            
-            // 평점순으로 정렬
-            const sortedMovies = sampleMovies.sort((a, b) => b.rating - a.rating);
-            setMovies(sortedMovies);
+            const today = new Date();
+            today.setDate(today.getDate() - 1); // 어제 날짜로 설정
+            const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
+            const API_KEY = import.meta.env.VITE_KOBIS_API_KEY;
+            const url = `https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${API_KEY}&targetDt=${formattedDate}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.boxOfficeResult && data.boxOfficeResult.dailyBoxOfficeList) {
+                    const top10Movies = data.boxOfficeResult.dailyBoxOfficeList.slice(0, 10).map((movie) => ({
+                        title: movie.movieNm,
+                        releaseDate: movie.openDt,
+                        rating: movie.audiAcc.toLocaleString(), // 누적 관객수를 문자열로 변환
+                        genre: "장르 정보 없음", // API에서 제공되지 않음
+                        duration: "정보 없음", // API에서 제공되지 않음
+                        cast: movie.movieCd, // API에서 제공되지 않음
+                        posterUrl: "", // 포스터 URL이 없는 경우 빈 문자열
+                    }));
+                    setMovies(top10Movies);
+                } else {
+                    console.error("박스오피스 데이터를 가져오는 중 오류 발생: 데이터 형식이 올바르지 않습니다.");
+                }
+            } catch (error) {
+                console.error("영화 데이터를 가져오는 중 오류 발생:", error);
+            }
         };
 
         fetchMovies();
@@ -57,17 +40,20 @@ const MovieInfo = () => {
 
     return (
         <S.Container>
-            <S.Header>현재 상영작 (평점순)</S.Header>
+            <S.Header>현재 상영작 (박스오피스 순위)</S.Header>
             <S.MovieList>
                 {movies.map((movie, index) => (
                     <S.MovieCard key={index}>
-                        <S.Poster src={movie.posterUrl} alt={movie.title} />
+                        <S.Poster
+                            src={movie.posterUrl || "https://via.placeholder.com/150x200?text=No+Image"}
+                            alt={movie.title}
+                        />
                         <S.TextContainer>
                             <S.MovieTitle>{movie.title}</S.MovieTitle>
                             <S.MovieInfo>개봉: {movie.releaseDate}</S.MovieInfo>
-                            <S.MovieInfo>평점: {movie.rating}</S.MovieInfo>
+                            <S.MovieInfo>누적 관객수: {movie.rating}명</S.MovieInfo>
                             <S.MovieInfo>장르: {movie.genre}</S.MovieInfo>
-                            <S.MovieInfo>개요: {movie.duration}</S.MovieInfo>
+                            <S.MovieInfo>상영시간: {movie.duration}</S.MovieInfo>
                             <S.MovieInfo>출연: {movie.cast}</S.MovieInfo>
                         </S.TextContainer>
                     </S.MovieCard>
