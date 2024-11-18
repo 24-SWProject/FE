@@ -7,11 +7,16 @@ import PerformListPage from './pages/PerformListPage';
 import RecordPage from './pages/RecordPage';
 import GuChoice from './pages/GuChoice';
 import KeywordPage from './pages/KeywordPage';
+import SignUpPage from './pages/SingupPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <LoginPage />
+  },
+  {
+    path: '/signup',
+    element: <SignUpPage />
   },
   {
     path: '/main',

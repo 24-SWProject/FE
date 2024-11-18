@@ -44,7 +44,10 @@ export const Intro = styled.div`
         margin-top : 0px;
     }
     span{
-        font-weight: 800;
+        margin-top: 2vh;
+        font-weight: 400;
+        font-size: clamp(14px, 2vw, 56px);
+        text-decoration: underline;
     }
 `;
 

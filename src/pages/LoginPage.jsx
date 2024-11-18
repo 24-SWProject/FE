@@ -30,6 +30,9 @@ export default function LoginPage() {
                     <img src={google} alt="icon_google" />
                     <p>Google 계정으로 로그인</p>
                 </S.LoginLine>
+                <S.Intro>
+                    <span onClick={() => navigate("/signup")}>회원가입하러가기</span>
+                </S.Intro>
             </S.ModuleContainer>
         </S.LoginContainer>
     );
