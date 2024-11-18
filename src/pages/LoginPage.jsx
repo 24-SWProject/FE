@@ -20,15 +20,15 @@ export default function LoginPage() {
             <S.ModuleContainer>
                 <S.LoginLine className="naver" onClick={handleNaverLogin}>
                     <img src={naver} alt="icon_naver" />
-                    <p> 네이버 계정으로 회원가입 </p>
+                    <p> 네이버 계정으로 로그인 </p>
                 </S.LoginLine>
-                <S.LoginLine className="kakao">
+                <S.LoginLine className="kakao" onClick={handleNaverLogin}>
                     <img src={kakao} alt="icon_kakao" />
-                    <p>카카오 계정으로 회원가입</p>
+                    <p>카카오 계정으로 로그인</p>
                 </S.LoginLine>
-                <S.LoginLine className="google">
+                <S.LoginLine className="google" onClick={handleNaverLogin}>
                     <img src={google} alt="icon_google" />
-                    <p>Google 계정으로 회원가입</p>
+                    <p>Google 계정으로 로그인</p>
                 </S.LoginLine>
             </S.ModuleContainer>
         </S.LoginContainer>

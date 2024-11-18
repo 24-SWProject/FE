@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import Arrow from '../../assets/Arrow_right.png'
+import Arrow from "../../assets/Arrow_left.png"
 
-export const RightArrow = styled.div`
+export const LeftArrow = styled.div`
     position: absolute;
-    top: 12vh;
-    right: 10px;
+    top : 12vh;
+    left: 10px;
     padding: 0;
     border: none;
     cursor: pointer;

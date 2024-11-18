@@ -24,7 +24,6 @@ export const Description = styled.div`
     word-wrap: break-word;
     overflow-wrap: break-word; 
     word-break: keep-all;
-    margin-bottom: 1vh;
     padding: 20px;
     box-sizing: border-box;
 `;

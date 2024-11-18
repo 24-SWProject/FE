@@ -10,7 +10,6 @@ const MovieInfo = () => {
             today.setDate(today.getDate() - 1);
             const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
             const KOBIS_API_KEY = import.meta.env.VITE_KOBIS_API_KEY;
-            const TMDB_BEARER_TOKEN = import.meta.env.VITE_TMDB_BEARER_TOKEN;
 
             const dailyUrl = `https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formattedDate}`;
 
@@ -28,34 +27,6 @@ const MovieInfo = () => {
                             const detailData = await detailResponse.json();
                             const movieInfo = detailData.movieInfoResult.movieInfo;
 
-                            // TMDB API를 사용하여 movieId 가져오기
-                            const tmdbSearchUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(movieInfo.movieNmEn || movie.movieNm)}&language=en-US`;
-                            const tmdbResponse = await fetch(tmdbSearchUrl, {
-                                headers: {
-                                    Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
-                                }
-                            });
-                            const tmdbData = await tmdbResponse.json();
-                            console.log("TMDB 응답 데이터:", tmdbData);
-
-                            // TMDB의 첫 번째 검색 결과에서 movieId 가져오기
-                            const movieId = tmdbData.results && tmdbData.results.length > 0 ? tmdbData.results[0].id : null;
-
-                            // movieId를 사용하여 영화 세부 정보 및 포스터 URL 가져오기
-                            let posterUrl = "";
-                            if (movieId) {
-                                const movieDetailUrl = `https://api.themoviedb.org/3/movie/${movieId}?language=ko&append_to_response=images`;
-                                const movieDetailResponse = await fetch(movieDetailUrl, {
-                                    headers: {
-                                        Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
-                                    }
-                                });
-                                const movieDetailData = await movieDetailResponse.json();
-                                posterUrl = movieDetailData.poster_path
-                                    ? `https://image.tmdb.org/t/p/w500${movieDetailData.poster_path}`
-                                    : "";
-                            }
-
                             return {
                                 title: movie.movieNm,
                                 releaseDate: movie.openDt,
@@ -63,7 +34,7 @@ const MovieInfo = () => {
                                 genre: movieInfo.genres.map((genre) => genre.genreNm).join(', ') || "장르 정보 없음",
                                 duration: movieInfo.showTm ? `${movieInfo.showTm}분` : "정보 없음",
                                 cast: movieInfo.actors.slice(0, 4).map((actor) => actor.peopleNm).join(', ') || "출연 정보 없음",
-                                posterUrl,
+                                posterUrl: "", // 빈 화면으로 설정
                             };
                         })
                     );
