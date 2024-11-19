@@ -4,16 +4,13 @@ import BookmarkFill from "../../assets/Bookmark_fill.png";
 
 export const CardContainer = styled.div`
     width: 85%;
-    min-width: 200px;
-    max-height: 150px;
     background-color: #E6A4B4;
     border-radius: 10px;
     display: flex;
     align-items: center;
-    padding: 15px;
+    padding: 10px;
     margin-bottom: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    aspect-ratio: 5 / 1;
     box-sizing: border-box;
 `;
 
@@ -29,6 +26,7 @@ export const CardImage = styled.div`
         width: 100%;
         height: 100%;
         object-fit: cover;
+        background-repeat: no-repeat;
     }
 `;
 

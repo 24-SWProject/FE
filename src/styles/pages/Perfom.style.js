@@ -8,33 +8,36 @@ export const PerformContainer = styled.div`
     flex-direction: column;
     align-items: center;
     margin: 0;
-    gap : 20px;
+    gap: 20px;
     position: relative;
 `;
 
 export const SmallHeader = styled.div`
-    gap: 20px;
+    gap: 15px;
+    margin: 80px 0 5px 0;
     flex-direction: row;
     display: flex; /* 반드시 flex 컨테이너가 필요 */
     justify-content: center; /* center 위치 */
     align-items: center; /* 세로축 중앙 정렬 */
-    transform: translateX(-5rem); /* x축으로 왼쪽으로 30% 이동 */
-    p {
-        font-size: clamp(10px, 1.0rem, 12px);
-        color: #ccc;
+    & > p { /* 부모 하위 p 요소에만 스타일 적용 */
+        font-size: clamp(12px, 1.0rem, 15px);
+        color: #444;
         font-family: 'Pretendard', sans-serif;
-        text-decoration: underline(#eee 1px);
+        text-decoration: underline;
+        text-decoration-color: #444;
+        text-decoration-thickness: 1.5px;
         margin: 0;
         padding: 0;
     }
 `;
+
 export const Header = styled.div`
     width: 80%;
     color: #FFFFFF;
     align-items: center;
     justify-content: space-between;
     font-weight: bold;
-    margin: 80px 0 20px 0;
+    margin: 0 0 20px 0;
     display: flex;
     flex-direction: row;
 
@@ -55,5 +58,24 @@ export const Header = styled.div`
         margin: 0;
         padding: 0;
     }
+`;
 
+export const EventContainer = styled.div`
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+    p {
+        font-size: 1rem;
+        color: #666;
+        font-family: 'Pretendard', sans-serif;
+        text-align: center;
+    }
 `;

@@ -1,13 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
+import { fetchPerformanceData, fetchFestivalData } from "../api/crud";
 
 export default function PerformListPage() {
     const today = new Date();
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
+    const [activeTab, setActiveTab] = useState("festival"); // 기본값: 축제
+    const [events, setEvents] = useState([]);
 
+    // API 호출로 데이터 가져오기
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                console.log("요청할 date 값:", date); // date가 제대로 전달되는지 확인
+    
+                if (activeTab === "festival") {
+                    const festivalData = await fetchFestivalData('2024-11-14');
+                    console.log("Festival API 응답 데이터:", festivalData);
+    
+                    setEvents(
+                        festivalData.map((festival) => ({
+                            title: festival.title,
+                            date: `${festival.openDate} ~ ${festival.endDate}`,
+                            imageUrl: festival.poster,
+                            linkText: "등록 링크",
+                            url: festival.registerLink,
+                        }))
+                    );
+                } else if (activeTab === "performance") {
+                    const performanceData = await fetchPerformanceData(date);
+                    console.log("Performance API 응답 데이터:", performanceData);
+    
+                    setEvents(
+                        performanceData.map((performance) => ({
+                            title: performance.title,
+                            date: `${performance.openDate} ~ ${performance.endDate}`,
+                            imageUrl: performance.poster,
+                            linkText: "공연 링크",
+                            url: `/performance/${performance.id}`,
+                        }))
+                    );
+                }
+            } catch (error) {
+                console.error("API 호출 중 오류 발생:", error);
+            }
+        };
+        fetchEvents();
+    }, [date, activeTab]);
+    
+    // 날짜 변경 함수
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
@@ -15,38 +59,52 @@ export default function PerformListPage() {
         if (newDate >= today) {
             setDate(formattedDate);
         }
-        console.log(date);
     };
 
-    const events = [
-        {
-            title: "서울 지하철 개통 50주년 기념 전시 <서울의 지하철>",
-            date: "2024-08-09 ~ 2024-11-03",
-            linkText: "LINK",
-        },
-        {
-            title: "2024 문화가 흐르는 서울광장",
-            date: "2024-05-08 ~ 2024-11-30",
-            linkText: "LINK",
-        },
-        {
-            title: "문학주간2024 <스페인포>",
-            date: "2024-09-27 ~ 2024-10-01",
-            linkText: "LINK",
-        },
-    ];
+    // 탭 변경 함수
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
 
     return (
         <S.PerformContainer>
             <Close />
+            <S.SmallHeader>
+                <p
+                    onClick={() => handleTabChange("festival")}
+                    style={{
+                        cursor: "pointer",
+                        fontWeight: activeTab === "festival" ? "bold" : "normal",
+                    }}
+                >
+                    축제
+                </p>
+                <p
+                    onClick={() => handleTabChange("performance")}
+                    style={{
+                        cursor: "pointer",
+                        fontWeight: activeTab === "performance" ? "bold" : "normal",
+                    }}
+                >
+                    공연
+                </p>
+            </S.SmallHeader>
             <S.Header>
                 <button onClick={() => handleDateChange(-1)}>&lt;</button>
-                <span>{date} 공연 & 전시회 정보</span>
+                <span>
+                    {date} {activeTab === "festival" ? "축제" : "공연"} 정보
+                </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
-            {events.map((event, index) => (
-                <Card key={index} event={event} /> // event 객체로 전달
-            ))}
+            <S.EventContainer>
+                {events.length > 0 ? (
+                    events.map((event, index) => (
+                        <Card key={index} event={event} />
+                    ))
+                ) : (
+                    <p>해당 날짜에 {activeTab === "festival" ? "축제" : "공연"} 정보가 없습니다.</p>
+                )}
+            </S.EventContainer>
         </S.PerformContainer>
     );
 }

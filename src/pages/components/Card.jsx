@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 import * as S from "../../styles/components/PerformCard.style";
 
@@ -37,5 +36,3 @@ export default function Card({ event }) { // event 객체로 받기
         </S.CardContainer>
     );
 }
-
-/* eslint-enable react/prop-types */
