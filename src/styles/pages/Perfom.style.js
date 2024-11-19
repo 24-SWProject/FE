@@ -12,12 +12,27 @@ export const PerformContainer = styled.div`
     position: relative;
 `;
 
+export const SmallHeader = styled.div`
+    gap: 20px;
+    flex-direction: row;
+    display: flex; /* 반드시 flex 컨테이너가 필요 */
+    justify-content: center; /* center 위치 */
+    align-items: center; /* 세로축 중앙 정렬 */
+    transform: translateX(-5rem); /* x축으로 왼쪽으로 30% 이동 */
+    p {
+        font-size: clamp(10px, 1.0rem, 12px);
+        color: #ccc;
+        font-family: 'Pretendard', sans-serif;
+        text-decoration: underline(#eee 1px);
+        margin: 0;
+        padding: 0;
+    }
+`;
 export const Header = styled.div`
-    width: 90%;
+    width: 80%;
     color: #FFFFFF;
     align-items: center;
     justify-content: space-between;
-    font-size: 18px;
     font-weight: bold;
     margin: 80px 0 20px 0;
     display: flex;
@@ -34,10 +49,11 @@ export const Header = styled.div`
     }
 
     span {
-        font-size: clamp(15px, 1.5rem, 25px);
+        font-size: clamp(15px, 1.2rem, 20px);
         color: #fff;
         font-family: 'Pretendard', sans-serif;
         margin: 0;
         padding: 0;
     }
+
 `;

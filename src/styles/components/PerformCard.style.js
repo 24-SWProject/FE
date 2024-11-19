@@ -3,7 +3,9 @@ import Bookmark from "../../assets/Bookmark.png";
 import BookmarkFill from "../../assets/Bookmark_fill.png";
 
 export const CardContainer = styled.div`
-    width: 80%;
+    width: 85%;
+    min-width: 200px;
+    max-height: 150px;
     background-color: #E6A4B4;
     border-radius: 10px;
     display: flex;
@@ -12,6 +14,7 @@ export const CardContainer = styled.div`
     margin-bottom: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     aspect-ratio: 5 / 1;
+    box-sizing: border-box;
 `;
 
 export const CardImage = styled.div`
@@ -41,20 +44,22 @@ export const CardContent = styled.div`
     align-items: flex-start;
     justify-content: center;
     position: relative;
+    overflow: hidden;
 `;
 
 export const Title = styled.h2`
-    font-size: 16px;
+    font-size: clamp(10px, 1.0rem, 15px);
     color: #fff;
     font-family: 'Pretendard', sans-serif;
     margin: 0;
     word-wrap: break-word; /* 줄바꿈을 강제로 추가 */
     overflow-wrap: break-word; /* 현대 브라우저에서의 줄바꿈 */
     white-space: normal; /* 텍스트가 줄바꿈 없이 한 줄로 표시되지 않도록 설정 */
+    text-align: left;
 `;
 
 export const DateText = styled.p`
-    font-size: 14px;
+    font-size: clamp(5px, 0.8rem, 15px);
     color: #fff;
     margin: 5px 0 10px 0;
 `;
