@@ -11,6 +11,7 @@ export const CardContainer = styled.div`
     padding: 15px;
     margin-bottom: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 5 / 1;
 `;
 
 export const CardImage = styled.div`
@@ -28,11 +29,18 @@ export const CardImage = styled.div`
     }
 `;
 
+
 export const CardContent = styled.div`
+    width: 100% - 120px;
+    height: 100%;
+    padding: 15px;
+    box-sizing: border-box;
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     justify-content: center;
+    position: relative;
 `;
 
 export const Title = styled.h2`
@@ -40,6 +48,9 @@ export const Title = styled.h2`
     color: #fff;
     font-family: 'Pretendard', sans-serif;
     margin: 0;
+    word-wrap: break-word; /* 줄바꿈을 강제로 추가 */
+    overflow-wrap: break-word; /* 현대 브라우저에서의 줄바꿈 */
+    white-space: normal; /* 텍스트가 줄바꿈 없이 한 줄로 표시되지 않도록 설정 */
 `;
 
 export const DateText = styled.p`
@@ -66,13 +77,14 @@ export const LinkButton = styled.button`
     cursor: pointer;
     margin-top: 5px;
     font-family: 'Pretendard', sans-serif;
-    margin-left : 10px;
     &:hover {
         background-color: #96c478;
     }
 `;
 
 export const BookmarkIcon = styled.button`
+    position: absolute;
+    right: 20px;
     width: 24px;
     height: 24px;
     background-image: url(${({ isActive }) => (isActive ? BookmarkFill : Bookmark)});

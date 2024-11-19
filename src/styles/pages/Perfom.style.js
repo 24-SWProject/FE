@@ -25,7 +25,7 @@ export const Header = styled.div`
 
     button {
         background: none;
-        color: #444;
+        color: #fff;
         border: none;
         font-weight: 900;
         font-size: 20px;
@@ -34,8 +34,8 @@ export const Header = styled.div`
     }
 
     span {
-        font-size: 20px;
-        color: #444;
+        font-size: clamp(15px, 1.5rem, 25px);
+        color: #fff;
         font-family: 'Pretendard', sans-serif;
         margin: 0;
         padding: 0;

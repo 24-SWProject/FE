@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
@@ -8,6 +9,9 @@ import RecordPage from './pages/RecordPage';
 import GuChoice from './pages/GuChoice';
 import KeywordPage from './pages/KeywordPage';
 import SignUpPage from './pages/SingupPage';
+
+// QueryClient 생성
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -46,7 +50,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 
