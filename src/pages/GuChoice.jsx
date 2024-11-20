@@ -83,7 +83,7 @@ export default function GuChoice() {
                     <MapTypeControl position={"TOPRIGHT"} />
                     <ZoomControl position={"RIGHT"} />
                 </Map>
-                {selectedDistrict && <p style={{ color: 'white' }}>{selectedDistrict}</p>}
+                {selectedDistrict && <p style={{ color: '#444' }}>{selectedDistrict}</p>}
             </div>
             <RightArrow onClick={handleRightArrowClick} />
         </S.KeywordContainer>
