@@ -8,7 +8,7 @@ import PerformListPage from './pages/PerformListPage';
 import RecordPage from './pages/RecordPage';
 import GuChoice from './pages/GuChoice';
 import KeywordPage from './pages/KeywordPage';
-import SignUpPage from './pages/SingupPage';
+import SignUpPage from './pages/SignupPage';
 
 // QueryClient 생성
 const queryClient = new QueryClient();

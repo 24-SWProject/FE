@@ -1,43 +1,62 @@
-import { useEffect, useState } from 'react';
-import * as S from '../../styles/components/PerformComponent.style';
+import { useEffect, useState } from "react";
+import * as S from "../../styles/components/PerformComponent.style";
+import { fetchFestivalData, fetchPerformanceData } from "../../api/crud";
 
 const PerformComponent = ({ selectedDate }) => {
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const sampleData = [
-                { name: "서울의 작은 산", date: "2024-11-05 ~ 2025-02-09" },
-                { name: "그때, 이곳의 기록 - 청계천 판자촌", date: "2024-11-05 ~ 2025-03-30" },
-                { name: "조민엽 Blue, Hidden, Nature", date: "2024-11-07 ~ 2024-12-08" },
-                { name: "2024 서울미식주간", date: "2024-11-08 ~ 2024-11-14" },
-                { name: "용산팡팡! 도장팡팡!", date: "2024-10-28 ~ 2024-12-10" },
-                { name: "서울의 작은 산", date: "2024-11-05 ~ 2025-02-09" },
-                { name: "그때, 이곳의 기록 - 청계천 판자촌", date: "2024-11-05 ~ 2025-03-30" },
-                { name: "조민엽 Blue, Hidden, Nature", date: "2024-11-07 ~ 2024-12-08" },
-                { name: "2024 서울미식주간", date: "2024-11-08 ~ 2024-11-14" },
-                { name: "용산팡팡! 도장팡팡!", date: "2024-10-28 ~ 2024-12-10" },
-            ];
-            setEvents(sampleData);
+            try {
+                if (!selectedDate) return;
+
+                const formattedDate = `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1)
+                    .toString()
+                    .padStart(2, "0")}-${selectedDate.getDate().toString().padStart(2, "0")}`;
+
+                console.log("선택된 날짜:", formattedDate);
+
+                const festivalData = await fetchFestivalData(formattedDate);
+                const performanceData = await fetchPerformanceData(formattedDate);
+
+                const mergedEvents = [
+                    ...festivalData.map((festival) => ({
+                        name: festival.title,
+                        date: `${festival.openDate} ~ ${festival.endDate}`,
+                    })),
+                    ...performanceData.map((performance) => ({
+                        name: performance.title,
+                        date: `${performance.openDate} ~ ${performance.endDate}`,
+                    })),
+                ];
+
+                setEvents(mergedEvents);
+            } catch (error) {
+                console.error("데이터 가져오기 실패:", error);
+            }
         };
 
         fetchData();
-    }, []);
+    }, [selectedDate]);
 
     const formattedDate = selectedDate
-        ? `${selectedDate.getFullYear()}.${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}.${selectedDate.getDate().toString().padStart(2, '0')}`
-        : '';
+        ? `${selectedDate.getFullYear()}.${(selectedDate.getMonth() + 1).toString().padStart(2, "0")}.${selectedDate.getDate().toString().padStart(2, "0")}`
+        : "";
 
     return (
         <S.PerformContainer>
             <S.DateHeader>{formattedDate}</S.DateHeader>
             <S.EventList>
-                {events.map((event, index) => (
-                    <S.EventItem key={index}>
-                        <S.EventName>{event.name}</S.EventName>
-                        <S.EventDate>{event.date}</S.EventDate>
-                    </S.EventItem>
-                ))}
+                {events.length > 0 ? (
+                    events.map((event, index) => (
+                        <S.EventItem key={index}>
+                            <S.EventName>{event.name}</S.EventName>
+                            <S.EventDate>{event.date}</S.EventDate>
+                        </S.EventItem>
+                    ))
+                ) : (
+                    <p>해당 날짜에 공연 및 축제 정보가 없습니다.</p>
+                )}
             </S.EventList>
         </S.PerformContainer>
     );

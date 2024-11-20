@@ -46,11 +46,13 @@ export const EventItem = styled.li`
 `;
 
 export const EventName = styled.div`
+    width: 60%;
     font-size: 0.85rem;
     color: #333;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: start;
 `;
 
 export const EventDate = styled.div`
