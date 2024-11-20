@@ -8,8 +8,13 @@ export default function LoginPage() {
     const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성
 
     const handleNaverLogin = () => {
-        navigate("/main"); // /main 경로로 이동
+        const loginURL = `${import.meta.env.VITE_baseURL}/api/user/login`;
+        window.location.href = loginURL;
     };
+
+    const handleLogin = () => {
+        navigate("/main");
+    }
 
     return (
         <S.LoginContainer>
@@ -22,7 +27,7 @@ export default function LoginPage() {
                     <img src={naver} alt="icon_naver" />
                     <p> 네이버 계정으로 로그인 </p>
                 </S.LoginLine>
-                <S.LoginLine className="kakao" onClick={handleNaverLogin}>
+                <S.LoginLine className="kakao" onClick={handleLogin}>
                     <img src={kakao} alt="icon_kakao" />
                     <p>카카오 계정으로 로그인</p>
                 </S.LoginLine>
