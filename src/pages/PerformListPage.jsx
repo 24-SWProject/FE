@@ -18,7 +18,7 @@ export default function PerformListPage() {
                 console.log("요청할 date 값:", date); // date가 제대로 전달되는지 확인
     
                 if (activeTab === "festival") {
-                    const festivalData = await fetchFestivalData('2024-11-14');
+                    const festivalData = await fetchFestivalData(date);
                     console.log("Festival API 응답 데이터:", festivalData);
     
                     setEvents(
@@ -26,7 +26,7 @@ export default function PerformListPage() {
                             title: festival.title,
                             date: `${festival.openDate} ~ ${festival.endDate}`,
                             imageUrl: festival.poster,
-                            linkText: "등록 링크",
+                            linkText: "LINK",
                             url: festival.registerLink,
                         }))
                     );
@@ -39,8 +39,8 @@ export default function PerformListPage() {
                             title: performance.title,
                             date: `${performance.openDate} ~ ${performance.endDate}`,
                             imageUrl: performance.poster,
-                            linkText: "공연 링크",
-                            url: `/performance/${performance.id}`,
+                            linkText: "X",
+                            url: "",
                         }))
                     );
                 }
@@ -96,15 +96,13 @@ export default function PerformListPage() {
                 </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
-            <S.EventContainer>
-                {events.length > 0 ? (
-                    events.map((event, index) => (
-                        <Card key={index} event={event} />
-                    ))
-                ) : (
-                    <p>해당 날짜에 {activeTab === "festival" ? "축제" : "공연"} 정보가 없습니다.</p>
-                )}
-            </S.EventContainer>
+            {events.length > 0 ? (
+                events.map((event, index) => (
+                    <Card key={index} event={event} />
+                ))
+            ) : (
+                <p>해당 날짜에 {activeTab === "festival" ? "축제" : "공연"} 정보가 없습니다.</p>
+            )}
         </S.PerformContainer>
     );
 }

@@ -16,7 +16,7 @@ export const CardContainer = styled.div`
 
 export const CardImage = styled.div`
     width: 100px;
-    height: 100px;
+    aspect-ratio: 3 / 4;
     background-color: #444;
     border-radius: 8px;
     overflow: hidden;
