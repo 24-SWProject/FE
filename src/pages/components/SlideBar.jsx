@@ -70,7 +70,7 @@ export default function SlideBar() {
             {/* 첫 번째 모달 */}
             {modalStep === 1 && (
                 <WithDrawModal
-                    message="정말로 탈퇴하시겠습니까? 다시 한 번 확인해주세요."
+                    message="😢 진짜 탈퇴하실건가요...? 😢"
                     onConfirm={openSecondModal} // 두 번째 모달 열기
                     onCancel={closeModal} // 모달 닫기
                 />
@@ -79,7 +79,7 @@ export default function SlideBar() {
             {/* 두 번째 모달 */}
             {modalStep === 2 && (
                 <WithDrawModal
-                    message="진짜 탈퇴하실건가요...?"
+                    message=" 😢정말정말 탈퇴할 건가요..? 마지막 기회에요 😢"
                     onConfirm={handleDeleteAccount} // 계정 삭제 처리
                     onCancel={closeModal} // 모달 닫기
                 />
