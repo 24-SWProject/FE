@@ -34,7 +34,7 @@ export const SlideBarContainer = styled.div`
 `;
 
 export const Overlay = styled.div`
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -78,5 +78,5 @@ export const Withdraw = styled.div`
     cursor: pointer;
     width: 90%;
     position: absolute;
-    bottom: 20px;
+    bottom: 10vh;
 `;
