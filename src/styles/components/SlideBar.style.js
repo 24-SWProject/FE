@@ -59,8 +59,8 @@ export const BarContext = styled.div`
 
 export const MenuItem = styled.div`
     white-space: nowrap;
-    font-size: 20px;
-    font-family: Pretendard, sans-serif;
+    font-family: 'Pretendard', sans-serif;
+    font-size: clamp(15px, 1.3rem, 25px);
     font-weight: 600;
     color: #444444;
     cursor: pointer;
@@ -70,9 +70,9 @@ export const MenuItem = styled.div`
 `;
 
 export const Withdraw = styled.div`
-    font-size: 15px;
+     font-size: clamp(10px, 1.1rem, 20px);
     font-family: Pretendard, sans-serif;
-    font-weight: 600;
+    font-weight: 800;
     color: #777777;
     text-decoration: underline;
     cursor: pointer;
