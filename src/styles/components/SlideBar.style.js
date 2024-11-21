@@ -34,7 +34,7 @@ export const SlideBarContainer = styled.div`
 `;
 
 export const Overlay = styled.div`
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;

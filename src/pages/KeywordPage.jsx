@@ -90,6 +90,7 @@ export default function KeywordPage() {
             console.log("Selected Answers:", savedAnswers);
             alert("AI 코스 추천을 받습니다!");
             localStorage.removeItem('answers');
+            navigate("/AIAnswer");
         }
     };
 
