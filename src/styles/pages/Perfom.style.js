@@ -67,10 +67,7 @@ export const EventContainer = styled.div`
     gap: 20px;
     align-items: center;
     justify-content: flex-start;
-    background-color: #f9f9f9;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
     p {
         font-size: 1rem;

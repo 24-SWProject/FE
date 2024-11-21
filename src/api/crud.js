@@ -1,9 +1,15 @@
 import instance from "./axios";
 
-export const fetchPerformanceData = async (date) => {
+export const fetchPerformanceData = async (date, page) => {
     try {
-        console.log(`Fetching performance data for date: ${date}`); // 요청 전 로그
-        const response = await instance.get(`/api/event/performance?date=${date}`);
+        console.log(`Fetching performance data for date: ${date}, page: ${page}`); // 요청 전 로그
+        const response = await instance.get(`/api/event/performance`, {
+            params: {
+                date: date,
+                page: page,
+                size: 10, // 한 페이지에 표시할 개수
+            },
+        });
         console.log("Performance API Response:", response.data); // 응답 데이터 확인
         return response.data;
     } catch (error) {
@@ -12,10 +18,16 @@ export const fetchPerformanceData = async (date) => {
     }
 };
 
-export const fetchFestivalData = async (date) => {
+export const fetchFestivalData = async (date, page) => {
     try {
-        console.log(`Fetching festival data for date: ${date}`); // 요청 전 로그
-        const response = await instance.get(`/api/event/festival?date=${date}`);
+        console.log(`Fetching festival data for date: ${date}, page: ${page}`); // 요청 전 로그
+        const response = await instance.get(`/api/event/festival`, {
+            params: {
+                date: date,
+                page: page,
+                size: 10, // 한 페이지에 표시할 개수
+            },
+        });
         console.log("Festival API Response:", response.data); // 응답 데이터 확인
         return response.data;
     } catch (error) {
@@ -23,4 +35,3 @@ export const fetchFestivalData = async (date) => {
         return [];
     }
 };
-
