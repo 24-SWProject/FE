@@ -51,7 +51,7 @@ const fetchMovies = async () => {
                 const detailResponse = await fetch(detailUrl);
                 const detailData = await detailResponse.json();
                 const movieInfo = detailData.movieInfoResult.movieInfo;
-
+                console.log("movidId: ", movie.movieCd);
                 // KMDB API를 사용해 포스터 URL 가져오기
                 const posterUrl = await fetchPosterUrl(movie.movieNm, movie.openDt);
 
