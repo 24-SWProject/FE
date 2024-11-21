@@ -35,3 +35,15 @@ export const fetchFestivalData = async (date, page) => {
         return [];
     }
 };
+
+// 회원 탈퇴 API 호출 함수
+export const deleteUserAccount = async () => {
+    try {
+        const response = await instance.delete(`/api/user`);
+        console.log("User account deleted successfully:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting user account:", error);
+        throw error;
+    }
+};
