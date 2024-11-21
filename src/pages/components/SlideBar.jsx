@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteUserAccount } from "../../api";
+import { deleteUserAccount } from "../../api/crud";
+import WithDrawModal from "./WithDrawModal";
 import * as S from "../../styles/components/SlideBar.style";
 
 export default function SlideBar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [modalStep, setModalStep] = useState(0); // 모달 단계: 0 = 닫힘, 1 = 첫 번째, 2 = 두 번째
     const navigate = useNavigate();
 
     // SlideBar를 여는 함수
@@ -17,11 +19,23 @@ export default function SlideBar() {
         setIsOpen(false);
     };
 
+    // 첫 번째 모달 열기
+    const openFirstModal = () => {
+        setModalStep(1);
+    };
+
+    // 모달 닫기
+    const closeModal = () => {
+        setModalStep(0);
+    };
+
+    // 두 번째 모달 열기
+    const openSecondModal = () => {
+        setModalStep(2);
+    };
+
     // 회원 탈퇴 처리 함수
     const handleDeleteAccount = async () => {
-        const confirmDelete = window.confirm("정말로 탈퇴하시겠습니까?");
-        if (!confirmDelete) return;
-
         try {
             await deleteUserAccount();
             alert("계정이 성공적으로 삭제되었습니다.");
@@ -30,15 +44,15 @@ export default function SlideBar() {
         } catch (error) {
             console.error("Error deleting account:", error);
             alert("계정 삭제 중 문제가 발생했습니다. 다시 시도해주세요.");
+        } finally {
+            closeModal(); // 모달 닫기
         }
     };
 
     return (
         <>
-            {/* ListIcon 버튼을 클릭하면 SlideBar가 열림 */}
             <S.ListIcon onClick={openSlideBar} />
 
-            {/* SlideBarContainer가 열려 있을 때만 표시 */}
             {isOpen && (
                 <S.Overlay onClick={closeSlideBar}>
                     <S.SlideBarContainer onClick={(e) => e.stopPropagation()}>
@@ -48,9 +62,27 @@ export default function SlideBar() {
                             <S.MenuItem as={Link} to="/performList">공연&전시 정보</S.MenuItem>
                             <S.MenuItem>북마크</S.MenuItem>
                         </S.BarContext>
-                        <S.Withdraw onClick={handleDeleteAccount}>탈퇴하기</S.Withdraw>
+                        <S.Withdraw onClick={openFirstModal}>탈퇴하기</S.Withdraw>
                     </S.SlideBarContainer>
                 </S.Overlay>
+            )}
+
+            {/* 첫 번째 모달 */}
+            {modalStep === 1 && (
+                <WithDrawModal
+                    message="정말로 탈퇴하시겠습니까? 다시 한 번 확인해주세요."
+                    onConfirm={openSecondModal} // 두 번째 모달 열기
+                    onCancel={closeModal} // 모달 닫기
+                />
+            )}
+
+            {/* 두 번째 모달 */}
+            {modalStep === 2 && (
+                <WithDrawModal
+                    message="진짜 탈퇴하실건가요...?"
+                    onConfirm={handleDeleteAccount} // 계정 삭제 처리
+                    onCancel={closeModal} // 모달 닫기
+                />
             )}
         </>
     );
