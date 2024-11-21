@@ -73,14 +73,14 @@ export const TextContainer = styled.div`
 `;
 
 export const MovieTitle = styled.div`
-    font-size: 1rem;
+    font-size: clamp(10px, 1rem, 20px);
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
 `;
 
 export const MovieInfo = styled.div`
-    font-size: 0.8rem;
+    font-size: clamp(10px, 0.8rem, 15px);
     color: #666;
     line-height: 1.2;
 `;

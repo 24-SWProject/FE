@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteUserAccount } from "../../api/crud";
+import { deleteUserAccount, logoutUser } from "../../api/crud"; // logoutUser 추가
 import WithDrawModal from "./WithDrawModal";
 import * as S from "../../styles/components/SlideBar.style";
 
@@ -8,6 +8,13 @@ export default function SlideBar() {
     const [isOpen, setIsOpen] = useState(false);
     const [modalStep, setModalStep] = useState(0); // 모달 단계: 0 = 닫힘, 1 = 첫 번째, 2 = 두 번째
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, []);
 
     // SlideBar를 여는 함수
     const openSlideBar = () => {
@@ -32,6 +39,19 @@ export default function SlideBar() {
     // 두 번째 모달 열기
     const openSecondModal = () => {
         setModalStep(2);
+    };
+
+    // 로그아웃 처리 함수
+    const handleLogout = async () => {
+        try {
+            await logoutUser(); // 로그아웃 API 호출
+            alert("성공적으로 로그아웃되었습니다.");
+            localStorage.clear(); // 로컬 스토리지 비우기
+            navigate("/login"); // 로그인 페이지로 이동
+        } catch (error) {
+            console.error("Error logging out:", error);
+            alert("로그아웃 처리 중 문제가 발생했습니다. 다시 시도해주세요.");
+        }
     };
 
     // 회원 탈퇴 처리 함수
@@ -60,7 +80,7 @@ export default function SlideBar() {
                             <S.MenuItem as={Link} to="/profileSet">프로필 설정</S.MenuItem>
                             <S.MenuItem as={Link} to="/recording">데이트 기록</S.MenuItem>
                             <S.MenuItem as={Link} to="/performList">공연&전시 정보</S.MenuItem>
-                            <S.MenuItem>북마크</S.MenuItem>
+                            <S.MenuItem onClick={handleLogout}>로그아웃</S.MenuItem> {/* 로그아웃 처리 */}
                         </S.BarContext>
                         <S.Withdraw onClick={openFirstModal}>탈퇴하기</S.Withdraw>
                     </S.SlideBarContainer>

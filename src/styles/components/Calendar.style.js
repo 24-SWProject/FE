@@ -13,7 +13,7 @@ export const CalendarContainer = styled.div`
 `;
 
 export const CalendarHeader = styled.div`
-    font-size: 24px;
+    font-size: clamp(15px, 1.2rem, 25px);
     font-weight: 700;
     color: #333333;
     text-align: center;
@@ -21,7 +21,7 @@ export const CalendarHeader = styled.div`
 `;
 
 export const CalendarSubHeader = styled.div`
-    font-size: 20px;
+    font-size: clamp(15px, 1.2rem, 25px);
     color: #333333;
     text-align: center;
     margin-bottom: 20px;

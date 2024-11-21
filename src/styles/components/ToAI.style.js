@@ -14,7 +14,7 @@ export const ToAI = styled.button`
     justify-content: center;
     align-items: center;
     color: #000000;
-    font-size: 20px;
+    font-size: clamp(15px, 1.1rem, 23px);
     font-weight: 500;
     font-family: 'Pretendard', sans-serif;
 `;

@@ -76,7 +76,7 @@ export const DdayInfo = styled.div`
     }
 
     h6 {
-        font-size: clamp(20px, 1.3rem, 35px);
+        font-size: clamp(15px, 1.1rem, 25px);
         font-weight: 600;
         color: #444;
         padding: 0;
@@ -85,7 +85,7 @@ export const DdayInfo = styled.div`
 
     span {
         padding: 0;
-        font-size: clamp(10px, 1.1rem, 20px);
+        font-size: clamp(10px, 0.9rem, 20px);
         color: #444444;
         text-decoration: underline;
     }

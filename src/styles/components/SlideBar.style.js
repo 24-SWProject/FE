@@ -50,7 +50,7 @@ export const BarContext = styled.div`
     flex-direction: column;
     justify-content: space-between;
     width: 90%;
-    height: 30%;
+    height: 50%;
     padding: 0;
     box-sizing: border-box;
     margin: 0;
@@ -60,7 +60,7 @@ export const BarContext = styled.div`
 export const MenuItem = styled.div`
     white-space: nowrap;
     font-family: 'Pretendard', sans-serif;
-    font-size: clamp(15px, 1.3rem, 25px);
+    font-size: clamp(15px, 1.0rem, 25px);
     font-weight: 600;
     color: #444444;
     cursor: pointer;

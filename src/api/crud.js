@@ -10,7 +10,6 @@ export const fetchPerformanceData = async (date, page) => {
                 size: 10, // 한 페이지에 표시할 개수
             },
         });
-        console.log("Performance API Response:", response.data); // 응답 데이터 확인
         return response.data;
     } catch (error) {
         console.error("Error fetching performance data:", error); // 오류 출력
@@ -28,11 +27,23 @@ export const fetchFestivalData = async (date, page) => {
                 size: 10, // 한 페이지에 표시할 개수
             },
         });
-        console.log("Festival API Response:", response.data); // 응답 데이터 확인
         return response.data;
     } catch (error) {
         console.error("Error fetching festival data:", error); // 오류 출력
         return [];
+    }
+};
+
+export const fetchRefreshToken = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_baseURL}/api/user/token`, {
+            credentials: "include", // 쿠키 포함
+        });
+        const data = await response.json();
+
+        localStorage.setItem("refreshToken", data.refreshToken);
+    } catch (error) {
+        console.error("Error fetching refresh token:", error);
     }
 };
 
@@ -45,5 +56,17 @@ export const deleteUserAccount = async () => {
     } catch (error) {
         console.error("Error deleting user account:", error);
         throw error;
+    }
+};
+
+// 로그아웃
+export const logoutUser = async () => {
+    try {
+        const response = await instance.get(`/api/user/logout`); // 로그아웃 API 호출
+        console.log("Logout successful:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error during logout:", error);
+        throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던짐
     }
 };
