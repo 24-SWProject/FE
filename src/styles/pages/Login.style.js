@@ -46,6 +46,7 @@ export const Intro = styled.div`
     span{
         margin-top: 2vh;
         font-weight: 400;
+        color: #444;
         font-size: clamp(14px, 1vw, 56px);
         text-decoration: underline;
     }

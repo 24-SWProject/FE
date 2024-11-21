@@ -36,12 +36,23 @@ export const fetchFestivalData = async (date, page) => {
 
 export const fetchRefreshToken = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_baseURL}/api/user/token`, {
-            credentials: "include", // 쿠키 포함
-        });
-        const data = await response.json();
+        console.log("cookie: ", document.cookie);
 
+        const response = await fetch(`${import.meta.env.VITE_baseURL}/api/user`, {
+            method: "GET",
+            credentials: "include", // 쿠키 포함
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch refresh token: ${response.status}`);
+        }
+
+        const data = await response.json();
         localStorage.setItem("refreshToken", data.refreshToken);
+        console.log("RefreshToken 저장 성공:", data.refreshToken);
     } catch (error) {
         console.error("Error fetching refresh token:", error);
     }
