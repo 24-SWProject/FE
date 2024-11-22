@@ -21,7 +21,7 @@ export default function PerformListPage() {
         isLoading,
     } = useInfiniteQuery(
         ["events", date, activeTab],
-        async ({ pageParam = 1 }) => {
+        async ({ pageParam = 0 }) => {
             const response =
                 activeTab === "festival"
                     ? await fetchFestivalData(date, pageParam)
