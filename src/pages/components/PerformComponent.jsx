@@ -21,12 +21,12 @@ const PerformComponent = ({ selectedDate }) => {
 
                 const mergedEvents = [
                     ...festivalData.content.map((festival) => ({
-                        name: festival.TITLE,
+                        name: festival.title,
                         date: `${festival.openDate} ~ ${festival.endDate}`,
                     })),
                     ...performanceData.content.map((performance) => ({
                         name: performance.title,
-                        date: `${performance.STARTDATE} ~ ${performance.END_DATE}`,
+                        date: `${performance.openDate} ~ ${performance.endDate}`,
                     })),
                 ];
 

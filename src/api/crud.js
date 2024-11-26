@@ -60,3 +60,15 @@ export const logoutUser = async () => {
         throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던짐
     }
 };
+
+// 북마크 토글
+export const toggleBookmark = async (type, id) => {
+    try {
+        const response = await instance.get(`/api/auth/bookmark/${type}/${id}`);
+        console.log("북마크 토글 성공:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("북마크 토글 실패:", error);
+        throw error;
+    }
+};
