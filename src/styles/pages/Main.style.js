@@ -6,7 +6,7 @@ export const MainContainer = styled.div`
     position: relative;
     flex-direction: column;
     align-items: center;
-    
+    height: auto;
     min-height: 100vh;
     padding: 10px 0;
     overflow-y: auto;

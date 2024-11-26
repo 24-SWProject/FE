@@ -2,12 +2,18 @@ import * as S from "../styles/pages/Login.style";
 import naver from "../assets/Login/naver.png";
 import kakao from "../assets/Login/kakao.png";
 import google from "../assets/Login/google.png";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+    const navigate = useNavigate();
     const handleNaverLogin = () => {
         const loginURL = `${import.meta.env.VITE_baseURL}/api/user/login`;
         window.location.href = loginURL; // 백엔드로 리다이렉트
     };
+
+    const handleLogin = () => {
+        navigate("/main");
+    }
 
     return (
         <S.LoginContainer>
@@ -20,7 +26,7 @@ export default function LoginPage() {
                     <img src={naver} alt="icon_naver" />
                     <p> 네이버 계정으로 로그인 </p>
                 </S.LoginLine>
-                <S.LoginLine className="kakao">
+                <S.LoginLine className="kakao" onClick={handleLogin}>
                     <img src={kakao} alt="icon_kakao" />
                     <p>카카오 계정으로 로그인</p>
                 </S.LoginLine>

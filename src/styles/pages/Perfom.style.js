@@ -3,8 +3,10 @@ import styled from "styled-components";
 export const PerformContainer = styled.div`
     width: 100%;
     min-height: 100vh;
+    height: auto;
     padding: 0px;
     display: flex;
+    overflow-y: auto;
     flex-direction: column;
     align-items: center;
     margin: 0;

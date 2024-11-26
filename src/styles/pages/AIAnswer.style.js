@@ -10,6 +10,7 @@ export const Container = styled.div`
     height: 100vh;
     padding-top: 20px;
     box-sizing: border-box;
+    position: relative;
 `;
 
 export const Robot = styled.div`
