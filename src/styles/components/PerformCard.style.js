@@ -100,7 +100,6 @@ export const BookmarkIcon = styled.button`
     transition: background-image 0.3s;
 
     &:hover {
-        background-image: url(${({ isActive }) => (isActive ? BookmarkFill : Bookmark)});
-        background-color: none;
+        opacity: 0.8;
     }
 `;

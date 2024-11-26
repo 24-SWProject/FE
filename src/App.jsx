@@ -10,6 +10,7 @@ import GuChoice from './pages/GuChoice';
 import KeywordPage from './pages/KeywordPage';
 import SignUpPage from './pages/SignupPage';
 import AIAnswerPage from './pages/AIAnswerPage';
+import BookmarkedPage from './pages/BookmarkedPage';
 
 // QueryClient 생성
 const queryClient = new QueryClient();
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: '/AIAnswer',
     element: <AIAnswerPage />
+  },
+  {
+    path: '/bookmarked',
+    element: <BookmarkedPage />
   },
 ]);
 

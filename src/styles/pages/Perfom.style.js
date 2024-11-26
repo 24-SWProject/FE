@@ -31,6 +31,14 @@ export const SmallHeader = styled.div`
         margin: 0;
         padding: 0;
     }
+
+    & > h3 {
+        font-size: clamp(18px, 2.0rem, 30px);
+        color: #fff;
+        font-family: 'Pretendard', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 `;
 
 export const Header = styled.div`

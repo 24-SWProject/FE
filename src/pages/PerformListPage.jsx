@@ -28,7 +28,7 @@ export default function PerformListPage() {
                     : await fetchPerformanceData(date, pageParam);
 
             // API 응답에서 content 배열 반환
-            console.log("content: ", response);
+            console.log("content: ", response.content);
             return response.content || [];
         },
         {
@@ -125,7 +125,9 @@ export default function PerformListPage() {
                                         imageUrl: event.poster,
                                         linkText: activeTab === "festival" ? "LINK" : "X",
                                         url: activeTab === "festival" ? event.registerLink : "",
+                                        id: event.id,
                                     }}
+                                    type = {activeTab}
                                 />
                             ))}
                         </React.Fragment>
