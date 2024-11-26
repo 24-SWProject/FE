@@ -28,6 +28,7 @@ export default function PerformListPage() {
                     : await fetchPerformanceData(date, pageParam);
 
             // API 응답에서 content 배열 반환
+            console.log("content: ", response);
             return response.content || [];
         },
         {

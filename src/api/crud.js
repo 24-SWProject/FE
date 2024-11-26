@@ -10,6 +10,7 @@ export const fetchPerformanceData = async (date, page) => {
                 size: 10, // 한 페이지에 표시할 개수
             },
         });
+        console.log("PerformanceDate: ", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching performance data:", error); // 오류 출력
@@ -26,43 +27,11 @@ export const fetchFestivalData = async (date, page) => {
                 size: 10, // 한 페이지에 표시할 개수
             },
         });
+        console.log("FestivalData: ", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching festival data:", error); // 오류 출력
         return [];
-    }
-};
-
-// Access Token 가져오기 (리다이렉트 없이 직접 요청 방식)
-export const fetchAccessToken = async () => {
-    try {
-        const response = await fetch(`${import.meta.env.VITE_baseURL}/api/user/login`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-        });
-
-        console.log("응답 상태:", response.status);
-        console.log("응답 헤더:", response.headers);
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch access token: ${response.status}`);
-        }
-
-        const authorizationHeader = response.headers.get("Authorization");
-        console.log("Authorization 헤더:", authorizationHeader);
-
-        if (authorizationHeader && authorizationHeader.startsWith("Bearer ")) {
-            const accessToken = authorizationHeader.split("Bearer ")[1];
-            localStorage.setItem("accessToken", accessToken);
-            console.log("AccessToken 저장 성공:", accessToken);
-        } else {
-            throw new Error("Authorization 헤더에서 AccessToken을 찾을 수 없습니다.");
-        }
-    } catch (error) {
-        console.error("AccessToken 요청 중 오류 발생:", error);
     }
 };
 
@@ -83,7 +52,7 @@ export const deleteUserAccount = async () => {
 // 로그아웃
 export const logoutUser = async () => {
     try {
-        const response = await instance.get(`/api/user/logout`); // 로그아웃 API 호출
+        const response = await instance.get(`/api/auth/user/logout`); // 로그아웃 API 호출
         console.log("Logout successful:", response.data);
         return response.data;
     } catch (error) {
