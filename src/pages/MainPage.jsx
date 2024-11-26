@@ -7,7 +7,7 @@ import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
 import { useEffect, useState } from "react";
-import { fetchAccessToken } from "../api/crud"; // 수정된 fetchAccessToken 사용
+import { fetchAccessToken } from "../api/crud";
 import { useNavigate } from "react-router-dom";
 
 export default function MainPage() {
@@ -17,13 +17,15 @@ export default function MainPage() {
     useEffect(() => {
         const initializeAccessToken = async () => {
             try {
-                await fetchAccessToken(); // Access Token 요청
+                await fetchAccessToken();
+                console.log("AccessToken 초기화 완료");
             } catch (error) {
-                console.error("Access Token 초기화 실패:", error);
-                navigate("/"); // 로그인 페이지로 리다이렉트
+                console.error("AccessToken 초기화 중 오류:", error);
+                // navigate("/"); // 오류 발생 시 로그인 페이지로 리다이렉트
             }
         };
 
+        window.scrollTo(0, 0); // 페이지 로드 시 상단으로 이동
         initializeAccessToken();
     }, [navigate]);
 

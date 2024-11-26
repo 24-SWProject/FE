@@ -3,11 +3,13 @@ import naver from "../assets/Login/naver.png";
 import kakao from "../assets/Login/kakao.png";
 import google from "../assets/Login/google.png";
 import { useNavigate } from "react-router-dom";
+import { fetchAccessToken } from "../api/crud";
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const handleNaverLogin = () => {
+    const handleNaverLogin = async () => {
         const loginURL = `${import.meta.env.VITE_baseURL}/api/user/login`;
+        await fetchAccessToken();
         window.location.href = loginURL; // 백엔드로 리다이렉트
     };
 
