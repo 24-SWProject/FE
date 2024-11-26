@@ -1,5 +1,4 @@
 import { useQuery } from 'react-query';
-// import ClipLoader from 'react-spinners/ClipLoader';
 import * as S from '../../styles/components/MovieInfo.style';
 
 // KMDB API를 사용하여 포스터 URL 가져오기
