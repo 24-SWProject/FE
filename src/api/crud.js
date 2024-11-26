@@ -34,29 +34,35 @@ export const fetchFestivalData = async (date, page) => {
     }
 };
 
-export const fetchRefreshToken = async () => {
+// Access Token 가져오기 (리다이렉트 없이 직접 요청 방식)
+export const fetchAccessToken = async () => {
     try {
-        console.log("cookie: ", document.cookie);
-
-        const response = await fetch(`${import.meta.env.VITE_baseURL}/api/user`, {
+        // 백엔드에서 처리 후 mainPage로 리다이렉트된 상태
+        const response = await fetch(`${import.meta.env.VITE_baseURL}/api/user/login`, {
             method: "GET",
-            credentials: "include", // 쿠키 포함
             headers: {
                 "Content-Type": "application/json",
             },
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch refresh token: ${response.status}`);
+            throw new Error(`Failed to fetch access token: ${response.status}`);
         }
 
-        const data = await response.json();
-        localStorage.setItem("refreshToken", data.refreshToken);
-        console.log("RefreshToken 저장 성공:", data.refreshToken);
+        // Authorization 헤더에서 Access Token 추출
+        const authorizationHeader = response.headers.get("authorization");
+        if (authorizationHeader && authorizationHeader.startsWith("Bearer ")) {
+            const accessToken = authorizationHeader.split("Bearer ")[1];
+            localStorage.setItem("accessToken", accessToken); // Access Token 저장
+            console.log("AccessToken 저장 성공:", accessToken);
+        } else {
+            throw new Error("Authorization 헤더에서 AccessToken을 찾을 수 없습니다.");
+        }
     } catch (error) {
-        console.error("Error fetching refresh token:", error);
+        console.error("AccessToken 요청 중 오류 발생:", error);
     }
 };
+
 
 // 회원 탈퇴 API 호출 함수
 export const deleteUserAccount = async () => {

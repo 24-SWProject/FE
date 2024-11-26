@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import ClipLoader from 'react-spinners/ClipLoader';
+// import ClipLoader from 'react-spinners/ClipLoader';
 import * as S from '../../styles/components/MovieInfo.style';
 
 // KMDB API를 사용하여 포스터 URL 가져오기
@@ -78,9 +78,18 @@ const MovieInfo = () => {
 
     if (isLoading) {
         return (
-            <S.Container style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <S.Container>
                 <S.Header>현재 상영작 (박스오피스 순위)</S.Header>
-                <ClipLoader size={50} color="#E6A4B4" loading={isLoading} />
+                <S.MovieList>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <S.SkeletonCard key={index}>
+                            <S.SkeletonPoster />
+                            <S.SkeletonText />
+                            <S.SkeletonText />
+                            <S.SkeletonText />
+                        </S.SkeletonCard>
+                    ))}
+                </S.MovieList>
             </S.Container>
         );
     }

@@ -28,7 +28,9 @@ export default function LoginPage() {
                     <img src={google} alt="icon_google" />
                     <p>Google 계정으로 로그인</p>
                 </S.LoginLine>
-                <S.Intro><span>회원가입하기</span></S.Intro>
+                <S.Intro>
+                    <span>회원가입하기</span>
+                </S.Intro>
             </S.ModuleContainer>
         </S.LoginContainer>
     );

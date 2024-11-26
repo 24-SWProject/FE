@@ -84,3 +84,48 @@ export const MovieInfo = styled.div`
     color: #666;
     line-height: 1.2;
 `;
+
+export const SkeletonCard = styled.div`
+    min-width: 180px;
+    aspect-ratio: 3 / 5;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: skeleton-loading 1.5s infinite;
+
+    @keyframes skeleton-loading {
+        0% {
+            background-color: #e0e0e0;
+        }
+        50% {
+            background-color: #f0f0f0;
+        }
+        100% {
+            background-color: #e0e0e0;
+        }
+    }
+`;
+
+export const SkeletonPoster = styled.div`
+    width: 90%;
+    aspect-ratio: 1 / 1.3;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin-bottom: 10px;
+`;
+
+export const SkeletonText = styled.div`
+    width: 90%;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+    margin: 5px 0;
+
+    &:last-child {
+        width: 60%;
+    }
+`;
+
