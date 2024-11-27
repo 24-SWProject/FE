@@ -42,7 +42,6 @@ export const CardContent = styled.div`
     align-items: flex-start;
     justify-content: center;
     position: relative;
-    overflow: hidden;
 `;
 
 export const Title = styled.h2`
@@ -103,4 +102,3 @@ export const BookmarkIcon = styled.button`
         opacity: 0.8;
     }
 `;
-

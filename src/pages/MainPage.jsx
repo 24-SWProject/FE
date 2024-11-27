@@ -1,6 +1,6 @@
 import * as S from "../styles/pages/Main.style";
 import CalendarComponent from "./components/CalendarComponent";
-import { InviteComponent } from "./components/Dday";
+import { InviteComponent } from "./components/InviteComponent";
 import MovieInfo from "./components/MovieInfo";
 import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";

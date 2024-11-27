@@ -126,6 +126,7 @@ export default function PerformListPage() {
                                         linkText: activeTab === "festival" ? "LINK" : "X",
                                         url: activeTab === "festival" ? event.registerLink : "",
                                         id: event.id,
+                                        bookmarked: event.bookmarked,
                                     }}
                                     type = {activeTab}
                                 />

@@ -68,8 +68,9 @@ export default function BookmarkedPage() {
                                 linkText: "LINK",
                                 url: event.registerLink,
                                 id: event.id,
+                                bookmarked: event.bookmarked,
                             }}
-                            type={"bookmark"} // 북마크 타입 전달
+                            type={event.type} // 북마크 타입 전달
                         />
                     ))}
                 </React.Fragment>
