@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "react-query";
 import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
-import { fetchBookmarkedData } from "../api/crud";
+import { fetchBookmarkedData } from "../api/bookmarkcrud";
 
 export default function BookmarkedPage() {
     const observerRef = useRef(null);

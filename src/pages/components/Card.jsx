@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as S from "../../styles/components/PerformCard.style";
-import { toggleBookmark } from "../../api/crud";
+import { toggleBookmark } from "../../api/bookmarkcrud";
 
 export default function Card({ event, type }) {
     const [isBookmarked, setIsBookmarked] = useState(event.bookmarked);

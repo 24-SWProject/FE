@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as S from "../../styles/components/PerformComponent.style";
-import { fetchFestivalData, fetchPerformanceData } from "../../api/crud";
+import { fetchFestivalData, fetchPerformanceData } from "../../api/eventcrud";
 
 const PerformComponent = ({ selectedDate }) => {
     const [events, setEvents] = useState([]);

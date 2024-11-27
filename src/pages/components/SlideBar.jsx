@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteUserAccount, logoutUser } from "../../api/crud"; // logoutUser 추가
+import { deleteUserAccount, logoutUser } from "../../api/usercrud"; 
 import WithDrawModal from "./WithDrawModal";
 import * as S from "../../styles/components/SlideBar.style";
 

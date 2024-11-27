@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import * as S from "../../styles/components/Dday.Style";
-import { getGroupCode, joinGroup } from "../../api/crud";
+import { getGroupCode, joinGroup } from "../../api/groupcrud";
 
 export function InviteComponent() {
     const [isCopied, setIsCopied] = useState(false); // 초대 코드 복사 상태
