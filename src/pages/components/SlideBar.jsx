@@ -47,7 +47,7 @@ export default function SlideBar() {
             await logoutUser(); // 로그아웃 API 호출
             alert("성공적으로 로그아웃되었습니다.");
             localStorage.clear(); // 로컬 스토리지 비우기
-            navigate("/login"); // 로그인 페이지로 이동
+            navigate("/"); // 로그인 페이지로 이동
         } catch (error) {
             console.error("Error logging out:", error);
             alert("로그아웃 처리 중 문제가 발생했습니다. 다시 시도해주세요.");
