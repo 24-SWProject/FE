@@ -3,7 +3,7 @@ import instance from "./axios";
 export const fetchPerformanceData = async (date, page) => {
     try {
         console.log(`Fetching performance data for date: ${date}, page: ${page}`); // 요청 전 로그
-        const response = await instance.get(`/api/event/performance`, {
+        const response = await instance.get(`/api/auth/event/performance`, {
             params: {
                 date: date,
                 page: page,
@@ -20,7 +20,7 @@ export const fetchPerformanceData = async (date, page) => {
 
 export const fetchFestivalData = async (date, page) => {
     try {
-        const response = await instance.get(`/api/event/festival`, {
+        const response = await instance.get(`/api/auth/event/festival`, {
             params: {
                 date: date,
                 page: page,
