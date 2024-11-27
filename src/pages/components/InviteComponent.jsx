@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as S from "../../styles/components/Dday.Style";
 import { getGroupCode, joinGroup } from "../../api/groupcrud";
 
-export function InviteComponent() {
+export function InviteComponent({ onGroupJoin }) {
     const [isCopied, setIsCopied] = useState(false); // 초대 코드 복사 상태
     const [isClicked, setIsClicked] = useState(false); // 상대방 코드 입력 클릭 상태
     const [inviteCode, setInviteCode] = useState("XXXXXXXX"); // 초대 코드 값
@@ -37,7 +37,10 @@ export function InviteComponent() {
     const handleConnectClick = async () => {
         try {
             const response = await joinGroup(coupleCode); // 입력한 코드로 그룹 참여 요청
-            setMessage(`그룹에 성공적으로 참여했습니다! (ID: ${response.id})`);
+            if (response && response.status === 200) {
+                setMessage("그룹에 성공적으로 참여했습니다!");
+                onGroupJoin(); // MainPage에서 상태 업데이트
+            }
         } catch (error) {
             setMessage(
                 error.response?.data?.message || "그룹 참여 중 오류가 발생했습니다."
@@ -76,7 +79,7 @@ export function InviteComponent() {
                 {!isCopied && (
                     <S.CopyButton onClick={handleCopyClick}>SHOW CODE</S.CopyButton>
                 )}
-                {message && <p>{message}</p>} {/* 응답 메시지 표시 */}
+                {message && <p>{message}</p>}
             </S.DdayInfo>
         </S.DdayContainer>
     );

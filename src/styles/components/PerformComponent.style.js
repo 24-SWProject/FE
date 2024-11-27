@@ -56,6 +56,6 @@ export const EventName = styled.div`
 `;
 
 export const EventDate = styled.div`
-    font-size: 0.7rem;
+    font-size: clamp(8px, 0.6rem, 15px);
     color: #666;
 `;

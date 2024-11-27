@@ -23,3 +23,44 @@ export const joinGroup = async (code) => {
         throw error; // 호출하는 쪽에서 에러를 처리할 수 있도록 throw
     }
 };
+
+// 그룹 프로필 조회
+export const getGroupProfile = async () => {
+    try {
+        const response = await instance.get(`/api/auth/group`);
+        console.log("group Profile: ", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("그룹 프로필 조회 실패", error);
+        throw error;
+    }
+};
+
+// 그룹 기념일 조회
+export const getGroupAnniv = async () => {
+    try {
+        const response = await instance.get(`/api/auth/group/anniv`);
+        console.log("group anniv: ", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("그룹 기념일 조회 실패", error);
+        throw error;
+    }
+};
+
+// 그룹 프로필 수정
+export const updateGroupProfile = async (data) => {
+    try {
+        const response = await instance.put(`/api/auth/group`, data, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        console.log("crud 그룹 프로필 수정 데이터 : ", data);
+        console.log("그룹 프로필 수정 성공:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("그룹 프로필 수정 실패:", error.response?.data || error.message);
+        throw error;
+    }
+};
