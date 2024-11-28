@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteUserAccount, logoutUser } from "../../api/usercrud"; 
 import WithDrawModal from "./WithDrawModal";
@@ -9,12 +9,6 @@ export default function SlideBar() {
     const [modalStep, setModalStep] = useState(0); // 모달 단계: 0 = 닫힘, 1 = 첫 번째, 2 = 두 번째
     const navigate = useNavigate();
 
-    useEffect(() => {
-        document.body.style.overflow = "auto";
-        return () => {
-            document.body.style.overflow = "hidden";
-        };
-    }, []);
 
     // SlideBar를 여는 함수
     const openSlideBar = () => {
