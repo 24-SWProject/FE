@@ -11,6 +11,7 @@ export default function LoginPage() {
 
     // URL에서 accessToken 추출 및 저장
     useEffect(() => {
+        localStorage.clear();
         const queryParams = new URLSearchParams(location.search);
         const accessToken = queryParams.get("accessToken");
 
