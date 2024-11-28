@@ -50,7 +50,6 @@ export default function GuChoice() {
             const answers = [selectedDistrict]; // 선택된 구 이름을 배열에 저장
             localStorage.setItem('answers', JSON.stringify(answers));
             navigate("/keyword");
-            localStorage.removeItem('weatherDescription');
         } else {
             alert("구를 선택해주세요.");
         }
@@ -61,7 +60,7 @@ export default function GuChoice() {
             <Close />
             <S.Description>{message}</S.Description>
             <S.Question>데이트 하고 싶은 구를 선택해주세요 :) </S.Question>
-            <div style={{ width: '90%', aspectRatio: '4/3', margin: '0 auto', marginTop: '10px'}}>
+            <div style={{ width: '90%', aspectRatio: '4/3', margin: '0 auto', marginTop: '0', padding: '0'}}>
                 <Map
                     appkey={import.meta.env.VITE_KAKAO_MAP_API}
                     center={{ lat: 37.5665, lng: 126.9780 }}

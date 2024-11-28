@@ -3,8 +3,8 @@ import Arrow from "../../assets/Arrow_left.png"
 
 export const LeftArrow = styled.div`
     position: absolute;
-    top : 12vh;
-    left: 10px;
+    top : 9vh;
+    left: 0px;
     padding: 0;
     border: none;
     cursor: pointer;

@@ -76,7 +76,7 @@ export default function KeywordPage() {
         if (currentQuestionIndex < questionsData.length - 1) {
             setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         } else {
-            alert("모든 질문이 완료되었습니다!");
+            console.log("모든 질문이 완료되었습니다!", answers);
         }
     };
 
@@ -89,6 +89,7 @@ export default function KeywordPage() {
         } else {
             console.log("Selected Answers:", savedAnswers);
             alert("AI 코스 추천을 받습니다!");
+            localStorage.removeItem('weatherDescription');
             localStorage.removeItem('answers');
             navigate("/AIAnswer");
         }
