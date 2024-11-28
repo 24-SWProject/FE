@@ -39,7 +39,7 @@ export default function RecordPage() {
         try {
             if (selectedTodo) {
                 await updateSchedule(selectedTodo.id, {
-                    id: todo.id,
+                    id: selectedTodo.id,
                     content: todo.task,
                     scheduleDate: todo.date,
                 });

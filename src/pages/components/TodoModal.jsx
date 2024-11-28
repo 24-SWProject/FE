@@ -45,7 +45,6 @@ export default function Modal({ onClose, onAdd, existingTodo }) {
                     type="text"
                     value={task} // 상태에서 읽어옴
                     onChange={(e) => {
-                        console.log("변경된 내용:", e.target.value); // 디버깅용
                         setTask(e.target.value);
                     }}
                     placeholder="할 일을 입력하세요"
