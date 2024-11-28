@@ -71,7 +71,7 @@ export const MenuItem = styled.div`
 `;
 
 export const Withdraw = styled.div`
-     font-size: clamp(10px, 1.1rem, 20px);
+     font-size: clamp(10px, 0.8rem, 15px);
     font-family: Pretendard, sans-serif;
     font-weight: 800;
     color: #777777;
