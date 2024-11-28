@@ -51,6 +51,7 @@ export const getGroupAnniv = async () => {
 // 그룹 프로필 수정
 export const updateGroupProfile = async (data) => {
     try {
+        console.log("update 온 데이터: ", data);
         const formData = new FormData();
         formData.append("nickName", data.nickName);
         formData.append("anniversary", data.anniversary);
