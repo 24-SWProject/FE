@@ -49,6 +49,7 @@ export const Intro = styled.div`
         color: #444;
         font-size: clamp(14px, 1vw, 56px);
         text-decoration: underline;
+        cursor: pointer;
     }
 `;
 
@@ -74,6 +75,7 @@ export const LoginLine = styled.div`
     font-size: 14px;
     font-weight: 300;
     font-family: 'Pretendard', sans-serif;
+    cursor: pointer;
 
     img{
         width: 39px;
