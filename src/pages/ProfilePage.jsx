@@ -62,27 +62,28 @@ export default function ProfileSet() {
 
     const onSubmit = async (data) => {
         try {
-            // 날짜 형식을 yyyy-mm-dd로 변환
-            const formattedDate = data.datingDate
-                ? new Date(data.datingDate).toISOString().split("T")[0]
-                : null;
-
+            // 날짜를 KST 기준으로 변환
+            const localDate = new Date(data.datingDate);
+            const kstDate = new Date(localDate.getTime() + (9 * 60 * 60 * 1000)); // UTC+9로 변환
+            const formattedDate = kstDate.toISOString().split("T")[0]; // yyyy-MM-dd 형식으로 변환
+    
             // 전송할 데이터 객체 생성
             const updatedData = {
                 nickName: data.nickname,
                 anniversary: formattedDate,
                 profileImg: profileImageFile || null, // 선택된 이미지 파일 없으면 null
             };
-
+    
             console.log("전송 데이터:", updatedData); // 디버깅용 데이터 확인
-
+    
             await updateGroupProfile(updatedData); // 그룹 프로필 수정 API 호출
             console.log("그룹 프로필 수정 성공:", updatedData);
-            navigate("/main"); // 메인 페이지로 이동
+            // window.location.href = "/main";
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
     };
+    
 
     if (!defaultData) {
         return <p>로딩 중...</p>; // 초기 데이터 로딩 상태

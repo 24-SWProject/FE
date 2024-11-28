@@ -122,4 +122,20 @@ export const CalendarItem = styled.div`
         background-color: rgba(173, 216, 230, 0.7);
         border: none;
     }
+
+    .react-calendar__tile {
+        position: relative;
+    }
+
+    .react-calendar__tile > div {
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 8px;
+        height: 8px;
+        background-color: #FF6F61; /* 기념일 색상 */
+        border-radius: 50%;
+    }
 `;
+

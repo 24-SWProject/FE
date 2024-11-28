@@ -51,12 +51,18 @@ export const getGroupAnniv = async () => {
 // 그룹 프로필 수정
 export const updateGroupProfile = async (data) => {
     try {
-        const response = await instance.put(`/api/auth/group`, data, {
+        const formData = new FormData();
+        formData.append("nickName", data.nickName);
+        formData.append("anniversary", data.anniversary);
+        if (data.profileImg) {
+            formData.append("profileImg", data.profileImg); // 이미지 파일 추가
+        }
+
+        const response = await instance.put(`/api/auth/group`, formData, {
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "multipart/form-data",
             },
         });
-        console.log("crud 그룹 프로필 수정 데이터 : ", data);
         console.log("그룹 프로필 수정 성공:", response.data);
         return response.data;
     } catch (error) {

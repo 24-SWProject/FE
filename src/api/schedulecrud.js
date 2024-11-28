@@ -1,9 +1,11 @@
 import instance from "./axios";
 
 // 일정 조회
-export const getSchedules = async () => {
+export const getSchedules = async (month) => {
     try {
-        const response = await instance.get(`/api/auth/schedule`);
+        const response = await instance.get(`/api/auth/schedule`, {
+            params: { date: month }, // 선택된 달(YYYY-MM)을 쿼리 파라미터로 전달
+        });
         console.log("일정 조회 성공:", response.data);
         return response.data; // 일정 데이터 반환
     } catch (error) {
@@ -11,6 +13,7 @@ export const getSchedules = async () => {
         throw error;
     }
 };
+
 
 // 일정 생성 (post)
 export const createSchedule = async (content, scheduleDate) => {
@@ -31,14 +34,26 @@ export const createSchedule = async (content, scheduleDate) => {
 // 일정 수정
 export const updateSchedule = async (id, updatedData) => {
     try {
-        const response = await instance.put(`/api/auth/schedule/${id}`, updatedData);
-        console.log("일정 수정 성공:", response.data);
-        return response.data; // 수정된 일정 데이터 반환
+        // API 요청 데이터 형식
+        const requestData = {
+            id: updatedData.id,
+            content: updatedData.content,
+            scheduleDate: updatedData.scheduleDate,
+        };
+
+        console.log("수정 요청 데이터 확인:", requestData); // 디버깅용
+        const response = await instance.put(`/api/auth/schedule/${id}`,{id: updatedData.id,
+            content: updatedData.content,
+            scheduleDate: updatedData.scheduleDate,});
+        console.log("일정 수정 성공:", response.data); // 수정된 데이터 확인
+        return response.data;
     } catch (error) {
         console.error("일정 수정 실패:", error.response?.data || error.message);
         throw error;
     }
 };
+
+
 
 // 일정 삭제
 export const deleteSchedule = async (id) => {
