@@ -22,8 +22,15 @@ export function InviteComponent({ onGroupJoin }) {
         fetchInviteCode();
     }, []);
 
-    const handleCopyClick = () => {
-        setIsCopied(true);
+    const handleCopyClick = async () => {
+        try {
+            await navigator.clipboard.writeText(inviteCode); // 초대 코드를 클립보드에 복사
+            setIsCopied(true);
+            alert("초대 코드가 클립보드에 복사되었습니다!"); // 복사 성공 시 알림
+        } catch (error) {
+            console.error("클립보드 복사 실패:", error);
+            alert("클립보드 복사에 실패했습니다. 다시 시도해주세요.");
+        }
     };
 
     const handleSpanClick = () => {
@@ -77,7 +84,7 @@ export function InviteComponent({ onGroupJoin }) {
                     <h3>초대코드를 짝꿍에게 보내주세요 :)</h3>
                 )}
                 {!isCopied && (
-                    <S.CopyButton onClick={handleCopyClick}>SHOW CODE</S.CopyButton>
+                    <S.CopyButton onClick={handleCopyClick}>COPY CODE</S.CopyButton>
                 )}
                 {message && <p>{message}</p>}
             </S.DdayInfo>

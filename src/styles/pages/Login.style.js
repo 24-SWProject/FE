@@ -92,10 +92,6 @@ export const LoginLine = styled.div`
         background-color: #FEE500;
         color: black;
     }
-    &.google{
-        background-color: #131A22;
-        color: white;
-    }
     .div{
         display: flex;
         flex-direction: row;
