@@ -45,3 +45,17 @@ export const ModalButton = styled.button`
         background-color: ${(props) => (props.cancel ? "#aaa" : "#ff0000")};
     }
 `;
+
+export const CopyButton = styled.div`
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #FFDA76;
+    color: white;
+    font-size: 16px;
+
+    &:hover {
+        background-color: #B4D6CD;
+    }
+`
