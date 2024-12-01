@@ -35,7 +35,6 @@ export default function MainPage() {
             ) : (
                 <InviteComponent onGroupJoin={() => setIsGroupJoined(true)} />
             )}
-            <InviteComponent />
             <ToAI />
             <MovieInfo />
             <Weather />
