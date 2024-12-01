@@ -28,6 +28,11 @@ export default function LoginPage() {
         window.location.href = loginURL; // 백엔드 로그인 URL로 리다이렉트
     };
 
+    const handleKakaoLogin = () => {
+        const loginURL = `${import.meta.env.VITE_baseURL}/api/user/login/kakao`;
+        window.location.href = loginURL; // 백엔드 로그인 URL로 리다이렉트
+    };
+
     const handleLogin = () => {
         navigate("/main");
     };
@@ -43,9 +48,13 @@ export default function LoginPage() {
                     <img src={naver} alt="icon_naver" />
                     <p> 네이버 계정으로 로그인 </p>
                 </S.LoginLine>
-                <S.LoginLine className="kakao" onClick={handleLogin}>
+                <S.LoginLine className="kakao" onClick={handleKakaoLogin}>
                     <img src={kakao} alt="icon_kakao" />
                     <p>카카오 계정으로 로그인</p>
+                </S.LoginLine>
+                <S.LoginLine className="kakao" onClick={handleLogin}>
+                    <img src={kakao} alt="icon_kakao" />
+                    <p>그냥 들어가보기</p>
                 </S.LoginLine>
                 <S.Intro>
                     <span>회원가입하기</span>
