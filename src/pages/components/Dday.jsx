@@ -47,7 +47,7 @@ export default function DdayComponent() {
             {/* 기념일 정보 */}
             <S.DdayInfo>
                 <h2>{profile.nickName || "별명 없음"}</h2>
-                <p>D+ {anniversaryData.currentDay || 0}</p>
+                <p>D +{anniversaryData.currentDay || 0}❤️</p>
             </S.DdayInfo>
         </S.DdayContainer>
     );
