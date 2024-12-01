@@ -30,7 +30,7 @@ export const CoupleImage = styled.div`
     border-radius: 50%;
     overflow: hidden;
     position: relative;
-    left: -15%;
+    left: -10%;
     
     img {
         width: 100%;
