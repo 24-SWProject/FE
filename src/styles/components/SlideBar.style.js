@@ -23,10 +23,9 @@ export const SlideBarContainer = styled.div`
     background-color: #f5f5dc;
     width: 40%;
     min-width: 100px;
-    height: 100vh;
+    height: 100%;
     display: flex;
     position: absolute;
-    top: 0;
     right: 0;
     bottom: auto;
     transition: 0.4s ease;
@@ -39,7 +38,7 @@ export const Overlay = styled.div`
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* 어두운 반투명 배경 */
     display: flex;
     justify-content: flex-end;
@@ -70,14 +69,21 @@ export const MenuItem = styled.div`
     }
 `;
 
+export const WithdrawGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 10vh;
+    gap: 10px; /* 버튼 간 간격 추가 */
+`;
+
+
 export const Withdraw = styled.div`
-     font-size: clamp(10px, 0.8rem, 15px);
+    font-size: clamp(10px, 0.8rem, 15px);
     font-family: Pretendard, sans-serif;
     font-weight: 800;
     color: #777777;
     text-decoration: underline;
     cursor: pointer;
-    width: 90%;
-    position: absolute;
-    bottom: 10vh;
 `;

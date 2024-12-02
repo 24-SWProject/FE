@@ -15,6 +15,10 @@ export const DdayContainer = styled.div`
     padding: 10px;
     box-sizing: border-box;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    overflow-x: hidden;
+    word-wrap: break-word; /* 줄바꿈을 강제로 추가 */
+    overflow-wrap: break-word; /* 현대 브라우저에서의 줄바꿈 */
+    white-space: normal;
 
     &.Copy {
          flex-direction: column;
