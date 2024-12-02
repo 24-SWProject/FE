@@ -7,15 +7,29 @@ import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isGroupJoined, setIsGroupJoined] = useState(true); // 그룹 참여 상태 관리
+    const [isGroupJoined, setIsGroupJoined] = useState(null); // "flase" 오타 수정
 
+    useEffect(() => {
+        const fetchGroupStatus = async () => {
+            try {
+                const isJoined = await checkGroupJoin();
+                setIsGroupJoined(isJoined);
+            } catch (error) {
+                console.error("그룹 참여 여부 확인 실패:", error);
+                setIsGroupJoined(false);
+            }
+        };
+        fetchGroupStatus();
+    }, []);
+    
     return (
         <S.MainContainer>
-            {/* 조건부 렌더링 */}
+            {console.log("isGroupJoined 상태:", isGroupJoined)} {/* 디버깅 */}
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (

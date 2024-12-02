@@ -16,7 +16,6 @@ export default function RecordCalendar({ onDateChange }) {
         // 컴포넌트가 처음 렌더링될 때 오늘 날짜 기준으로 현재 달 전달
         const today = new Date();
         const currentMonth = getCurrentMonth(today);
-        console.log("초기 표시된 달:", currentMonth);
         onDateChange(currentMonth); // 부모 컴포넌트로 전달
     }, [onDateChange]);
 
@@ -24,7 +23,6 @@ export default function RecordCalendar({ onDateChange }) {
         if (view === "month") {
             // activeStartDate를 기반으로 정확한 표시된 달 계산
             const selectedMonth = getCurrentMonth(activeStartDate);
-            console.log("변경된 표시된 달:", selectedMonth); // 디버깅용
             onDateChange(selectedMonth); // 부모 컴포넌트로 전달
         }
     };

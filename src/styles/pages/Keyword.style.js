@@ -8,15 +8,16 @@ export const KeywordContainer = styled.div`
     position: relative;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 8vh;
+    padding-top: 12vh;
     box-sizing: border-box;
     font-family: Pretendard, sans-serif;
+    overflow-y: auto;
 `;
 
 export const Description = styled.div`
     width: 90%;
     height: 120px;
-    font-size: 17px;
+    font-size: clamp(10px, 1.0rem, 20px);
     font-weight: 500;
     color: #444;
     text-align: center;
@@ -26,11 +27,12 @@ export const Description = styled.div`
     word-break: keep-all;
     padding: 20px;
     box-sizing: border-box;
+    margin-bottom: 0;
 `;
 
 export const Question = styled.div`
     width: 80%;
-    font-size: 30px;
+    font-size: clamp(15px, 1.5rem, 25px);
     font-weight: 700;
     height: 150px;
     font-family: Pretendard, sans-serif;
@@ -39,7 +41,8 @@ export const Question = styled.div`
     word-wrap: break-word;
     overflow-wrap: break-word; 
     word-break: keep-all;
-    margin-bottom: 3vh;
+    margin-bottom: 1vh;
+    margin-top: 0;
 `;
 
 export const QBox = styled.button`

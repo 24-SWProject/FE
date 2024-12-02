@@ -11,6 +11,7 @@ import KeywordPage from './pages/KeywordPage';
 import SignUpPage from './pages/SignupPage';
 import AIAnswerPage from './pages/AIAnswerPage';
 import BookmarkedPage from './pages/BookmarkedPage';
+import PrivateRoute from './pages/components/PrivateRouter';
 
 // QueryClient 생성
 const queryClient = new QueryClient();
@@ -26,35 +27,67 @@ const router = createBrowserRouter([
   },
   {
     path: '/main',
-    element: <MainPage />
+    element: (
+      <PrivateRoute>
+        <MainPage />
+      </PrivateRoute>
+    )
   },
   {
     path: '/choice',
-    element: <GuChoice />
+    element: (
+      <PrivateRoute>
+        <GuChoice />
+      </PrivateRoute>
+    )
   },
   {
     path: '/keyword',
-    element: <KeywordPage />
+    element: (
+      <PrivateRoute>
+        <KeywordPage />
+      </PrivateRoute>
+    )
   },
   {
     path: '/profileSet',
-    element: <ProfileSet />
+    element: (
+      <PrivateRoute>
+        <ProfileSet />
+      </PrivateRoute>
+    )
   },
   {
     path: '/performList',
-    element: <PerformListPage />
+    element: (
+      <PrivateRoute>
+        <PerformListPage />
+      </PrivateRoute>
+    )
   },
   {
     path: '/recording',
-    element: <RecordPage />
+    element: (
+      <PrivateRoute>
+        <RecordPage />
+      </PrivateRoute>
+    )
   },
   {
     path: '/AIAnswer',
-    element: <AIAnswerPage />
+    element: (
+      <PrivateRoute>
+        <AIAnswerPage />
+      </PrivateRoute>
+    )
   },
   {
     path: '/bookmarked',
-    element: <BookmarkedPage />
+    element: (
+      <PrivateRoute>
+        <BookmarkedPage />
+      </PrivateRoute>
+    )
   },
 ]);
 

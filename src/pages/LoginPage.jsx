@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import * as S from "../styles/pages/Login.style";
 import naver from "../assets/Login/naver.png";
 import kakao from "../assets/Login/kakao.png";
-import google from "../assets/Login/google.png";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -11,6 +10,7 @@ export default function LoginPage() {
 
     // URL에서 accessToken 추출 및 저장
     useEffect(() => {
+        localStorage.clear();
         const queryParams = new URLSearchParams(location.search);
         const accessToken = queryParams.get("accessToken");
 
@@ -25,6 +25,11 @@ export default function LoginPage() {
 
     const handleNaverLogin = () => {
         const loginURL = `${import.meta.env.VITE_baseURL}/api/user/login`;
+        window.location.href = loginURL; // 백엔드 로그인 URL로 리다이렉트
+    };
+
+    const handleKakaoLogin = () => {
+        const loginURL = `${import.meta.env.VITE_baseURL}/api/user/login/kakao`;
         window.location.href = loginURL; // 백엔드 로그인 URL로 리다이렉트
     };
 
@@ -43,13 +48,13 @@ export default function LoginPage() {
                     <img src={naver} alt="icon_naver" />
                     <p> 네이버 계정으로 로그인 </p>
                 </S.LoginLine>
-                <S.LoginLine className="kakao" onClick={handleLogin}>
+                <S.LoginLine className="kakao" onClick={handleKakaoLogin}>
                     <img src={kakao} alt="icon_kakao" />
                     <p>카카오 계정으로 로그인</p>
                 </S.LoginLine>
-                <S.LoginLine className="google">
-                    <img src={google} alt="icon_google" />
-                    <p>Google 계정으로 로그인</p>
+                <S.LoginLine className="kakao" onClick={handleLogin}>
+                    <img src={kakao} alt="icon_kakao" />
+                    <p>그냥 들어가보기</p>
                 </S.LoginLine>
                 <S.Intro>
                     <span>회원가입하기</span>

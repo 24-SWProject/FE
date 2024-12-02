@@ -30,7 +30,7 @@ export const CoupleImage = styled.div`
     border-radius: 50%;
     overflow: hidden;
     position: relative;
-    left: -15%;
+    left: -10%;
     
     img {
         width: 100%;
@@ -57,11 +57,12 @@ export const DdayInfo = styled.div`
         margin-bottom: 1vh;
         color: black;
         padding: 0;
+        font-weight: 500;
     }
 
     h2 {
         font-family: 'Pretendard', sans-serif;
-        font-size: clamp(20px, 1.5rem, 35px);
+        font-size: clamp(20px, 1.3rem, 30px);
         margin-bottom: 1vh;
         color: black;
         padding: 0;

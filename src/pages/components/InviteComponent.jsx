@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import * as S from "../../styles/components/Dday.Style";
 import { getGroupCode, joinGroup } from "../../api/groupcrud";
+import * as M from "../../styles/components/WithDrawModal.style";
 
 export function InviteComponent({ onGroupJoin }) {
     const [isCopied, setIsCopied] = useState(false); // 초대 코드 복사 상태
@@ -8,6 +9,7 @@ export function InviteComponent({ onGroupJoin }) {
     const [inviteCode, setInviteCode] = useState("XXXXXXXX"); // 초대 코드 값
     const [coupleCode, setCoupleCode] = useState(""); // 입력된 커플 코드 값
     const [message, setMessage] = useState(""); // API 응답 메시지
+    const [showModal, setShowModal] = useState(false); // Modal 표시 상태
 
     // 그룹 코드 조회 및 상태 업데이트
     useEffect(() => {
@@ -22,8 +24,15 @@ export function InviteComponent({ onGroupJoin }) {
         fetchInviteCode();
     }, []);
 
-    const handleCopyClick = () => {
-        setIsCopied(true);
+    const handleCopyClick = async () => {
+        try {
+            await navigator.clipboard.writeText(inviteCode); // 초대 코드를 클립보드에 복사
+            setIsCopied(true);
+            setShowModal(true); // Modal 표시
+        } catch (error) {
+            console.error("클립보드 복사 실패:", error);
+            alert("클립보드 복사에 실패했습니다. 다시 시도해주세요.");
+        }
     };
 
     const handleSpanClick = () => {
@@ -48,39 +57,55 @@ export function InviteComponent({ onGroupJoin }) {
         }
     };
 
+    const closeModal = () => {
+        setShowModal(false); // Modal 닫기
+    };
+
     return (
-        <S.DdayContainer className="Copy">
-            <S.DdayInfo>
-                {isCopied ? (
-                    !isClicked ? (
-                        <>
-                            <h6>초대코드: {inviteCode}</h6>
-                            <span onClick={handleSpanClick}>상대방 코드 입력</span>
-                        </>
+        <>
+            <S.DdayContainer className="Copy">
+                <S.DdayInfo>
+                    {isCopied ? (
+                        !isClicked ? (
+                            <>
+                                <h6>초대코드: {inviteCode}</h6>
+                                <span onClick={handleSpanClick}>상대방 코드 입력</span>
+                            </>
+                        ) : (
+                            <>
+                                <h6>상대방의 초대코드를 입력해주세요 :)</h6>
+                                <S.InputWrapper>
+                                    <S.CoupleCodeInput
+                                        type="text"
+                                        placeholder="코드 입력"
+                                        value={coupleCode}
+                                        onChange={handleInputChange}
+                                    />
+                                    <S.ConnectButton onClick={handleConnectClick}>
+                                        연결
+                                    </S.ConnectButton>
+                                </S.InputWrapper>
+                            </>
+                        )
                     ) : (
-                        <>
-                            <h6>상대방의 초대코드를 입력해주세요 :)</h6>
-                            <S.InputWrapper>
-                                <S.CoupleCodeInput
-                                    type="text"
-                                    placeholder="코드 입력"
-                                    value={coupleCode}
-                                    onChange={handleInputChange}
-                                />
-                                <S.ConnectButton onClick={handleConnectClick}>
-                                    연결
-                                </S.ConnectButton>
-                            </S.InputWrapper>
-                        </>
-                    )
-                ) : (
-                    <h3>초대코드를 짝꿍에게 보내주세요 :)</h3>
-                )}
-                {!isCopied && (
-                    <S.CopyButton onClick={handleCopyClick}>SHOW CODE</S.CopyButton>
-                )}
-                {message && <p>{message}</p>}
-            </S.DdayInfo>
-        </S.DdayContainer>
+                        <h3>초대코드를 짝꿍에게 보내주세요 :)</h3>
+                    )}
+                    {!isCopied && (
+                        <S.CopyButton onClick={handleCopyClick}>COPY CODE</S.CopyButton>
+                    )}
+                    {message && <p>{message}</p>}
+                </S.DdayInfo>
+            </S.DdayContainer>
+
+            {/* Modal Component */}
+            {showModal && (
+                <M.ModalOverlay>
+                    <M.ModalContainer>
+                        <p>초대 코드가 클립보드에 복사되었습니다!</p>
+                        <M.CopyButton onClick={closeModal}>확인</M.CopyButton>
+                    </M.ModalContainer>
+                </M.ModalOverlay>
+            )}
+        </>
     );
 }
