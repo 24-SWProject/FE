@@ -16,8 +16,9 @@ export default defineConfig({
     historyApiFallback: true, // 모든 경로를 index.html로 리디렉션
     proxy: {
       '/api': {
-          target: 'https://14.63.178.28:8080', // 요청을 보낼 서버
+          target: 'http://14.63.178.28:8080', // 요청을 보낼 서버
           changeOrigin: true, // 서버의 CORS 정책 무시
+          secure: false,
           rewrite: (path) => path.replace(/^\/api/, '') // /api를 제거
       }
   }
