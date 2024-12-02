@@ -33,10 +33,6 @@ export default function LoginPage() {
         window.location.href = loginURL; // 백엔드 로그인 URL로 리다이렉트
     };
 
-    const handleLogin = () => {
-        navigate("/main");
-    };
-
     return (
         <S.LoginContainer>
             <S.Logo />
@@ -52,13 +48,6 @@ export default function LoginPage() {
                     <img src={kakao} alt="icon_kakao" />
                     <p>카카오 계정으로 로그인</p>
                 </S.LoginLine>
-                <S.LoginLine className="kakao" onClick={handleLogin}>
-                    <img src={kakao} alt="icon_kakao" />
-                    <p>그냥 들어가보기</p>
-                </S.LoginLine>
-                <S.Intro>
-                    <span>회원가입하기</span>
-                </S.Intro>
             </S.ModuleContainer>
         </S.LoginContainer>
     );
