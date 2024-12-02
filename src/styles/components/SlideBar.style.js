@@ -23,7 +23,7 @@ export const SlideBarContainer = styled.div`
     background-color: #f5f5dc;
     width: 40%;
     min-width: 100px;
-    height: 100%;
+    height: 100vh;
     display: flex;
     position: absolute;
     right: 0;
@@ -70,12 +70,13 @@ export const MenuItem = styled.div`
 `;
 
 export const WithdrawGroup = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: absolute;
     bottom: 10vh;
-    gap: 10px; /* 버튼 간 간격 추가 */
+    gap: 3vh; /* 버튼 간 간격 추가 */
 `;
 
 
