@@ -81,3 +81,15 @@ export const updateGroupProfile = async (data) => {
         throw error;
     }
 };
+
+// 그룹 탈퇴 API 호출 함수
+export const deleteGroupAccount = async () => {
+    try {
+        const response = await instance.delete(`/api/auth/group`);
+        console.log("그룹 탈퇴 성공:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("그룹 탈퇴 실패:", error);
+        throw error;
+    }
+};
