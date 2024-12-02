@@ -11,6 +11,7 @@ export const Container = styled.div`
     padding-top: 20px;
     box-sizing: border-box;
     position: relative;
+    margin-bottom: 5vh;
 `;
 
 export const Robot = styled.div`
