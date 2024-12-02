@@ -4,6 +4,7 @@ import Card from "./components/Card"; // Card 컴포넌트 불러오기
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { fetchPerformanceData, fetchFestivalData } from "../api/eventcrud";
+import SlideBar from "./components/SlideBar";
 
 export default function PerformListPage() {
     const today = new Date();
@@ -138,6 +139,7 @@ export default function PerformListPage() {
                     </div>
                 </>
             )}
+            <SlideBar />
         </S.PerformContainer>
     );
 }

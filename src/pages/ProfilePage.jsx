@@ -69,8 +69,8 @@ export default function ProfileSet() {
     
             // 전송할 데이터 객체 생성
             const updatedData = {
-                nickName: data.nickname,
-                anniversary: formattedDate,
+                nickName: data.nickname || null,
+                anniversary: formattedDate || null,
                 profileImg: profileImageFile || null, // 선택된 이미지 파일 없으면 null
             };
     
@@ -78,7 +78,7 @@ export default function ProfileSet() {
     
             await updateGroupProfile(updatedData); // 그룹 프로필 수정 API 호출
             console.log("그룹 프로필 수정 성공:", updatedData);
-            // window.location.href = "/main";
+            navigate('/main');
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
