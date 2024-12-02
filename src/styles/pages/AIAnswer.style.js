@@ -16,6 +16,7 @@ export const Container = styled.div`
 export const Robot = styled.div`
     width: 180px; /* 아이콘 크기 */
     height: 180px; /* 정사각형 아이콘 */
+    margin-top: 3vh;
     margin-bottom: -30px; /* 흰색 박스와 겹치도록 마진 조정 */
     background-image: url(${RobotIcon});
     background-size: contain; 
