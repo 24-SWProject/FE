@@ -29,7 +29,7 @@ export const AnswerBox = styled.div`
     background-color: #ffffff;
     width: 90%;
     max-width: 400px;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 3 / 5;
     min-height: 300px; 
     border-radius: 15px;
     padding: 50px 20px 20px 20px;
@@ -44,4 +44,6 @@ export const AnswerBox = styled.div`
     font-size: clamp(15px, 1.0rem, 20px);
     color: #444444;
     box-sizing: border-box;
+    overflow-y: auto;
+    scrollbar-width: thin;
 `;

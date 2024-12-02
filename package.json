@@ -23,7 +23,6 @@
     "react-minimal-side-navigation": "^1.9.2",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.27.0",
-    "react-spinner": "^0.2.7",
     "react-spinners": "^0.14.1",
     "recoil": "^0.7.7",
     "styled-components": "^6.1.13",

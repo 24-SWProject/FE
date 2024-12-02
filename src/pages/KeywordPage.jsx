@@ -1,10 +1,11 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // React Router의 useNavigate 훅
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // React Router의 useNavigate 훅
 import * as S from "../styles/pages/Keyword.style";
 import Close from "./components/Close";
-import { RightArrow } from '../styles/components/RightArrow';
-import { LeftArrow } from '../styles/components/LeftArrow';
+import { RightArrow } from "../styles/components/RightArrow";
+import { LeftArrow } from "../styles/components/LeftArrow";
+import { recommendAI } from "../api/recommendcrud";
+import LoadingSpinner from "./components/LoadingComponent";// 로딩 컴포넌트 import
 
 export default function KeywordPage() {
     const navigate = useNavigate(); // useNavigate 훅 초기화
@@ -19,35 +20,36 @@ export default function KeywordPage() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedChoice, setSelectedChoice] = useState(null);
     const [answers, setAnswers] = useState([]);
+    const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
     useEffect(() => {
-        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+        const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         setAnswers(savedAnswers);
     }, []);
 
     const handleChoiceClick = (index) => {
         setSelectedChoice(index);
         const currentAnswer = questionsData[currentQuestionIndex].choices[index];
-    
-        const existingAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+
+        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         const updatedAnswers = [...existingAnswers];
         updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
         setAnswers(updatedAnswers);
-        localStorage.setItem('answers', JSON.stringify(updatedAnswers)); 
+        localStorage.setItem("answers", JSON.stringify(updatedAnswers));
     };
-    
+
     const handleLeftArrowClick = () => {
-        const existingAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         if (currentQuestionIndex === 0) {
             if (existingAnswers.length > 0) {
-                const updatedAnswers = existingAnswers.slice(0, -1); 
-                localStorage.setItem('answers', JSON.stringify(updatedAnswers));
+                const updatedAnswers = existingAnswers.slice(0, -1);
+                localStorage.setItem("answers", JSON.stringify(updatedAnswers));
             }
-            navigate('/choice'); // Q1에서 /choice로 이동
+            navigate("/choice"); // Q1에서 /choice로 이동
         } else {
             setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-            const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex + 1); 
-            localStorage.setItem('answers', JSON.stringify(updatedAnswers));
+            const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex + 1);
+            localStorage.setItem("answers", JSON.stringify(updatedAnswers));
             setAnswers(updatedAnswers);
             setSelectedChoice(null); // 선택 초기화
         }
@@ -80,43 +82,60 @@ export default function KeywordPage() {
         }
     };
 
-
-    const handleAiRecommendation = () => {
-        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+    const handleAiRecommendation = async () => {
+        const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
 
         if (savedAnswers.length < questionsData.length) {
             alert("모든 질문에 답해주세요.");
-        } else {
+            return;
+        }
+
+        setLoading(true); // 로딩 시작
+        try {
             console.log("Selected Answers:", savedAnswers);
-            alert("AI 코스 추천을 받습니다!");
-            localStorage.removeItem('weatherDescription');
-            localStorage.removeItem('answers');
-            navigate("/AIAnswer");
+            const response = await recommendAI(savedAnswers); // POST 요청
+            const { llm_response } = response; // llm_response 추출
+
+            localStorage.removeItem("weatherDescription");
+            localStorage.removeItem("answers");
+
+            navigate("/AIAnswer", { state: { aiAnswer: llm_response } }); // 응답 전달
+        } catch (error) {
+            console.error("AI 추천 요청 실패:", error);
+            alert("AI 추천 요청에 실패했습니다. 다시 시도해주세요.");
+        } finally {
+            setLoading(false); // 로딩 종료
         }
     };
 
     return (
-        <S.KeywordContainer>
-            <Close />
-            <S.Question>
-                Q{currentQuestionIndex + 1}. {questionsData[currentQuestionIndex].question}
-            </S.Question>
-            {questionsData[currentQuestionIndex].choices.map((choice, index) => (
-                <S.QBox
-                    key={index}
-                    isSelected={selectedChoice === index}
-                    onClick={() => handleChoiceClick(index)}
-                >
-                    {choice}
-                </S.QBox>
-            ))}
-            <LeftArrow onClick={handleLeftArrowClick} />
-            {currentQuestionIndex < questionsData.length - 1 && selectedChoice !== null && (
-                <RightArrow onClick={handleRightArrowClick} />
+        <>
+            {loading ? (
+                <LoadingSpinner text="AI 추천 코스를 생성 중입니다..." />
+            ) : (
+                <S.KeywordContainer>
+                    <Close />
+                    <S.Question>
+                        Q{currentQuestionIndex + 1}. {questionsData[currentQuestionIndex].question}
+                    </S.Question>
+                    {questionsData[currentQuestionIndex].choices.map((choice, index) => (
+                        <S.QBox
+                            key={index}
+                            isSelected={selectedChoice === index}
+                            onClick={() => handleChoiceClick(index)}
+                        >
+                            {choice}
+                        </S.QBox>
+                    ))}
+                    <LeftArrow onClick={handleLeftArrowClick} />
+                    {currentQuestionIndex < questionsData.length - 1 && selectedChoice !== null && (
+                        <RightArrow onClick={handleRightArrowClick} />
+                    )}
+                    {currentQuestionIndex === questionsData.length - 1 && (
+                        <S.SetButton onClick={handleAiRecommendation}>AI 코스 추천 받기</S.SetButton>
+                    )}
+                </S.KeywordContainer>
             )}
-            {currentQuestionIndex === questionsData.length - 1 && (
-                <S.SetButton onClick={handleAiRecommendation}>AI 코스 추천 받기</S.SetButton>
-            )}
-        </S.KeywordContainer>
+        </>
     );
 }
