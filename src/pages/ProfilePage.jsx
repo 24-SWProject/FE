@@ -129,11 +129,13 @@ export default function ProfileSet() {
                 />
                 {errors.nickname && <S.ErrorMessage>{errors.nickname.message}</S.ErrorMessage>}
 
+                <label htmlFor="datingDate">사귄 날짜를 입력해주세요</label>
                 <S.InputField
+                    id="datingDate"
                     type="date"
-                    placeholder="사귄 날짜 (YYYY-MM-DD)"
                     {...register("datingDate")}
                 />
+
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
 
                 <S.SetButton type="submit" disabled={!isValid}>수정하기</S.SetButton>

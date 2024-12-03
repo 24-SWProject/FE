@@ -79,7 +79,6 @@ export const InputField = styled.input`
     &[type="date"] {
         width: 100%; 
         height: 45px;
-        appearance: none; // 기본 브라우저 설정 제거
         text-align: start;
 
         &::placeholder {
