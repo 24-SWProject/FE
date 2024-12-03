@@ -14,7 +14,6 @@ export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isGroupJoined, setIsGroupJoined] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
-    const [forceRenderKey, setForceRenderKey] = useState(0); // 강제 렌더링 키
 
     // 페이지 마운트 시 그룹 참여 상태 확인
     useEffect(() => {
@@ -33,7 +32,7 @@ export default function MainPage() {
         };
 
         fetchGroupStatus(); // 초기 한 번만 실행
-    }, [forceRenderKey]); // forceRenderKey 변경 시 재실행
+    }, []);
 
     // 상태 변경 즉시 렌더링
     const handleGroupJoin = async () => {
@@ -43,13 +42,18 @@ export default function MainPage() {
             const isJoined = await checkGroupJoin(); // 서버 상태 확인
             console.log("서버 상태 재확인:", isJoined);
             setIsGroupJoined(isJoined); // 상태 업데이트
-            setForceRenderKey(forceRenderKey + 1); // 강제 렌더링
+    
+            // 페이지 새로고침
+            if (isJoined) {
+                window.location.reload(); // 강제 새로고침
+            }
         } catch (error) {
             console.error("그룹 참여 상태 재확인 중 오류:", error);
         } finally {
             setIsLoading(false); // 로딩 종료
         }
     };
+    
 
     // 렌더링 로직
     if (isLoading) {
