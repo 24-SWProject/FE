@@ -25,8 +25,13 @@ export default function MainPage() {
                 setIsGroupJoined(false);
             }
         };
-        fetchGroupStatus();
-    }, []);
+    
+        // 상태가 null에서 변경된 경우에만 재호출
+        if (isGroupJoined !== null) {
+            fetchGroupStatus();
+        }
+    }, [isGroupJoined]); // isGroupJoined 상태를 의존성에 추가
+    
 
     // 상태 변경 즉시 렌더링
     const handleGroupJoin = async () => {
