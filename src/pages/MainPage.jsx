@@ -32,7 +32,7 @@ export default function MainPage() {
     const handleGroupJoin = () => {
         setIsGroupJoined(true); // 상태 즉시 변경
         setTimeout(() => {
-            window.location.reload(); // 약간의 지연 후 새로고침
+            window.location.href('/main'); // 약간의 지연 후 새로고침
         }, 100);
     };
     
