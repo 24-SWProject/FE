@@ -1,19 +1,8 @@
-import * as S from "../styles/pages/Main.style";
-import CalendarComponent from "./components/CalendarComponent";
-import { InviteComponent } from "./components/InviteComponent";
-import DdayComponent from "./components/Dday";
-import MovieInfo from "./components/MovieInfo";
-import PerformComponent from "./components/PerformComponent";
-import SlideBar from "./components/SlideBar";
-import ToAI from "./components/ToAI";
-import Weather from "./components/Weather";
-import { useState, useEffect } from "react";
-import { checkGroupJoin } from "../api/groupcrud";
-
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isGroupJoined, setIsGroupJoined] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [forceRenderKey, setForceRenderKey] = useState(0); // 강제 렌더링 키
 
     // 페이지 마운트 시 그룹 참여 상태 확인
     useEffect(() => {
@@ -32,7 +21,7 @@ export default function MainPage() {
         };
 
         fetchGroupStatus(); // 초기 한 번만 실행
-    }, []);
+    }, [forceRenderKey]); // forceRenderKey 변경 시 재실행
 
     // 상태 변경 즉시 렌더링
     const handleGroupJoin = async () => {
@@ -42,6 +31,7 @@ export default function MainPage() {
             const isJoined = await checkGroupJoin(); // 서버 상태 확인
             console.log("서버 상태 재확인:", isJoined);
             setIsGroupJoined(isJoined); // 상태 업데이트
+            setForceRenderKey(forceRenderKey + 1); // 강제 렌더링
         } catch (error) {
             console.error("그룹 참여 상태 재확인 중 오류:", error);
         } finally {
@@ -55,7 +45,7 @@ export default function MainPage() {
     }
 
     return (
-        <S.MainContainer>
+        <S.MainContainer key={forceRenderKey}>
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (
