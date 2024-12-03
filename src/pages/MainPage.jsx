@@ -1,3 +1,15 @@
+import * as S from "../styles/pages/Main.style";
+import CalendarComponent from "./components/CalendarComponent";
+import { InviteComponent } from "./components/InviteComponent";
+import DdayComponent from "./components/Dday";
+import MovieInfo from "./components/MovieInfo";
+import PerformComponent from "./components/PerformComponent";
+import SlideBar from "./components/SlideBar";
+import ToAI from "./components/ToAI";
+import Weather from "./components/Weather";
+import { useState, useEffect } from "react";
+import { checkGroupJoin } from "../api/groupcrud";
+
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isGroupJoined, setIsGroupJoined] = useState(null);
