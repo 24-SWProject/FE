@@ -49,7 +49,7 @@ export default function ProfileSet() {
     useEffect(() => {
         if (defaultData) {
             setValue("nickname", defaultData.nickName || ""); // 닉네임 기본값
-            setValue("datingDate", defaultData.anniversary || ""); // 날짜 기본값
+            setValue("datingDate", defaultData.anniversary || undefined); // 날짜 기본값
         }
     }, [defaultData, setValue]);
 
