@@ -69,10 +69,19 @@ export default function PerformListPage() {
 
     // 날짜 변경 함수
     const handleDateChange = (days) => {
-        const newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + days);
-        const formattedDate = newDate.toISOString().split("T")[0];
-        if (newDate >= today) {
+        const currentDate = new Date(date); // 현재 상태의 날짜
+        currentDate.setDate(currentDate.getDate() + days);
+    
+        // 날짜 비교를 위해 시간 부분을 제거
+        const todayWithoutTime = new Date(today);
+        todayWithoutTime.setHours(0, 0, 0, 0);
+    
+        const newDateWithoutTime = new Date(currentDate);
+        newDateWithoutTime.setHours(0, 0, 0, 0);
+    
+        // 오늘 이후 날짜만 변경 가능
+        if (newDateWithoutTime >= todayWithoutTime) {
+            const formattedDate = currentDate.toISOString().split("T")[0];
             setDate(formattedDate);
         }
     };
