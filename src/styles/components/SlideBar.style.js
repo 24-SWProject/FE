@@ -3,7 +3,7 @@ import List from "/src/assets/list.png"
 
 export const ListIcon = styled.div`
     top: 20px;
-    right: 10px;
+    right: 30px;
     position: absolute;
     padding: 0;
     border: none;
