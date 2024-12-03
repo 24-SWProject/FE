@@ -50,7 +50,6 @@ export function InviteComponent({ onGroupJoin }) {
                 setMessage("그룹에 성공적으로 참여했습니다!");
                 console.log("onGroupJoin 호출됨"); // 로그 추가
                 onGroupJoin(); // 그룹 참여 상태 업데이트
-                window.location.reload();
             }
         } catch (error) {
             setMessage(

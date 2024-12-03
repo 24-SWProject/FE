@@ -31,7 +31,9 @@ export default function MainPage() {
     // 상태 변경 즉시 렌더링
     const handleGroupJoin = () => {
         setIsGroupJoined(true); // 상태 즉시 변경
-        window.location.reload();
+        setTimeout(() => {
+            window.location.reload(); // 약간의 지연 후 새로고침
+        }, 100);
     };
     
     return (
@@ -41,7 +43,7 @@ export default function MainPage() {
             ) : isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={() => handleGroupJoin} />
+                <InviteComponent onGroupJoin={handleGroupJoin} />
             )}
             <ToAI />
             <MovieInfo />
