@@ -85,7 +85,10 @@ export function InviteComponent({ onGroupJoin }) {
                                         value={coupleCode}
                                         onChange={handleInputChange}
                                     />
-                                    <S.ConnectButton onClick={handleConnectClick}>
+                                    <S.ConnectButton onClick={() => {
+                                        console.log("Connect 버튼 클릭됨");
+                                        handleConnectClick();
+                                    }}>
                                         연결
                                     </S.ConnectButton>
                                 </S.InputWrapper>
