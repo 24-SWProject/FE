@@ -12,47 +12,51 @@ import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isGroupJoined, setIsGroupJoined] = useState(null); 
+    const [isGroupJoined, setIsGroupJoined] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
+    // 페이지 마운트 시 그룹 참여 상태 확인
     useEffect(() => {
         const fetchGroupStatus = async () => {
+            setIsLoading(true); // 로딩 시작
             try {
                 const isJoined = await checkGroupJoin();
                 console.log("Group join status fetched:", isJoined); // 디버깅
-                setIsGroupJoined(isJoined);
+                setIsGroupJoined(isJoined); // 상태 업데이트
             } catch (error) {
                 console.error("그룹 참여 여부 확인 실패:", error);
                 setIsGroupJoined(false);
+            } finally {
+                setIsLoading(false); // 로딩 종료
             }
         };
-    
-        // 상태가 null에서 변경된 경우에만 재호출
-        if (isGroupJoined !== null) {
-            fetchGroupStatus();
-        }
-    }, [isGroupJoined]); // isGroupJoined 상태를 의존성에 추가
-    
+
+        fetchGroupStatus(); // 초기 한 번만 실행
+    }, []);
 
     // 상태 변경 즉시 렌더링
     const handleGroupJoin = async () => {
+        setIsLoading(true); // 로딩 시작
         try {
-            // 상태를 로컬에서 즉시 true로 변경
-            setIsGroupJoined(true);
-    
-            // 서버 상태를 재확인
-            const isJoined = await checkGroupJoin();
+            console.log("onGroupJoin 호출됨");
+            const isJoined = await checkGroupJoin(); // 서버 상태 확인
             console.log("서버 상태 재확인:", isJoined);
-            setIsGroupJoined(isJoined); // 서버에서 반환된 값으로 업데이트
+            setIsGroupJoined(isJoined); // 상태 업데이트
         } catch (error) {
             console.error("그룹 참여 상태 재확인 중 오류:", error);
+        } finally {
+            setIsLoading(false); // 로딩 종료
         }
     };
-    
+
+    // 렌더링 로직
+    if (isLoading) {
+        return <p>로딩 중...</p>; // 로딩 상태
+    }
+
     return (
         <S.MainContainer>
-            {isGroupJoined === null ? (
-                <p>로딩 중...</p> // 로딩 상태
-            ) : isGroupJoined ? (
+            {isGroupJoined ? (
                 <DdayComponent />
             ) : (
                 <InviteComponent onGroupJoin={handleGroupJoin} />
@@ -65,5 +69,4 @@ export default function MainPage() {
             <SlideBar />
         </S.MainContainer>
     );
-    
 }
