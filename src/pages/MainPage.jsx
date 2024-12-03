@@ -45,7 +45,7 @@ export default function MainPage() {
     
             // 페이지 새로고침
             if (isJoined) {
-                window.location.reload(); // 강제 새로고침
+                window.location.replace(window.location.href); // 현재 URL로 이동
             }
         } catch (error) {
             console.error("그룹 참여 상태 재확인 중 오류:", error);
@@ -61,7 +61,7 @@ export default function MainPage() {
     }
 
     return (
-        <S.MainContainer key={forceRenderKey}>
+        <S.MainContainer>
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (
