@@ -22,6 +22,9 @@ export const ModalContainer = styled.div`
     width: 90%;
     max-width: 400px;
     text-align: center;
+    word-wrap: break-word; /* 줄바꿈을 강제로 추가 */
+    overflow-wrap: break-word; /* 현대 브라우저에서의 줄바꿈 */
+    white-space: normal;
 `;
 
 // 버튼 그룹
