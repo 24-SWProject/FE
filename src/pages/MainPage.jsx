@@ -8,7 +8,7 @@ import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
-import { useGroup } from "../context/GroupContext"; // GroupContext 추가
+import { useGroup } from "../context/GroupContext";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());

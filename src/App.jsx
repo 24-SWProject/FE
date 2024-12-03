@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import { GroupProvider } from "./context/GroupContext"; // GroupProvider 추가
+import { GroupProvider } from "./context/GroupContext";
 import LoginPage from "./pages/LoginPage";
 import MainPage from "./pages/MainPage";
 import ProfileSet from "./pages/ProfilePage";
