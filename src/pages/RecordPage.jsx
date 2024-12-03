@@ -25,29 +25,32 @@ export default function RecordPage() {
 
     const fetchSchedules = async (month) => {
         try {
-            const scheduleData = await getSchedules(month); // 일정 조회
+            // 일정 데이터 가져오기
+            const scheduleData = await getSchedules(month); 
             const formattedSchedules = scheduleData.map((todo) => ({
                 ...todo,
                 date: todo.scheduleDate, // 일정 날짜
                 isAnniversary: false, // 일반 일정
             }));
-
+    
+            // 기념일 데이터 가져오기
             const anniversaryData = await getGroupAnniv();
-            const formattedAnniversaries = anniversaryData.milestones
-                .filter((anniv) => anniv.date.startsWith(month)) // 해당 월의 기념일만
+            const milestones = anniversaryData?.milestones || []; // milestones가 없을 경우 빈 배열로 설정
+            const formattedAnniversaries = milestones
+                .filter((anniv) => anniv.date.startsWith(month)) // 해당 월의 기념일만 필터링
                 .map((anniv) => ({
-                    id: `anniv-${anniv.day}`, // 고유 ID 생성
                     content: `${anniv.day}일 ❤️`, // 기념일 내용
                     date: anniv.date,
                     isAnniversary: true, // 기념일 여부
                 }));
-
+    
             // 일정과 기념일 병합
             setTodos([...formattedSchedules, ...formattedAnniversaries]);
         } catch (error) {
             console.error("일정 및 기념일 데이터를 불러오는 중 오류 발생:", error);
         }
     };
+    
 
     const handleAddOrEditTodo = async (todo) => {
         try {
