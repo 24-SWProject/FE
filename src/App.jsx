@@ -94,7 +94,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <GroupProvider> {/* Context Provider 추가 */}
+      <GroupProvider>
         <RouterProvider router={router} />
       </GroupProvider>
     </QueryClientProvider>
