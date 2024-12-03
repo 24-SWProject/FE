@@ -41,7 +41,7 @@ export default function MainPage() {
             ) : isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={() => setIsGroupJoined(true)} />
+                <InviteComponent onGroupJoin={() => handleGroupJoin} />
             )}
             <ToAI />
             <MovieInfo />
