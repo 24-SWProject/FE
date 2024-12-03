@@ -1,3 +1,4 @@
+import { useState } from "react";
 import * as S from "../styles/pages/Main.style";
 import CalendarComponent from "./components/CalendarComponent";
 import { InviteComponent } from "./components/InviteComponent";
@@ -7,39 +8,18 @@ import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
-import { useState, useEffect } from "react";
-import { checkGroupJoin } from "../api/groupcrud";
+import { useGroup } from "../context/GroupContext"; // GroupContext 추가
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isGroupJoined, setIsGroupJoined] = useState(null); // "flase" 오타 수정
+    const { isGroupJoined, joinGroupHandler } = useGroup(); // Context 값 가져오기
 
-    useEffect(() => {
-        const fetchGroupStatus = async () => {
-            try {
-                const isJoined = await checkGroupJoin();
-                setIsGroupJoined(isJoined);
-            } catch (error) {
-                console.error("그룹 참여 여부 확인 실패:", error);
-                setIsGroupJoined(false);
-            }
-        };
-        fetchGroupStatus();
-    }, []);
-
-    // 상태 변경 즉시 렌더링
-    const handleGroupJoin = () => {
-        setIsGroupJoined(true); // 상태 즉시 변경
-        window.location.reload();
-    };
-    
     return (
         <S.MainContainer>
-            {console.log("isGroupJoined 상태:", isGroupJoined)} {/* 디버깅 */}
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={handleGroupJoin} />
+                <InviteComponent onGroupJoin={joinGroupHandler} />
             )}
             <ToAI />
             <MovieInfo />

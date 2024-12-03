@@ -45,9 +45,10 @@ export function InviteComponent({ onGroupJoin }) {
 
     const handleConnectClick = async () => {
         try {
-            const response = await joinGroup(coupleCode); // 입력한 코드로 그룹 참여 요청
+            const response = await joinGroup(coupleCode);
             if (response && response.status === 200) {
-                onGroupJoin(); // MainPage에서 상태 업데이트
+                setMessage("그룹에 성공적으로 참여했습니다!");
+                onGroupJoin(); // 그룹 참여 상태 업데이트
             }
         } catch (error) {
             setMessage(
@@ -55,6 +56,7 @@ export function InviteComponent({ onGroupJoin }) {
             );
         }
     };
+    
 
     const closeModal = () => {
         setShowModal(false); // Modal 닫기
