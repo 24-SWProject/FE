@@ -17,6 +17,7 @@ export const DdayContainer = styled.div`
     box-sizing: border-box;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     overflow-x: hidden;
+    overflow-y: hidden;
     word-wrap: break-word; /* 줄바꿈을 강제로 추가 */
     overflow-wrap: break-word; /* 현대 브라우저에서의 줄바꿈 */
     white-space: normal;
