@@ -12,7 +12,6 @@ export const CardContainer = styled.div`
     margin-bottom: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    position: relative;
 `;
 
 export const CardImage = styled.div`
@@ -67,7 +66,7 @@ export const BottomDiv = styled.div`
     align-items: center;
     justify-content: space-between;
     position: absolute;
-    bottom: 2vh;
+    
 `;
 
 
