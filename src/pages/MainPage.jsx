@@ -26,6 +26,11 @@ export default function MainPage() {
         };
         fetchGroupStatus();
     }, []);
+
+    // 상태 변경 즉시 렌더링
+    const handleGroupJoin = () => {
+        setIsGroupJoined(true); // 상태 즉시 변경
+    };
     
     return (
         <S.MainContainer>
@@ -33,7 +38,7 @@ export default function MainPage() {
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={() => setIsGroupJoined(true)} />
+                <InviteComponent onGroupJoin={handleGroupJoin} />
             )}
             <ToAI />
             <MovieInfo />
