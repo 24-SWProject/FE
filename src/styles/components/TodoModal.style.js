@@ -26,7 +26,8 @@ export const ModalContainer = styled.div`
 
 export const Input = styled.input`
     width: 90%;
-    aspect-ratio: 4 / 1;
+    min-height: 30px;
+    aspect-ratio: 8 / 1;
     margin: 5px 0;
     padding: 10px;
     border-radius: 5px;

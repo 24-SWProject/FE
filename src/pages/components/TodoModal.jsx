@@ -21,6 +21,7 @@ export default function TodoModal({ onClose, onAdd, existingTodo, isAnniversary 
         <S.ModalOverlay>
             <S.ModalContainer>
                 <h3>{isAnniversary ? "기념일 보기" : existingTodo ? "일정 수정하기" : "일정 추가하기"}</h3>
+                <label>날짜를 선택해주세요</label>
                 <S.Input
                     type="date"
                     value={date}
