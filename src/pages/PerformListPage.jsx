@@ -7,7 +7,8 @@ import { fetchPerformanceData, fetchFestivalData } from "../api/eventcrud";
 import SlideBar from "./components/SlideBar";
 
 export default function PerformListPage() {
-    const today = new Date(new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }));
+    const today = new Date();
+    console.log("today: ", today);
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
     const [activeTab, setActiveTab] = useState("festival"); // 기본값: 축제
@@ -68,13 +69,9 @@ export default function PerformListPage() {
 
     // 날짜 변경 함수
     const handleDateChange = (days) => {
-        const currentDate = new Date(date);
-        currentDate.setDate(currentDate.getDate() + days);
-
-        const newDate = new Date(currentDate.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }));
+        const newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + days);
         const formattedDate = newDate.toISOString().split("T")[0];
-
-        // 한국 기준으로 오늘 이후 날짜만 변경 가능
         if (newDate >= today) {
             setDate(formattedDate);
         }
@@ -128,12 +125,12 @@ export default function PerformListPage() {
                                         title: event.title,
                                         date: `${event.openDate} ~ ${event.endDate}`,
                                         imageUrl: event.poster,
-                                        linkText: activeTab === "festival" ? "LINK" : "",
+                                        linkText: activeTab === "festival" ? "LINK" : "X",
                                         url: activeTab === "festival" ? event.registerLink : "",
                                         id: event.id,
                                         bookmarked: event.bookmarked,
                                     }}
-                                    type={activeTab}
+                                    type = {activeTab}
                                 />
                             ))}
                         </React.Fragment>
