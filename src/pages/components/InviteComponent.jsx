@@ -48,15 +48,18 @@ export function InviteComponent({ onGroupJoin }) {
             const response = await joinGroup(coupleCode);
             if (response && response.status === 200) {
                 setMessage("그룹에 성공적으로 참여했습니다!");
+                console.log("onGroupJoin 호출됨"); // 로그 추가
                 onGroupJoin(); // 그룹 참여 상태 업데이트
             }
         } catch (error) {
             setMessage(
                 error.response?.data?.message || "그룹 참여 중 오류가 발생했습니다."
             );
+            console.error("그룹 참여 중 오류:", error);
         }
     };
     
+
 
     const closeModal = () => {
         setShowModal(false); // Modal 닫기
