@@ -29,11 +29,18 @@ export default function MainPage() {
     }, []);
 
     // 상태 변경 즉시 렌더링
-    const handleGroupJoin = () => {
-        setIsGroupJoined(true); // 상태 즉시 변경
-        setTimeout(() => {
-            window.location.href = '/main'; // 약간의 지연 후 새로고침
-        }, 100);
+    const handleGroupJoin = async () => {
+        try {
+            // 상태를 로컬에서 즉시 true로 변경
+            setIsGroupJoined(true);
+    
+            // 서버 상태를 재확인
+            const isJoined = await checkGroupJoin();
+            console.log("서버 상태 재확인:", isJoined);
+            setIsGroupJoined(isJoined); // 서버에서 반환된 값으로 업데이트
+        } catch (error) {
+            console.error("그룹 참여 상태 재확인 중 오류:", error);
+        }
     };
     
     return (
