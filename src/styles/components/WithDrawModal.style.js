@@ -53,7 +53,7 @@ export const CopyButton = styled.div`
     cursor: pointer;
     background-color: #FFDA76;
     color: white;
-    font-size: 16px;
+    font-size: 12px;
 
     &:hover {
         background-color: #B4D6CD;
