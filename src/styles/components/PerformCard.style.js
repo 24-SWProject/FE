@@ -65,8 +65,7 @@ export const BottomDiv = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: absolute;
-    
+    bottom: 10px;
 `;
 
 
