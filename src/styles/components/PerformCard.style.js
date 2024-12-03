@@ -45,7 +45,7 @@ export const CardContent = styled.div`
 `;
 
 export const Title = styled.h2`
-    font-size: clamp(10px, 1.0rem, 15px);
+    font-size: clamp(10px, 1.0rem, 13px);
     color: #fff;
     font-family: 'Pretendard', sans-serif;
     margin: 0;
@@ -56,7 +56,7 @@ export const Title = styled.h2`
 `;
 
 export const DateText = styled.p`
-    font-size: clamp(5px, 0.8rem, 15px);
+    font-size: clamp(5px, 0.7rem, 10px);
     color: #fff;
     margin: 5px 0 10px 0;
 `;
