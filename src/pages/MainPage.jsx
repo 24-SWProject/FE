@@ -30,6 +30,7 @@ export default function MainPage() {
     // 상태 변경 즉시 렌더링
     const handleGroupJoin = () => {
         setIsGroupJoined(true); // 상태 즉시 변경
+        window.location.reload();
     };
     
     return (
