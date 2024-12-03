@@ -47,8 +47,10 @@ export function InviteComponent({ onGroupJoin }) {
         try {
             const response = await joinGroup(coupleCode); // 입력한 코드로 그룹 참여 요청
             if (response && response.status === 200) {
-                setMessage("그룹에 성공적으로 참여했습니다!");
                 onGroupJoin(); // MainPage에서 상태 업데이트
+                setTimeout(() => {
+                    window.location.reload(); // 성공 후 페이지 새로고침
+                }, 500);
             }
         } catch (error) {
             setMessage(

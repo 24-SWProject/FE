@@ -69,6 +69,8 @@ export default function SlideBar() {
     const handleGroupWithdraw = async () => {
         try {
             await deleteGroupAccount();
+            localStorage.clear();
+            navigate("/");
             alert("그룹에서 성공적으로 탈퇴되었습니다.");
             closeModal();
         } catch (error) {
