@@ -18,7 +18,7 @@ export const ModalContainer = styled.div`
     padding: 20px;
     border-radius: 10px;
     width: 300px;
-    aspect-ratio: 3/2;
+    aspect-ratio: 3 / 2.5;
     position: absolute;
     box-sizing: border-box;
     font-family: Pretendard, sans-serif;
@@ -26,6 +26,7 @@ export const ModalContainer = styled.div`
 
 export const Input = styled.input`
     width: 90%;
+    aspect-ratio: 4 / 1;
     margin: 5px 0;
     padding: 10px;
     border-radius: 5px;

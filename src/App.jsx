@@ -28,9 +28,7 @@ const router = createBrowserRouter([
   {
     path: '/main',
     element: (
-      <PrivateRoute>
         <MainPage />
-      </PrivateRoute>
     )
   },
   {
@@ -68,9 +66,7 @@ const router = createBrowserRouter([
   {
     path: '/recording',
     element: (
-      <PrivateRoute>
         <RecordPage />
-      </PrivateRoute>
     )
   },
   {
