@@ -4,7 +4,7 @@ export const DdayContainer = styled.div`
     width: 80%;
     aspect-ratio: 3/1;
     min-width: 300px;
-    min-height: 140px;
+    min-height: 120px;
     background-color: #f5f5dc;
     position: relative;
     margin: 70px 0 10px 0;
