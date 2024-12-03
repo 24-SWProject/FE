@@ -1,4 +1,3 @@
-import { useState } from "react";
 import * as S from "../styles/pages/Main.style";
 import CalendarComponent from "./components/CalendarComponent";
 import { InviteComponent } from "./components/InviteComponent";
@@ -8,18 +7,41 @@ import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
-import { useGroup } from "../context/GroupContext";
+import { useState, useEffect } from "react";
+import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const { isGroupJoined, joinGroupHandler } = useGroup(); // Context 값 가져오기
+    const [isGroupJoined, setIsGroupJoined] = useState(null); 
 
+    useEffect(() => {
+        const fetchGroupStatus = async () => {
+            try {
+                const isJoined = await checkGroupJoin();
+                console.log("Group join status fetched:", isJoined); // 디버깅
+                setIsGroupJoined(isJoined);
+            } catch (error) {
+                console.error("그룹 참여 여부 확인 실패:", error);
+                setIsGroupJoined(false);
+            }
+        };
+        fetchGroupStatus();
+    }, []);
+
+    // 상태 변경 즉시 렌더링
+    const handleGroupJoin = () => {
+        setIsGroupJoined(true); // 상태 즉시 변경
+        window.location.reload();
+    };
+    
     return (
         <S.MainContainer>
-            {isGroupJoined ? (
+            {isGroupJoined === null ? (
+                <p>로딩 중...</p> // 로딩 상태
+            ) : isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={joinGroupHandler} />
+                <InviteComponent onGroupJoin={() => setIsGroupJoined(true)} />
             )}
             <ToAI />
             <MovieInfo />
@@ -29,4 +51,5 @@ export default function MainPage() {
             <SlideBar />
         </S.MainContainer>
     );
+    
 }

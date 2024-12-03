@@ -37,14 +37,13 @@ export const Input = styled.input`
     }
 
     &[type="date"] {
-        appearance: none; // 기본 브라우저 설정 제거
         -webkit-appearance: none;
         -moz-appearance: none;
         background-color: #fff; 
         color: #000; 
         text-align: start; 
 
-        &::placeholder {
+        &::before {
             color: #ccc;
         }
     }
