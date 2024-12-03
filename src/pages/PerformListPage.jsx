@@ -7,7 +7,7 @@ import { fetchPerformanceData, fetchFestivalData } from "../api/eventcrud";
 import SlideBar from "./components/SlideBar";
 
 export default function PerformListPage() {
-    const today = new Date(new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }));
+    const today = new Date(new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }));
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
     const [activeTab, setActiveTab] = useState("festival"); // 기본값: 축제
