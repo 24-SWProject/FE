@@ -64,7 +64,7 @@ export function InviteComponent({ onGroupJoin }) {
                                         value={coupleCode}
                                         onChange={handleInputChange}
                                     />
-                                    <S.ConnectButton onClick={handleConnectClick}>
+                                    <S.ConnectButton onClick={this.handleConnectClick}>
                                         연결
                                     </S.ConnectButton>
                                 </S.InputWrapper>
