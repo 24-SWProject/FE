@@ -9,6 +9,7 @@ import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
 import { useState, useEffect } from "react";
 import { checkGroupJoin } from "../api/groupcrud";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
