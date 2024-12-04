@@ -12,7 +12,7 @@ import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isGroupJoined, setIsGroupJoined] = useState(false);
+    const [isGroupJoined, setIsGroupJoined] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // 그룹 상태 확인
