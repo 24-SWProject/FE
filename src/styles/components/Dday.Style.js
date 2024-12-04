@@ -32,7 +32,7 @@ export const DdayContainer = styled.div`
 export const CoupleImage = styled.div`
     width: 100px;
     height: 100px;
-    background-color: #fff;
+    background-color: #bbb;
     border: 2px solid #FFFFFF;
     border-radius: 50%;
     overflow: hidden;
