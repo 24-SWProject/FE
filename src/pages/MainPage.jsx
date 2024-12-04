@@ -13,7 +13,7 @@ import { checkGroupJoin } from "../api/groupcrud";
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isGroupJoined, setIsGroupJoined] = useState(null);
-    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [isLoading, setIsLoading] = useState(true);
 
     // 페이지 마운트 시 그룹 참여 상태 확인
     useEffect(() => {
@@ -21,7 +21,7 @@ export default function MainPage() {
             setIsLoading(true); // 로딩 시작
             try {
                 const isJoined = await checkGroupJoin();
-                console.log("Group join status fetched:", isJoined); // 디버깅
+                console.log("Group join status fetched:", isJoined.data); // 디버깅
                 setIsGroupJoined(isJoined); // 상태 업데이트
             } catch (error) {
                 console.error("그룹 참여 여부 확인 실패:", error);
