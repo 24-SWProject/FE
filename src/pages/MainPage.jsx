@@ -15,7 +15,7 @@ export default function MainPage() {
     const [isGroupJoined, setIsGroupJoined] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // 그룹 참여 상태 확인
+    // 그룹 참여 상태 확인 및 업데이트
     useEffect(() => {
         const fetchGroupStatus = async () => {
             setIsLoading(true);
@@ -33,14 +33,10 @@ export default function MainPage() {
         fetchGroupStatus();
     }, []);
 
-    // 그룹 가입 후 처리
-    const handleGroupJoin = async () => {
-        try {
-            const isJoined = await checkGroupJoin();
-            setIsGroupJoined(isJoined);
-        } catch (error) {
-            console.error("그룹 참여 상태 재확인 중 오류:", error);
-        }
+    // 그룹 가입 후 상태 업데이트
+    const handleGroupJoin = () => {
+        console.log("그룹 가입 상태 업데이트 중...");
+        setIsGroupJoined(true); // 상태 업데이트로 인해 재렌더링 트리거
     };
 
     // 렌더링할 컴포넌트를 메모화
