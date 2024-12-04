@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import * as S from "../styles/pages/Main.style";
 import CalendarComponent from "./components/CalendarComponent";
 import { InviteComponent } from "./components/InviteComponent";
@@ -7,66 +8,56 @@ import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
-import { useState, useEffect } from "react";
 import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isGroupJoined, setIsGroupJoined] = useState(null);
-    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [isLoading, setIsLoading] = useState(true);
 
-    // 페이지 마운트 시 그룹 참여 상태 확인
+    // 그룹 참여 상태 확인
     useEffect(() => {
         const fetchGroupStatus = async () => {
-            setIsLoading(true); // 로딩 시작
+            setIsLoading(true);
             try {
                 const isJoined = await checkGroupJoin();
-                console.log("Group join status fetched:", isJoined); // 디버깅
-                setIsGroupJoined(isJoined); // 상태 업데이트
+                setIsGroupJoined(isJoined);
             } catch (error) {
                 console.error("그룹 참여 여부 확인 실패:", error);
                 setIsGroupJoined(false);
             } finally {
-                setIsLoading(false); // 로딩 종료
+                setIsLoading(false);
             }
         };
 
-        fetchGroupStatus(); // 초기 한 번만 실행
+        fetchGroupStatus();
     }, []);
 
-    // 상태 변경 즉시 렌더링
+    // 그룹 가입 후 처리
     const handleGroupJoin = async () => {
-        setIsLoading(true); // 로딩 시작
         try {
-            console.log("onGroupJoin 호출됨");
-            const isJoined = await checkGroupJoin(); // 서버 상태 확인
-            console.log("서버 상태 재확인:", isJoined);
-            setIsGroupJoined(isJoined); // 상태 업데이트
-    
-            // 페이지 새로고침
-            if (isJoined) {
-                window.location.replace(window.location.href); // 현재 URL로 이동
-            }
+            const isJoined = await checkGroupJoin();
+            setIsGroupJoined(isJoined);
         } catch (error) {
             console.error("그룹 참여 상태 재확인 중 오류:", error);
-        } finally {
-            setIsLoading(false); // 로딩 종료
         }
     };
-    
 
-    // 렌더링 로직
+    // 렌더링할 컴포넌트를 메모화
+    const renderedComponent = useMemo(() => {
+        if (isGroupJoined) {
+            return <DdayComponent />;
+        }
+        return <InviteComponent onGroupJoin={handleGroupJoin} />;
+    }, [isGroupJoined]);
+
     if (isLoading) {
-        return <p>로딩 중...</p>; // 로딩 상태
+        return <p>로딩 중...</p>;
     }
 
     return (
         <S.MainContainer>
-            {isGroupJoined ? (
-                <DdayComponent />
-            ) : (
-                <InviteComponent onGroupJoin={handleGroupJoin} />
-            )}
+            {renderedComponent}
             <ToAI />
             <MovieInfo />
             <Weather />
