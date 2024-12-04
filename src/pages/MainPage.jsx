@@ -32,7 +32,7 @@ export default function MainPage() {
 
     useEffect(() => {
         fetchGroupStatus();
-    }, [isGroupJoined]); // 의존성 배열에 isGroupJoined 추가
+    }, []);
 
     if (isLoading) {
         return <p>로딩 중...</p>;
