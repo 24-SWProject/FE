@@ -32,10 +32,10 @@ export function InviteComponent({ onGroupJoin }) {
     };
 
     // Connect 버튼 클릭 핸들러
-    const handleConnectClick = useCallback(async () => {
+    const handleConnectClick = useCallback(() => {
         console.log("Connect button clicked with coupleCode:", coupleCode);
         try {
-            const response = await joinGroup(coupleCode);
+            const response = joinGroup(coupleCode);
             if (response && response.status === 200) {
                 console.log("그룹 참여 성공");
                 setMessage("그룹에 성공적으로 참여했습니다!");
