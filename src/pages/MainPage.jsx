@@ -57,7 +57,7 @@ export default function MainPage() {
 
     // 렌더링 로직
     if (isLoading) {
-        return <p>로딩 중...</p>; // 로딩 상태
+        return <PropagateLoader color="#E6A4B4" size={15} />; // 로딩 상태
     }
 
     return (

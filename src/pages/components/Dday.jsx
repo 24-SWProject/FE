@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import * as S from "../../styles/components/Dday.Style";
 import { getGroupProfile, getGroupAnniv } from "../../api/groupcrud";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 export default function DdayComponent() {
     const [profile, setProfile] = useState(null); // 그룹 프로필 데이터
@@ -31,18 +32,22 @@ export default function DdayComponent() {
     }
 
     if (!profile || !anniversaryData) {
-        return <p>로딩 중...</p>; // 로딩 상태 표시
+        return <PropagateLoader color="#E6A4B4" size={15} />; // 로딩 상태 표시
     }
 
     return (
         <S.DdayContainer>
             {/* 프로필 이미지 */}
             <S.CoupleImage>
-                <img
-                    src={`data:image/jpeg;base64,${profile.profileImg}`} // Base64 데이터 렌더링
-                    alt={`${profile.nickName}의 프로필`}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }} // 이미지 스타일링
-                />
+                {profile.profileImg ? (
+                    <img
+                        src={`data:image/jpeg;base64,${profile.profileImg}`} // Base64 데이터 렌더링
+                        alt={`${profile.nickName}의 프로필`}
+                    />
+                ) : (
+                    // 이미지가 없을 경우 기본 배경 유지
+                    <div />
+                )}
             </S.CoupleImage>
             {/* 기념일 정보 */}
             <S.DdayInfo>
