@@ -36,7 +36,7 @@ export function InviteComponent({ onGroupJoin }) {
         console.log("Connect button clicked with coupleCode:", coupleCode);
         try {
             const response = await joinGroup(coupleCode);
-            if (response && response.status === 200) {
+            if (response.status === 200) {
                 console.log("그룹 참여 성공");
                 setMessage("그룹에 성공적으로 참여했습니다!");
                 onGroupJoin(); // 부모 컴포넌트의 상태 업데이트
@@ -64,7 +64,7 @@ export function InviteComponent({ onGroupJoin }) {
                                         value={coupleCode}
                                         onChange={handleInputChange}
                                     />
-                                    <S.ConnectButton onClick={this.handleConnectClick}>
+                                    <S.ConnectButton onClick={() => {handleConnectClick}}>
                                         연결
                                     </S.ConnectButton>
                                 </S.InputWrapper>
