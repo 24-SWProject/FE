@@ -12,7 +12,7 @@ import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isGroupJoined, setIsGroupJoined] = useState(null);
+    const [isGroupJoined, setIsGroupJoined] = useState(null); // 초기값 null
     const [isLoading, setIsLoading] = useState(true);
 
     // 그룹 참여 상태 확인 및 업데이트
@@ -21,7 +21,7 @@ export default function MainPage() {
             setIsLoading(true);
             try {
                 const isJoined = await checkGroupJoin();
-                setIsGroupJoined(isJoined);
+                setIsGroupJoined(isJoined); // true 또는 false 값 설정
             } catch (error) {
                 console.error("그룹 참여 여부 확인 실패:", error);
                 setIsGroupJoined(false);
@@ -41,15 +41,14 @@ export default function MainPage() {
 
     // 렌더링할 컴포넌트를 메모화
     const renderedComponent = useMemo(() => {
-        if (isGroupJoined) {
+        if (isGroupJoined === true) {
             return <DdayComponent />;
         }
-        return <InviteComponent onGroupJoin={handleGroupJoin} />;
+        if (isGroupJoined === false) {
+            return <InviteComponent onGroupJoin={handleGroupJoin} />;
+        }
+        return <p>로딩 중...</p>; // isGroupJoined가 null인 경우
     }, [isGroupJoined]);
-
-    if (isLoading) {
-        return <p>로딩 중...</p>;
-    }
 
     return (
         <S.MainContainer>
