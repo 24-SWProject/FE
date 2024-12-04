@@ -8,38 +8,37 @@ import PerformComponent from "./components/PerformComponent";
 import SlideBar from "./components/SlideBar";
 import ToAI from "./components/ToAI";
 import Weather from "./components/Weather";
-import { checkGroupJoin, joinGroup } from "../api/groupcrud";
+import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isGroupJoined, setIsGroupJoined] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchGroupStatus = async () => {
-            setIsLoading(true);
-            try {
-                if (isGroupJoined === null) {
-                    // 초기 상태에서 그룹 참여 여부 확인
-                    const isJoined = await checkGroupJoin();
-                    console.log("초기 그룹 상태:", isJoined);
-                    setIsGroupJoined(isJoined);
-                } else if (!isGroupJoined) {
-                    // 그룹에 가입되지 않은 경우 처리
-                    console.log("그룹 가입 처리 시작...");
-                    await joinGroup(); // 가입 로직 (InviteComponent에서 처리 가능)
-                    const isJoined = await checkGroupJoin();
-                    setIsGroupJoined(isJoined);
-                }
-            } catch (error) {
-                console.error("그룹 상태 처리 중 오류:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    // 그룹 상태 확인
+    const fetchGroupStatus = async () => {
+        setIsLoading(true);
+        try {
+            const isJoined = await checkGroupJoin();
+            console.log("그룹 상태 확인:", isJoined);
+            setIsGroupJoined(isJoined);
+        } catch (error) {
+            console.error("그룹 상태 확인 중 오류:", error);
+            setIsGroupJoined(false);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-        fetchGroupStatus();
-    }, [isGroupJoined]);
+    useEffect(() => {
+        fetchGroupStatus(); // 초기 한 번 실행
+    }, []);
+
+    // 그룹 가입 후 상태 재확인
+    const handleGroupJoin = async () => {
+        console.log("그룹 가입 후 상태 확인...");
+        await fetchGroupStatus(); // 그룹 상태 재확인
+    };
 
     if (isLoading) {
         return <p>로딩 중...</p>;
@@ -50,7 +49,7 @@ export default function MainPage() {
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={() => setIsGroupJoined(true)} />
+                <InviteComponent onGroupJoin={handleGroupJoin} />
             )}
             <ToAI />
             <MovieInfo />
