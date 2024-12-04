@@ -16,13 +16,14 @@ export const getGroupCode = async () => {
 export const joinGroup = async (code) => {
     try {
         const response = await instance.post(`/api/auth/group/join`, { code });
-        console.log("그룹 참여 성공:", response);
-        return response.data; // 성공한 경우 응답 데이터 반환
+        console.log("그룹 참여 성공:", response.data);
+        return { status: response.status, data: response.data }; // 상태와 데이터를 함께 반환
     } catch (error) {
         console.error("그룹 참여 실패:", error.response?.data || error.message);
-        throw error; // 호출하는 쪽에서 에러를 처리할 수 있도록 throw
+        throw error; // 호출하는 쪽에서 에러를 처리하도록 throw
     }
 };
+
 
 export const checkGroupJoin = async () => {
     try {

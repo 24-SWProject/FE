@@ -43,7 +43,7 @@ export function InviteComponent({ onGroupJoin }) {
         console.log("Connect 버튼 클릭, 커플 코드:", coupleCode);
         try {
             const response = await joinGroup(coupleCode);
-            console.log("handleConnectClick response, status", response, response.status);
+            console.log("handleConnectClick response, status", response.data, response.status);
             if (response.status === 200) { // HTTP 상태 코드 확인
                 console.log("그룹 참여 성공");
                 setMessage("그룹에 성공적으로 참여했습니다!");
