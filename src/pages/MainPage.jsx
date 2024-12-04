@@ -32,7 +32,7 @@ export default function MainPage() {
 
     useEffect(() => {
         fetchGroupStatus(); // 초기 한 번 실행
-    }, []);
+    }, [isGroupJoined]);
 
     // 그룹 가입 후 상태 재확인
     const handleGroupJoin = async () => {
