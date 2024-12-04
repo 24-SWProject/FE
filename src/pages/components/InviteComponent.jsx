@@ -40,21 +40,25 @@ export function InviteComponent({ onGroupJoin }) {
 
     // Connect 버튼 클릭 핸들러
     const handleConnectClick = useCallback(async () => {
-        console.log("Connect button clicked with coupleCode:", coupleCode);
+        console.log("Connect 버튼 클릭, 커플 코드:", coupleCode);
         try {
             const response = await joinGroup(coupleCode);
-            if (response && response.status === 200) {
+            if (response.status === 200) { // HTTP 상태 코드 확인
                 console.log("그룹 참여 성공");
                 setMessage("그룹에 성공적으로 참여했습니다!");
-                onGroupJoin();
+                onGroupJoin(); // 상위 컴포넌트 상태 업데이트
+            } else {
+                console.error("예상치 못한 응답:", response);
+                setMessage("그룹 참여 중 문제가 발생했습니다.");
             }
         } catch (error) {
-            console.error("그룹 참여 중 오류:", error);
+            console.error("그룹 참여 실패:", error);
             setMessage(
                 error.response?.data?.message || "그룹 참여 중 오류가 발생했습니다."
             );
         }
     }, [coupleCode, onGroupJoin]);
+    
 
     // Modal 닫기
     const closeModal = () => {

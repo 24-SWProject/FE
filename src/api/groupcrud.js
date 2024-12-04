@@ -27,13 +27,14 @@ export const joinGroup = async (code) => {
 export const checkGroupJoin = async () => {
     try {
         const response = await instance.get(`/api/auth/group/join/check`);
-        console.log("그룹 여부: ", response.data);
-        return response; // `response.data`가 true/false라고 가정
+        console.log("그룹 참여 여부 확인:", response.data);
+        return response.data; // Boolean 값 반환
     } catch (error) {
-        console.error("그룹 참여 여부 확인 에러 : ", error.response?.data || error.message);
+        console.error("그룹 참여 여부 확인 실패:", error.response?.data || error.message);
         throw error;
     }
 };
+
 
 // 그룹 프로필 조회
 export const getGroupProfile = async () => {
