@@ -22,7 +22,7 @@ export default function MainPage() {
             try {
                 const isJoined = await checkGroupJoin();
                 console.log("Group join status fetched:", isJoined.data); // 디버깅
-                setIsGroupJoined(isJoined); // 상태 업데이트
+                setIsGroupJoined(isJoined.data); // 상태 업데이트
             } catch (error) {
                 console.error("그룹 참여 여부 확인 실패:", error);
                 setIsGroupJoined(false);
