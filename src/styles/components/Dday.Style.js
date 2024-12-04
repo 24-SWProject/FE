@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Logo from "../../assets/logo.png"
 
 export const DdayContainer = styled.div`
     width: 80%;
@@ -31,7 +32,7 @@ export const DdayContainer = styled.div`
 export const CoupleImage = styled.div`
     width: 100px;
     height: 100px;
-    background: #BBBBBB;
+    background-color: #fff;
     border: 2px solid #FFFFFF;
     border-radius: 50%;
     overflow: hidden;
@@ -42,9 +43,18 @@ export const CoupleImage = styled.div`
         width: 100%;
         height: 100%;
         object-fit: cover;
+        background-repeat: no-repeat;
         position: absolute;
         top: 0;
         left: 0;
+    }
+
+    div {
+        width: 100%;
+        height: 100%;
+        background-image: url(${Logo});
+        object-fit: cover;
+        background-repeat: no-repeat;
     }
 `;
 
