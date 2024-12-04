@@ -116,7 +116,6 @@ export default function SlideBar() {
                             await handleGroupWithdraw();
                         } else {
                             await handleDeleteAccount();
-                            await handleLogout(); // 회원 탈퇴 후 로그아웃 처리
                         }
                     }}
                     onCancel={closeModal}
