@@ -12,7 +12,7 @@ import { checkGroupJoin } from "../api/groupcrud";
 
 export default function MainPage() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isGroupJoined, setIsGroupJoined] = useState(null);
+    const [isGroupJoined, setIsGroupJoined] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     // 그룹 상태 확인
@@ -31,14 +31,8 @@ export default function MainPage() {
     };
 
     useEffect(() => {
-        fetchGroupStatus(); // 초기 한 번 실행
-    }, [isGroupJoined]);
-
-    // 그룹 가입 후 상태 재확인
-    const handleGroupJoin = async () => {
-        console.log("그룹 가입 후 상태 확인...");
-        await fetchGroupStatus(); // 그룹 상태 재확인
-    };
+        fetchGroupStatus();
+    }, [isGroupJoined]); // 의존성 배열에 isGroupJoined 추가
 
     if (isLoading) {
         return <p>로딩 중...</p>;
@@ -49,7 +43,7 @@ export default function MainPage() {
             {isGroupJoined ? (
                 <DdayComponent />
             ) : (
-                <InviteComponent onGroupJoin={handleGroupJoin} />
+                <InviteComponent onGroupJoin={() => setIsGroupJoined(true)} />
             )}
             <ToAI />
             <MovieInfo />

@@ -27,8 +27,7 @@ export const joinGroup = async (code) => {
 export const checkGroupJoin = async () => {
     try {
         const response = await instance.get(`/api/auth/group/join/check`);
-        console.log("그룹 참여 여부: ", response.data); // 디버깅용
-        return response.data; // `response.data`가 true/false라고 가정
+        return response; // `response.data`가 true/false라고 가정
     } catch (error) {
         console.error("그룹 참여 여부 확인 에러 : ", error.response?.data || error.message);
         throw error;
