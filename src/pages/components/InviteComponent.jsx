@@ -15,6 +15,7 @@ export function InviteComponent({ onGroupJoin }) {
     useEffect(() => {
         const fetchInviteCode = async () => {
             try {
+                console.log("초대 코드를 가져오는 중...");
                 const code = await getGroupCode();
                 setInviteCode(code || "");
                 console.log("초대 코드 가져옴:", code);
@@ -38,9 +39,7 @@ export function InviteComponent({ onGroupJoin }) {
             if (response && response.status === 200) {
                 console.log("그룹 참여 성공");
                 setMessage("그룹에 성공적으로 참여했습니다!");
-                onGroupJoin(); // 부모 컴포넌트(MainPage)의 상태 재확인 요청
-            } else {
-                setMessage("그룹 참여에 실패했습니다.");
+                onGroupJoin(); // 부모 컴포넌트의 상태 업데이트
             }
         } catch (error) {
             console.error("그룹 참여 중 오류:", error);
@@ -52,7 +51,7 @@ export function InviteComponent({ onGroupJoin }) {
 
     return (
         <>
-            <S.DdayContainer>
+            <S.DdayContainer className="Copy">
                 <S.DdayInfo>
                     {isCopied ? (
                         isClicked ? (
@@ -79,24 +78,24 @@ export function InviteComponent({ onGroupJoin }) {
                             </>
                         )
                     ) : (
-                        <>
-                            <h3>초대코드를 짝꿍에게 보내주세요 :)</h3>
-                            <S.CopyButton
-                                onClick={async () => {
-                                    try {
-                                        await navigator.clipboard.writeText(inviteCode);
-                                        setIsCopied(true);
-                                        setShowModal(true);
-                                        console.log("초대 코드가 클립보드에 복사됨");
-                                    } catch (error) {
-                                        console.error("클립보드 복사 실패:", error);
-                                        alert("클립보드 복사에 실패했습니다. 다시 시도해주세요.");
-                                    }
-                                }}
-                            >
-                                COPY CODE
-                            </S.CopyButton>
-                        </>
+                        <h3>초대코드를 짝꿍에게 보내주세요 :)</h3>
+                    )}
+                    {!isCopied && (
+                        <S.CopyButton
+                            onClick={async () => {
+                                try {
+                                    await navigator.clipboard.writeText(inviteCode);
+                                    setIsCopied(true);
+                                    setShowModal(true);
+                                    console.log("초대 코드가 클립보드에 복사됨");
+                                } catch (error) {
+                                    console.error("클립보드 복사 실패:", error);
+                                    alert("클립보드 복사에 실패했습니다. 다시 시도해주세요.");
+                                }
+                            }}
+                        >
+                            COPY CODE
+                        </S.CopyButton>
                     )}
                     {message && <p>{message}</p>}
                 </S.DdayInfo>
