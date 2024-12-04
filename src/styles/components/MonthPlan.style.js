@@ -20,8 +20,8 @@ export const Plus = styled.div`
     aspect-ratio: 1/1;
     position: absolute;
     background-image: url(${add});
-    top: 10px;
-    right: 10px;
+    top: 1vh;
+    right: 2vw;
     background-repeat: no-repeat;
 `;
 
