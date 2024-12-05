@@ -5,7 +5,7 @@ import Close from "./components/Close";
 import { RightArrow } from "../styles/components/RightArrow";
 import { LeftArrow } from "../styles/components/LeftArrow";
 import { recommendAI } from "../api/recommendcrud";
-import LoadingSpinner from "./components/LoadingComponent"; // 로딩 컴포넌트 import
+import LoadingSpinner from "./components/LoadingComponent";// 로딩 컴포넌트 import
 
 export default function KeywordPage() {
     const navigate = useNavigate(); // useNavigate 훅 초기화
@@ -25,29 +25,7 @@ export default function KeywordPage() {
     useEffect(() => {
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         setAnswers(savedAnswers);
-        updateLastQuestion(); // 컴포넌트 초기화 시 마지막 질문 업데이트
     }, []);
-
-    const updateLastQuestion = () => {
-        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
-        const indoorOutdoor = existingAnswers[1]; // 첫 번째 질문의 답
-
-        const filteredQuestions = questionsData.filter(
-            (q) => q.question !== "이 중 무엇을 하고 싶은가요?" && q.question !== "이 중 어디를 가고 싶은가요?"
-        );
-
-        if (indoorOutdoor === "실내") {
-            setQuestionsData([
-                ...filteredQuestions,
-                { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
-            ]);
-        } else if (indoorOutdoor === "실외") {
-            setQuestionsData([
-                ...filteredQuestions,
-                { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
-            ]);
-        }
-    };
 
     const handleChoiceClick = (index) => {
         setSelectedChoice(index);
@@ -55,7 +33,7 @@ export default function KeywordPage() {
 
         const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         const updatedAnswers = [...existingAnswers];
-        updatedAnswers[currentQuestionIndex] = currentAnswer;
+        updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
         setAnswers(updatedAnswers);
         localStorage.setItem("answers", JSON.stringify(updatedAnswers));
     };
@@ -70,16 +48,10 @@ export default function KeywordPage() {
             navigate("/choice"); // Q1에서 /choice로 이동
         } else {
             setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-
             const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex + 1);
             localStorage.setItem("answers", JSON.stringify(updatedAnswers));
             setAnswers(updatedAnswers);
             setSelectedChoice(null); // 선택 초기화
-
-            // 첫 번째 질문에 따라 마지막 질문 업데이트
-            if (currentQuestionIndex === 1) {
-                updateLastQuestion();
-            }
         }
     };
 
@@ -87,15 +59,19 @@ export default function KeywordPage() {
         if (selectedChoice === null) return;
 
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
-        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
-        const updatedAnswers = [...existingAnswers];
-        updatedAnswers[currentQuestionIndex] = currentAnswer;
-        setAnswers(updatedAnswers);
-        localStorage.setItem("answers", JSON.stringify(updatedAnswers));
 
-        // 첫 번째 질문에 따라 마지막 질문 추가
         if (currentQuestionIndex === 0) {
-            updateLastQuestion();
+            if (currentAnswer === "실내") {
+                setQuestionsData((prevQuestions) => [
+                    ...prevQuestions,
+                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
+                ]);
+            } else if (currentAnswer === "실외") {
+                setQuestionsData((prevQuestions) => [
+                    ...prevQuestions,
+                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
+                ]);
+            }
         }
 
         setSelectedChoice(null);
