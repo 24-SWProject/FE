@@ -34,3 +34,14 @@ export const fetchFestivalData = async (date, page) => {
         return [];
     }
 };
+
+export const fetchMovieData = async () => {
+    try{
+        const response = await instance.get(`/api/auth/event/movie`);
+        console.log("MovieData: ", response.data);
+        return response.data;
+    } catch(error) {
+        console.error("Error fetching Movie Data: ", error);
+        return [];
+    }
+}
