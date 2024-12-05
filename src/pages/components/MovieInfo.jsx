@@ -39,7 +39,7 @@ const MovieInfo = () => {
                 {movies.map((movie) => (
                     <S.MovieCard key={movie.id}>
                         <S.Poster
-                            src={movie.posterUrl || "https://via.placeholder.com/150x200?text=No+Image"}
+                            src={movie.poster || "https://via.placeholder.com/150x200?text=No+Image"}
                             alt={movie.title}
                         />
                         <S.TextContainer>
