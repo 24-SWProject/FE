@@ -86,38 +86,3 @@ export const EventContainer = styled.div`
         text-align: center;
     }
 `;
-
-export const SearchContainer = styled.div`
-    width: 90%;
-    height: auto;
-    display: inline-block;
-`;
-
-export const Input = styled.input`
-    width: 85%;
-    min-height: 30px;
-    aspect-ratio: 8 / 1;
-    margin: 5px 0;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #FFDA76;
-    font-family: Pretendard, sans-serif;
-    font-size: clamp(15px, 1.2rem, 20px);
-    ::placeholder {
-        color: #ccc;
-    }
-`;
-
-export const SearchButton = styled.button`
-    width: 15%;
-    min-height: 30px;
-    aspect-ratio: 3 / 2;
-    margin: 0;
-    padding: 0;
-    background-color: #E6A4B4;
-    border: 2px solid #FFFFFF;
-    border-radius: 10px;
-    font-family: 'Pretendard', sans-serif;
-    font-size: clamp(15px, 1.2rem, 25px);;
-    color: black;
-`;
