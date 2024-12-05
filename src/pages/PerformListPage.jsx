@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import Card from "./components/Card"; // Card 컴포넌트 불러오기
+import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { fetchPerformanceData, fetchFestivalData } from "../api/eventcrud";
 import SlideBar from "./components/SlideBar";
+import { useDebounce } from "../hooks/useDebounce"; 
 
 export default function PerformListPage() {
     const today = new Date();
-    console.log("today: ", today);
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
-    const [activeTab, setActiveTab] = useState("festival"); // 기본값: 축제
-    const observerRef = useRef(null); // IntersectionObserver를 연결할 DOM 요소
+    const [activeTab, setActiveTab] = useState("festival");
+    const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+    const debouncedSearchQuery = useDebounce(searchQuery, 1000); // 1000ms debounce 적용
+    const observerRef = useRef(null);
 
-    // useInfiniteQuery로 데이터 가져오기
     const {
         data,
         fetchNextPage,
@@ -22,38 +23,33 @@ export default function PerformListPage() {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteQuery(
-        ["events", date, activeTab],
+        ["events", date, activeTab, debouncedSearchQuery], // debounce된 검색어를 의존성에 추가
         async ({ pageParam = 0 }) => {
             const response =
                 activeTab === "festival"
-                    ? await fetchFestivalData(date, pageParam)
-                    : await fetchPerformanceData(date, pageParam);
+                    ? await fetchFestivalData(date, pageParam, debouncedSearchQuery)
+                    : await fetchPerformanceData(date, pageParam, debouncedSearchQuery);
 
-            // API 응답에서 content 배열 반환
-            console.log("content: ", response.content);
             return response.content || [];
         },
         {
             getNextPageParam: (lastPage, allPages) => {
-                // 데이터가 10개 미만인 경우 더 이상 불러오지 않음
                 if (!lastPage || lastPage.length < 10) return undefined;
                 return allPages.length + 1;
             },
         }
     );
 
-    // IntersectionObserver 설정
     useEffect(() => {
-        if (!hasNextPage || isFetchingNextPage) return; // 더 이상 데이터가 없거나 로딩 중일 때 중단
+        if (!hasNextPage || isFetchingNextPage) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    console.log("Fetching next page...");
                     fetchNextPage();
                 }
             },
-            { threshold: 0.1 } // 요소가 10% 이상 화면에 보이면 트리거
+            { threshold: 0.1 }
         );
 
         if (observerRef.current) {
@@ -67,26 +63,22 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 날짜 변경 함수
     const handleDateChange = (days) => {
-        const currentDate = new Date(date); // 현재 상태의 날짜
+        const currentDate = new Date(date);
         currentDate.setDate(currentDate.getDate() + days);
-    
-        // 날짜 비교를 위해 시간 부분을 제거
+
         const todayWithoutTime = new Date(today);
         todayWithoutTime.setHours(0, 0, 0, 0);
-    
+
         const newDateWithoutTime = new Date(currentDate);
         newDateWithoutTime.setHours(0, 0, 0, 0);
-    
-        // 오늘 이후 날짜만 변경 가능
+
         if (newDateWithoutTime >= todayWithoutTime) {
             const formattedDate = currentDate.toISOString().split("T")[0];
             setDate(formattedDate);
         }
     };
 
-    // 탭 변경 함수
     const handleTabChange = (tab) => {
         setActiveTab(tab);
     };
@@ -121,11 +113,18 @@ export default function PerformListPage() {
                 </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
+            <S.SearchContainer>
+                <S.Input
+                    placeholder="검색어를 입력하세요..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </S.SearchContainer>
             {isLoading ? (
                 <p>로딩 중...</p>
             ) : (
                 <>
-                   {data?.pages?.map((page, pageIndex) => (
+                    {data?.pages?.map((page, pageIndex) => (
                         <React.Fragment key={pageIndex}>
                             {page?.map((event, index) => (
                                 <Card
@@ -139,7 +138,7 @@ export default function PerformListPage() {
                                         id: event.id,
                                         bookmarked: event.bookmarked,
                                     }}
-                                    type = {activeTab}
+                                    type={activeTab}
                                 />
                             ))}
                         </React.Fragment>
