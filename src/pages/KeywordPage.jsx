@@ -5,7 +5,7 @@ import Close from "./components/Close";
 import { RightArrow } from "../styles/components/RightArrow";
 import { LeftArrow } from "../styles/components/LeftArrow";
 import { recommendAI } from "../api/recommendcrud";
-import LoadingSpinner from "./components/LoadingComponent";// 로딩 컴포넌트 import
+import LoadingSpinner from "./components/LoadingComponent"; // 로딩 컴포넌트 import
 
 export default function KeywordPage() {
     const navigate = useNavigate(); // useNavigate 훅 초기화
@@ -25,6 +25,11 @@ export default function KeywordPage() {
     useEffect(() => {
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         setAnswers(savedAnswers);
+
+        // 구 선택 완료 후 첫 번째 질문을 건너뛰도록 설정
+        if (savedAnswers[0]) {
+            setCurrentQuestionIndex(1);
+        }
     }, []);
 
     const handleChoiceClick = (index) => {
@@ -33,24 +38,45 @@ export default function KeywordPage() {
 
         const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         const updatedAnswers = [...existingAnswers];
-        updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
+        updatedAnswers[currentQuestionIndex + 1] = currentAnswer; // 현재 질문의 답변 업데이트
         setAnswers(updatedAnswers);
         localStorage.setItem("answers", JSON.stringify(updatedAnswers));
+    };
+
+    const updateLastQuestion = () => {
+        const indoorOutdoor = answers[1]; // 첫 번째 질문(실내/실외)의 선택 값
+
+        // 기존 질문 초기화 및 새 질문 추가
+        const filteredQuestions = initialQuestionsData.slice(0, 4); // 기본 질문만 유지
+        if (indoorOutdoor === "실내") {
+            setQuestionsData([
+                ...filteredQuestions,
+                { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
+            ]);
+        } else if (indoorOutdoor === "실외") {
+            setQuestionsData([
+                ...filteredQuestions,
+                { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
+            ]);
+        }
     };
 
     const handleLeftArrowClick = () => {
         const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         if (currentQuestionIndex === 0) {
-            if (existingAnswers.length > 0) {
-                const updatedAnswers = existingAnswers.slice(0, -1);
-                localStorage.setItem("answers", JSON.stringify(updatedAnswers));
+            // 구 선택 화면으로 돌아가기
+            navigate("/choice");
+
+            // 실내/실외 선택 값 기반으로 마지막 질문 업데이트
+            if (existingAnswers[1]) {
+                updateLastQuestion(); // 실내/실외에 따른 질문 갱신
             }
-            navigate("/choice"); // Q1에서 /choice로 이동
         } else {
+            // 이전 질문으로 돌아가기
             setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-            const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex + 1);
-            localStorage.setItem("answers", JSON.stringify(updatedAnswers));
+            const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex);
             setAnswers(updatedAnswers);
+            localStorage.setItem("answers", JSON.stringify(updatedAnswers));
             setSelectedChoice(null); // 선택 초기화
         }
     };
@@ -59,16 +85,24 @@ export default function KeywordPage() {
         if (selectedChoice === null) return;
 
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
+        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
+        const updatedAnswers = [...existingAnswers];
+        updatedAnswers[currentQuestionIndex + 1] = currentAnswer; // 현재 질문의 답변 업데이트
+        setAnswers(updatedAnswers);
+        localStorage.setItem("answers", JSON.stringify(updatedAnswers));
+
         if (currentQuestionIndex === 0) {
-            const indoorOutdoor = updatedAnswers[1];
+            const indoorOutdoor = updatedAnswers[1]; // 실내/실외 선택 값
+            const filteredQuestions = initialQuestionsData.slice(0, 4); // 기본 질문 유지
+
             if (indoorOutdoor === "실내") {
-                setQuestionsData((prevQuestions) => [
-                    ...prevQuestions,
+                setQuestionsData([
+                    ...filteredQuestions,
                     { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
                 ]);
-            } else if (indoorOutdoor=== "실외") {
-                setQuestionsData((prevQuestions) => [
-                    ...prevQuestions,
+            } else if (indoorOutdoor === "실외") {
+                setQuestionsData([
+                    ...filteredQuestions,
                     { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
                 ]);
             }
@@ -78,7 +112,7 @@ export default function KeywordPage() {
         if (currentQuestionIndex < questionsData.length - 1) {
             setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         } else {
-            console.log("모든 질문이 완료되었습니다!", answers);
+            console.log("모든 질문이 완료되었습니다!", updatedAnswers);
         }
     };
 
@@ -96,9 +130,7 @@ export default function KeywordPage() {
             const response = await recommendAI(savedAnswers); // POST 요청
             const { llm_response } = response; // llm_response 추출
 
-            localStorage.removeItem("weatherDescription");
             localStorage.removeItem("answers");
-
             navigate("/AIAnswer", { state: { aiAnswer: llm_response } }); // 응답 전달
         } catch (error) {
             console.error("AI 추천 요청 실패:", error);
