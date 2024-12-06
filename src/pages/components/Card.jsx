@@ -31,11 +31,9 @@ export default function Card({ event, type }) {
                 <S.Title>{event.title || "제목 없음"}</S.Title>
                 <S.DateText>{event.date || "날짜 없음"}</S.DateText>
                 <S.BottomDiv>
-                    {type !== "performance" && (
-                        <S.LinkButton onClick={handleLinkClick}>
-                            {event.linkText || "LINK"}
-                        </S.LinkButton>
-                    )}
+                    <S.LinkButton onClick={handleLinkClick}>
+                        {event.linkText || "LINK"}
+                    </S.LinkButton>
                     <S.BookmarkIcon
                         isActive={isBookmarked}
                         onClick={handleBookmarkToggle}

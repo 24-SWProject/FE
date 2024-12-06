@@ -134,8 +134,8 @@ export default function PerformListPage() {
                                         title: event.title,
                                         date: `${event.openDate} ~ ${event.endDate}`,
                                         imageUrl: event.poster,
-                                        linkText: activeTab === "festival" ? "LINK" : "X",
-                                        url: activeTab === "festival" ? event.registerLink : "",
+                                        linkText: "LINK",
+                                        url: event.registerLink,
                                         id: event.id,
                                         bookmarked: event.bookmarked,
                                     }}
