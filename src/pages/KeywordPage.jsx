@@ -57,30 +57,42 @@ export default function KeywordPage() {
 
     const handleRightArrowClick = () => {
         if (selectedChoice === null) return;
-
+    
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
-
-        if (currentQuestionIndex === 0) {
-            if (currentAnswer === "실내") {
+        const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
+        
+        // 기존 선택 저장 로직 유지
+        const updatedAnswers = [...savedAnswers];
+        updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
+        localStorage.setItem("answers", JSON.stringify(updatedAnswers));
+        setAnswers(updatedAnswers);
+    
+        setSelectedChoice(null);
+    
+        // 마지막 질문 처리: answer[1] (실내/실외)에 따라 동적 설정
+        if (currentQuestionIndex === questionsData.length - 2) {
+            const indoorOutdoorAnswer = updatedAnswers[1]; // answer[1] 값 가져오기
+            if (indoorOutdoorAnswer === "실내") {
                 setQuestionsData((prevQuestions) => [
                     ...prevQuestions,
-                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
+                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] },
                 ]);
-            } else if (currentAnswer === "실외") {
+            } else if (indoorOutdoorAnswer === "실외") {
                 setQuestionsData((prevQuestions) => [
                     ...prevQuestions,
-                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
+                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] },
                 ]);
             }
         }
-
-        setSelectedChoice(null);
+    
+        // 다음 질문으로 이동
         if (currentQuestionIndex < questionsData.length - 1) {
             setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         } else {
-            console.log("모든 질문이 완료되었습니다!", answers);
+            console.log("모든 질문이 완료되었습니다!", updatedAnswers);
         }
     };
+    
 
     const handleAiRecommendation = async () => {
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
