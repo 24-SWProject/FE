@@ -89,7 +89,7 @@ export default function SlideBar() {
                         <S.BarContext>
                             <S.MenuItem as={Link} to="/profileSet">프로필 설정</S.MenuItem>
                             <S.MenuItem as={Link} to="/recording">데이트 기록</S.MenuItem>
-                            <S.MenuItem as={Link} to="/performList">공연&전시 정보</S.MenuItem>
+                            <S.MenuItem as={Link} to="/performList">축제&공연 정보</S.MenuItem>
                             <S.MenuItem as={Link} to="/bookmarked">북마크</S.MenuItem>
                             <S.MenuItem onClick={handleLogout}>로그아웃</S.MenuItem>
                         </S.BarContext>

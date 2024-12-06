@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // React Router의 useNavigate 훅
 import * as S from "../styles/pages/Keyword.style";
 import Close from "./components/Close";
 import { RightArrow } from "../styles/components/RightArrow";
 import { LeftArrow } from "../styles/components/LeftArrow";
 import { recommendAI } from "../api/recommendcrud";
-import LoadingSpinner from "./components/LoadingComponent";
+import LoadingSpinner from "./components/LoadingComponent"; // 로딩 컴포넌트 import
 
 export default function KeywordPage() {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // useNavigate 훅 초기화
     const initialQuestionsData = [
         { question: "실내와 실외 중 어디에서 데이트를 할 건가요?", choices: ["실내", "실외"] },
         { question: "오늘은 어떤 분위기의 데이트를 하고 싶나요?", choices: ["조용한", "활기찬", "로맨틱한", "캐주얼한", "자연친화적인"] },
@@ -20,42 +20,13 @@ export default function KeywordPage() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedChoice, setSelectedChoice] = useState(null);
     const [answers, setAnswers] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
     useEffect(() => {
+        // LocalStorage에서 answers 초기화
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         setAnswers(savedAnswers);
     }, []);
-
-    useEffect(() => {
-        // 마지막 질문을 추가하는 로직
-        const indoorOutdoorAnswer = answers[0]; // 첫 번째 질문의 답변
-        if (currentQuestionIndex === questionsData.length - 1 && !isFinalQuestionAdded()) {
-            addFinalQuestion(indoorOutdoorAnswer);
-        }
-    }, [currentQuestionIndex, answers]);
-
-    const isFinalQuestionAdded = () => {
-        // 이미 마지막 질문이 추가되었는지 확인
-        return questionsData.some(question => 
-            question.question.includes("이 중 무엇을 하고 싶은가요?") || 
-            question.question.includes("이 중 어디를 가고 싶은가요?")
-        );
-    };
-
-    const addFinalQuestion = (indoorOutdoorAnswer) => {
-        if (indoorOutdoorAnswer === "실내") {
-            setQuestionsData(prevQuestions => [
-                ...prevQuestions,
-                { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
-            ]);
-        } else if (indoorOutdoorAnswer === "실외") {
-            setQuestionsData(prevQuestions => [
-                ...prevQuestions,
-                { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
-            ]);
-        }
-    };
 
     const handleChoiceClick = (index) => {
         setSelectedChoice(index);
@@ -63,17 +34,22 @@ export default function KeywordPage() {
 
         const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         const updatedAnswers = [...existingAnswers];
-        updatedAnswers[currentQuestionIndex] = currentAnswer;
+        updatedAnswers[currentQuestionIndex + 1] = currentAnswer; // 현재 질문의 답변 업데이트
         setAnswers(updatedAnswers);
         localStorage.setItem("answers", JSON.stringify(updatedAnswers));
     };
 
     const handleLeftArrowClick = () => {
+        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         if (currentQuestionIndex === 0) {
+            // 구 선택 페이지로 이동
             navigate("/choice");
         } else {
-            setCurrentQuestionIndex(prevIndex => prevIndex - 1);
-            setSelectedChoice(null);
+            setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+            const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex + 1);
+            setAnswers(updatedAnswers);
+            localStorage.setItem("answers", JSON.stringify(updatedAnswers));
+            setSelectedChoice(null); // 선택 초기화
         }
     };
 
@@ -81,38 +57,61 @@ export default function KeywordPage() {
         if (selectedChoice === null) return;
 
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
-        const updatedAnswers = [...answers];
-        updatedAnswers[currentQuestionIndex] = currentAnswer;
+
+        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
+        const updatedAnswers = [...existingAnswers];
+        updatedAnswers[currentQuestionIndex + 1] = currentAnswer; // 현재 질문의 답변 업데이트
         setAnswers(updatedAnswers);
         localStorage.setItem("answers", JSON.stringify(updatedAnswers));
-        setSelectedChoice(null);
 
-        // 마지막 질문이 이미 추가되었으면 더 이상 추가하지 않음
+        // 마지막 질문 업데이트
+        if (currentQuestionIndex === 0) {
+            const indoorOutdoor = updatedAnswers[1]; // 실내/실외 선택 값
+
+            // 기존 마지막 질문 제거하고 새 질문 추가
+            const filteredQuestions = initialQuestionsData.slice(0, 4);
+            if (indoorOutdoor === "실내") {
+                setQuestionsData([
+                    ...filteredQuestions,
+                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
+                ]);
+            } else if (indoorOutdoor === "실외") {
+                setQuestionsData([
+                    ...filteredQuestions,
+                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
+                ]);
+            }
+        }
+
+        setSelectedChoice(null);
         if (currentQuestionIndex < questionsData.length - 1) {
-            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+            setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         } else {
             console.log("모든 질문이 완료되었습니다!", updatedAnswers);
         }
     };
 
     const handleAiRecommendation = async () => {
-        if (answers.length < questionsData.length) {
+        const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
+
+        if (savedAnswers.length < questionsData.length) {
             alert("모든 질문에 답해주세요.");
             return;
         }
 
-        setLoading(true);
+        setLoading(true); // 로딩 시작
         try {
-            const response = await recommendAI(answers);
-            const { llm_response } = response;
+            console.log("Selected Answers:", savedAnswers);
+            const response = await recommendAI(savedAnswers); // POST 요청
+            const { llm_response } = response; // llm_response 추출
 
-            localStorage.removeItem("answers");
-            navigate("/AIAnswer", { state: { aiAnswer: llm_response } });
+            localStorage.removeItem("answers"); // LocalStorage 정리
+            navigate("/AIAnswer", { state: { aiAnswer: llm_response } }); // 응답 전달
         } catch (error) {
             console.error("AI 추천 요청 실패:", error);
             alert("AI 추천 요청에 실패했습니다. 다시 시도해주세요.");
         } finally {
-            setLoading(false);
+            setLoading(false); // 로딩 종료
         }
     };
 
