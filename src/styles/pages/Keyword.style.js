@@ -34,14 +34,13 @@ export const Question = styled.div`
     width: 80%;
     font-size: clamp(15px, 1.5rem, 25px);
     font-weight: 700;
-    height: 150px;
     font-family: Pretendard, sans-serif;
     color: #444;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word; 
     word-break: keep-all;
-    margin-bottom: 1vh;
+    margin-bottom: 2vh;
     margin-top: 0;
 `;
 
