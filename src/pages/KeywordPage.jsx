@@ -59,7 +59,7 @@ export default function KeywordPage() {
         if (selectedChoice === null) return;
 
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
-        if (currentQuestionIndex === 4) {
+        if (currentQuestionIndex === 0) {
             const indoorOutdoor = updatedAnswers[1];
             if (indoorOutdoor === "실내") {
                 setQuestionsData((prevQuestions) => [
