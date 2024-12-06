@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import debounce from "lodash.debounce";
 import Card from "./components/Card"; // Card 컴포넌트 불러오기
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { PropagateLoader } from "react-spinners";
 import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
 import SlideBar from "./components/SlideBar";
+import { useDebounce } from "../hooks/useDebounce"; // useDebounce 커스텀 훅 불러오기
 
 export default function PerformListPage() {
     const today = new Date();
@@ -20,28 +20,26 @@ export default function PerformListPage() {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
 
-    // 디바운스 함수 설정
-    const debouncedSearch = useCallback(
-        debounce(async (term) => {
-            if (term.trim() === "") {
+    // 디바운스된 검색어
+    const debouncedSearchTerm = useDebounce(searchTerm, 1000);
+
+    // 디바운스된 검색어 변경 시 검색 수행
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            if (debouncedSearchTerm.trim() === "") {
                 setIsSearching(false);
                 setSearchResults([]);
                 return;
             }
 
             setIsSearching(true);
-            const results = await fetchEventDataByTitle(activeTab, term);
+            const results = await fetchEventDataByTitle(activeTab, debouncedSearchTerm);
             setSearchResults(results.content || []);
             setIsSearching(false);
-        }, 1000),
-        [activeTab]
-    );
+        };
 
-    const handleSearchChange = (event) => {
-        const term = event.target.value;
-        setSearchTerm(term);
-        debouncedSearch(term);
-    };
+        fetchSearchResults();
+    }, [debouncedSearchTerm, activeTab]);
 
     // useInfiniteQuery로 데이터 가져오기
     const {
@@ -144,7 +142,7 @@ export default function PerformListPage() {
                     type="text"
                     placeholder="검색어를 입력하세요..."
                     value={searchTerm}
-                    onChange={handleSearchChange}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
             {isSearching ? (
