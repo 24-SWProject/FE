@@ -45,3 +45,19 @@ export const fetchMovieData = async () => {
         return [];
     }
 }
+
+export const fetchEventDataByTitle = async (type, title, page = 1, size = 10) => {
+    try {
+        const response = await instance.post(`/api/auth/event/${type}/title`, { title }, {
+            params: {
+                page,
+                size,
+            },
+        });
+        console.log(`Search Results for ${type}: `, response.data);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching event data by title for ${type}:`, error);
+        return [];
+    }
+};

@@ -1,18 +1,47 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useInfiniteQuery } from "react-query";
+import debounce from "lodash.debounce";
 import Card from "./components/Card"; // Card 컴포넌트 불러오기
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
-import { fetchPerformanceData, fetchFestivalData } from "../api/eventcrud";
+import { PropagateLoader } from "react-spinners";
+import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
 import SlideBar from "./components/SlideBar";
 
 export default function PerformListPage() {
     const today = new Date();
-    console.log("today: ", today);
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
     const [activeTab, setActiveTab] = useState("festival"); // 기본값: 축제
+    const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
     const observerRef = useRef(null); // IntersectionObserver를 연결할 DOM 요소
+
+    // 검색 결과 상태
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+
+    // 디바운스 함수 설정
+    const debouncedSearch = useCallback(
+        debounce(async (term) => {
+            if (term.trim() === "") {
+                setIsSearching(false);
+                setSearchResults([]);
+                return;
+            }
+
+            setIsSearching(true);
+            const results = await fetchEventDataByTitle(activeTab, term);
+            setSearchResults(results.content || []);
+            setIsSearching(false);
+        }, 1000),
+        [activeTab]
+    );
+
+    const handleSearchChange = (event) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+        debouncedSearch(term);
+    };
 
     // useInfiniteQuery로 데이터 가져오기
     const {
@@ -30,7 +59,6 @@ export default function PerformListPage() {
                     : await fetchPerformanceData(date, pageParam);
 
             // API 응답에서 content 배열 반환
-            console.log("content: ", response.content);
             return response.content || [];
         },
         {
@@ -49,7 +77,6 @@ export default function PerformListPage() {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    console.log("Fetching next page...");
                     fetchNextPage();
                 }
             },
@@ -71,24 +98,15 @@ export default function PerformListPage() {
     const handleDateChange = (days) => {
         const currentDate = new Date(date); // 현재 상태의 날짜
         currentDate.setDate(currentDate.getDate() + days);
-    
-        // 날짜 비교를 위해 시간 부분을 제거
-        const todayWithoutTime = new Date(today);
-        todayWithoutTime.setHours(0, 0, 0, 0);
-    
-        const newDateWithoutTime = new Date(currentDate);
-        newDateWithoutTime.setHours(0, 0, 0, 0);
-    
-        // 오늘 이후 날짜만 변경 가능
-        if (newDateWithoutTime >= todayWithoutTime) {
-            const formattedDate = currentDate.toISOString().split("T")[0];
-            setDate(formattedDate);
-        }
+        const formattedDate = currentDate.toISOString().split("T")[0];
+        setDate(formattedDate);
     };
 
     // 탭 변경 함수
     const handleTabChange = (tab) => {
         setActiveTab(tab);
+        setSearchResults([]); // 탭 변경 시 검색 결과 초기화
+        setSearchTerm(""); // 검색어 초기화
     };
 
     return (
@@ -121,32 +139,64 @@ export default function PerformListPage() {
                 </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
-            {isLoading ? (
-                <p>로딩 중...</p>
+            <S.SearchContainer>
+                <S.Input
+                    type="text"
+                    placeholder="검색어를 입력하세요..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+            </S.SearchContainer>
+            {isSearching ? (
+                <PropagateLoader color="#E6A4B4" size={15} />
+            ) : searchResults.length > 0 ? (
+                <S.EventContainer>
+                    {searchResults.map((event, index) => (
+                        <Card
+                            key={`search-${index}`}
+                            event={{
+                                title: event.title,
+                                date: `${event.openDate} ~ ${event.endDate}`,
+                                imageUrl: event.poster,
+                                linkText: "LINK",
+                                url: event.registerLink,
+                                id: event.id,
+                                bookmarked: event.bookmarked,
+                            }}
+                            type={activeTab}
+                        />
+                    ))}
+                </S.EventContainer>
             ) : (
                 <>
-                   {data?.pages?.map((page, pageIndex) => (
-                        <React.Fragment key={pageIndex}>
-                            {page?.map((event, index) => (
-                                <Card
-                                    key={`${pageIndex}-${index}`}
-                                    event={{
-                                        title: event.title,
-                                        date: `${event.openDate} ~ ${event.endDate}`,
-                                        imageUrl: event.poster,
-                                        linkText: "LINK",
-                                        url: event.registerLink,
-                                        id: event.id,
-                                        bookmarked: event.bookmarked,
-                                    }}
-                                    type = {activeTab}
-                                />
+                    {isLoading ? (
+                        <PropagateLoader color="#E6A4B4" size={15} />
+                    ) : (
+                        <>
+                            {data?.pages?.map((page, pageIndex) => (
+                                <React.Fragment key={pageIndex}>
+                                    {page?.map((event, index) => (
+                                        <Card
+                                            key={`${pageIndex}-${index}`}
+                                            event={{
+                                                title: event.title,
+                                                date: `${event.openDate} ~ ${event.endDate}`,
+                                                imageUrl: event.poster,
+                                                linkText: "LINK",
+                                                url: event.registerLink,
+                                                id: event.id,
+                                                bookmarked: event.bookmarked,
+                                            }}
+                                            type={activeTab}
+                                        />
+                                    ))}
+                                </React.Fragment>
                             ))}
-                        </React.Fragment>
-                    ))}
-                    <div ref={observerRef} style={{ height: "50px" }}>
-                        {isFetchingNextPage && <p>로딩 중...</p>}
-                    </div>
+                            <div ref={observerRef} style={{ height: "50px" }}>
+                                {isFetchingNextPage && <PropagateLoader color="#E6A4B4" size={15} />}
+                            </div>
+                        </>
+                    )}
                 </>
             )}
             <SlideBar />
