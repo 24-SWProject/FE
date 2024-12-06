@@ -21,6 +21,7 @@ export default function KeywordPage() {
     const [selectedChoice, setSelectedChoice] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [isFinalQuestionAdded, setIsFinalQuestionAdded] = useState(false); // 마지막 질문 추가 여부
 
     useEffect(() => {
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
@@ -33,7 +34,7 @@ export default function KeywordPage() {
 
         const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         const updatedAnswers = [...existingAnswers];
-        updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
+        updatedAnswers[currentQuestionIndex] = currentAnswer;
         setAnswers(updatedAnswers);
         localStorage.setItem("answers", JSON.stringify(updatedAnswers));
     };
@@ -47,36 +48,46 @@ export default function KeywordPage() {
         }
     };
 
+    const addFinalQuestion = (answers) => {
+        if (isFinalQuestionAdded) return; // 이미 추가된 경우 종료
+
+        const indoorOutdoorAnswer = answers[0]; // 첫 번째 질문의 답변
+        if (indoorOutdoorAnswer === "실내") {
+            setQuestionsData((prevQuestions) => [
+                ...prevQuestions,
+                { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
+            ]);
+        } else if (indoorOutdoorAnswer === "실외") {
+            setQuestionsData((prevQuestions) => [
+                ...prevQuestions,
+                { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
+            ]);
+        }
+        setIsFinalQuestionAdded(true); // 상태 업데이트
+    };
+
     const handleRightArrowClick = () => {
         if (selectedChoice === null) return;
 
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
         const updatedAnswers = [...answers];
-        updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
+        updatedAnswers[currentQuestionIndex] = currentAnswer;
         setAnswers(updatedAnswers);
         localStorage.setItem("answers", JSON.stringify(updatedAnswers));
         setSelectedChoice(null);
 
         // 마지막 질문 추가
-        if (currentQuestionIndex === questionsData.length - 1) {
-            const indoorOutdoorAnswer = updatedAnswers[1]; // 두 번째 질문의 답변
-            if (indoorOutdoorAnswer === "실내") {
-                setQuestionsData((prevQuestions) => [
-                    ...prevQuestions,
-                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
-                ]);
-            } else if (indoorOutdoorAnswer === "실외") {
-                setQuestionsData((prevQuestions) => [
-                    ...prevQuestions,
-                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
-                ]);
-            }
+        if (
+            currentQuestionIndex === questionsData.length - 1 && // 현재 마지막 질문
+            !isFinalQuestionAdded // 아직 마지막 질문이 추가되지 않은 경우
+        ) {
+            addFinalQuestion(updatedAnswers); // 마지막 질문 추가
         }
 
         // 다음 질문으로 이동
-        if (currentQuestionIndex < questionsData.length) {
+        if (currentQuestionIndex < questionsData.length - 1) {
             setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        } else {
+        } else if (currentQuestionIndex === questionsData.length - 1 && isFinalQuestionAdded) {
             console.log("모든 질문이 완료되었습니다!", updatedAnswers);
         }
     };
@@ -122,10 +133,10 @@ export default function KeywordPage() {
                         </S.QBox>
                     ))}
                     <LeftArrow onClick={handleLeftArrowClick} />
-                    {currentQuestionIndex < questionsData.length && selectedChoice !== null && (
+                    {currentQuestionIndex < questionsData.length - 1 && selectedChoice !== null && (
                         <RightArrow onClick={handleRightArrowClick} />
                     )}
-                    {currentQuestionIndex === questionsData.length && (
+                    {currentQuestionIndex === questionsData.length - 1 && isFinalQuestionAdded && (
                         <S.SetButton onClick={handleAiRecommendation}>AI 코스 추천 받기</S.SetButton>
                     )}
                 </S.KeywordContainer>
