@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // React Router의 useNavigate 훅
+import { useNavigate } from "react-router-dom";
 import * as S from "../styles/pages/Keyword.style";
 import Close from "./components/Close";
 import { RightArrow } from "../styles/components/RightArrow";
 import { LeftArrow } from "../styles/components/LeftArrow";
 import { recommendAI } from "../api/recommendcrud";
-import LoadingSpinner from "./components/LoadingComponent";// 로딩 컴포넌트 import
+import LoadingSpinner from "./components/LoadingComponent";
 
 export default function KeywordPage() {
-    const navigate = useNavigate(); // useNavigate 훅 초기화
+    const navigate = useNavigate();
     const initialQuestionsData = [
         { question: "실내와 실외 중 어디에서 데이트를 할 건가요?", choices: ["실내", "실외"] },
         { question: "오늘은 어떤 분위기의 데이트를 하고 싶나요?", choices: ["조용한", "활기찬", "로맨틱한", "캐주얼한", "자연친화적인"] },
@@ -20,7 +20,7 @@ export default function KeywordPage() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedChoice, setSelectedChoice] = useState(null);
     const [answers, setAnswers] = useState([]);
-    const [loading, setLoading] = useState(false); // 로딩 상태 추가
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
@@ -39,84 +39,66 @@ export default function KeywordPage() {
     };
 
     const handleLeftArrowClick = () => {
-        const existingAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         if (currentQuestionIndex === 0) {
-            if (existingAnswers.length > 0) {
-                const updatedAnswers = existingAnswers.slice(0, -1);
-                localStorage.setItem("answers", JSON.stringify(updatedAnswers));
-            }
-            navigate("/choice"); // Q1에서 /choice로 이동
+            navigate("/choice");
         } else {
             setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-            const updatedAnswers = existingAnswers.slice(0, currentQuestionIndex + 1);
-            localStorage.setItem("answers", JSON.stringify(updatedAnswers));
-            setAnswers(updatedAnswers);
-            setSelectedChoice(null); // 선택 초기화
+            setSelectedChoice(null);
         }
     };
 
     const handleRightArrowClick = () => {
         if (selectedChoice === null) return;
-    
+
         const currentAnswer = questionsData[currentQuestionIndex].choices[selectedChoice];
-        const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
-        
-        // 기존 선택 저장 로직 유지
-        const updatedAnswers = [...savedAnswers];
+        const updatedAnswers = [...answers];
         updatedAnswers[currentQuestionIndex + 1] = currentAnswer;
-        localStorage.setItem("answers", JSON.stringify(updatedAnswers));
         setAnswers(updatedAnswers);
-    
+        localStorage.setItem("answers", JSON.stringify(updatedAnswers));
         setSelectedChoice(null);
-    
-        // 마지막 질문 처리: answer[1] (실내/실외)에 따라 동적 설정
-        if (currentQuestionIndex === questionsData.length - 2) {
-            const indoorOutdoorAnswer = updatedAnswers[1]; // answer[1] 값 가져오기
+
+        // 마지막 질문 추가
+        if (currentQuestionIndex === questionsData.length - 1) {
+            const indoorOutdoorAnswer = updatedAnswers[1]; // 두 번째 질문의 답변
             if (indoorOutdoorAnswer === "실내") {
                 setQuestionsData((prevQuestions) => [
                     ...prevQuestions,
-                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] },
+                    { question: "이 중 무엇을 하고 싶은가요?", choices: ["영화", "공연", "축제"] }
                 ]);
             } else if (indoorOutdoorAnswer === "실외") {
                 setQuestionsData((prevQuestions) => [
                     ...prevQuestions,
-                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] },
+                    { question: "이 중 어디를 가고 싶은가요?", choices: ["야경", "강변", "산", "포토존", "거리"] }
                 ]);
             }
         }
-    
+
         // 다음 질문으로 이동
-        if (currentQuestionIndex < questionsData.length - 1) {
+        if (currentQuestionIndex < questionsData.length) {
             setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         } else {
             console.log("모든 질문이 완료되었습니다!", updatedAnswers);
         }
     };
-    
 
     const handleAiRecommendation = async () => {
-        const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
-
-        if (savedAnswers.length < questionsData.length) {
+        if (answers.length < questionsData.length) {
             alert("모든 질문에 답해주세요.");
             return;
         }
 
-        setLoading(true); // 로딩 시작
+        setLoading(true);
         try {
-            console.log("Selected Answers:", savedAnswers);
-            const response = await recommendAI(savedAnswers); // POST 요청
-            const { llm_response } = response; // llm_response 추출
+            const response = await recommendAI(answers);
+            const { llm_response } = response;
 
-            localStorage.removeItem("weatherDescription");
             localStorage.removeItem("answers");
-
-            navigate("/AIAnswer", { state: { aiAnswer: llm_response } }); // 응답 전달
+            navigate("/AIAnswer", { state: { aiAnswer: llm_response } });
         } catch (error) {
             console.error("AI 추천 요청 실패:", error);
             alert("AI 추천 요청에 실패했습니다. 다시 시도해주세요.");
         } finally {
-            setLoading(false); // 로딩 종료
+            setLoading(false);
         }
     };
 
@@ -140,10 +122,10 @@ export default function KeywordPage() {
                         </S.QBox>
                     ))}
                     <LeftArrow onClick={handleLeftArrowClick} />
-                    {currentQuestionIndex < questionsData.length - 1 && selectedChoice !== null && (
+                    {currentQuestionIndex < questionsData.length && selectedChoice !== null && (
                         <RightArrow onClick={handleRightArrowClick} />
                     )}
-                    {currentQuestionIndex === questionsData.length - 1 && (
+                    {currentQuestionIndex === questionsData.length && (
                         <S.SetButton onClick={handleAiRecommendation}>AI 코스 추천 받기</S.SetButton>
                     )}
                 </S.KeywordContainer>
