@@ -62,27 +62,31 @@ export default function ProfileSet() {
 
     const onSubmit = async (data) => {
         try {
-            // 날짜를 KST 기준으로 변환
-            const localDate = new Date(data.datingDate);
-            const kstDate = new Date(localDate.getTime() + (9 * 60 * 60 * 1000)); // UTC+9로 변환
-            const formattedDate = kstDate.toISOString().split("T")[0]; // yyyy-MM-dd 형식으로 변환
+            // 날짜를 KST 기준으로 변환 (선택한 날짜가 없는 경우 이전 값 유지)
+            let formattedDate = defaultData.anniversary;
+            if (data.datingDate && data.datingDate !== defaultData.anniversary) {
+                const localDate = new Date(data.datingDate);
+                const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000); // UTC+9로 변환
+                formattedDate = kstDate.toISOString().split("T")[0]; // yyyy-MM-dd 형식으로 변환
+            }
     
             // 전송할 데이터 객체 생성
             const updatedData = {
-                nickName: data.nickname || null,
-                anniversary: formattedDate || null,
-                profileImg: profileImageFile || null, // 선택된 이미지 파일 없으면 null
+                nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName, // 닉네임 변경 시 업데이트, 그렇지 않으면 기존 값 유지
+                anniversary: formattedDate, // 날짜 변경 시 업데이트, 그렇지 않으면 기존 값 유지
+                profileImg: profileImageFile || defaultData.profileImg, // 새로운 이미지가 없으면 기존 이미지 유지
             };
     
             console.log("전송 데이터:", updatedData); // 디버깅용 데이터 확인
     
             await updateGroupProfile(updatedData); // 그룹 프로필 수정 API 호출
             console.log("그룹 프로필 수정 성공:", updatedData);
-            navigate('/main');
+            navigate("/main");
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
     };
+    
     
 
     if (!defaultData) {
