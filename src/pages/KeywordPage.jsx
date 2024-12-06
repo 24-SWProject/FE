@@ -25,11 +25,6 @@ export default function KeywordPage() {
     useEffect(() => {
         const savedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
         setAnswers(savedAnswers);
-
-        // 구 선택 완료 후 첫 번째 질문을 건너뛰도록 설정
-        if (savedAnswers[0]) {
-            setCurrentQuestionIndex(1);
-        }
     }, []);
 
     const handleChoiceClick = (index) => {
