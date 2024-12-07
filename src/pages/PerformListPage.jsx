@@ -4,20 +4,20 @@ import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { PropagateLoader } from "react-spinners";
-import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
-import SlideBar from "./components/SlideBar";
+import { fetchPerformanceData, fetchFestivalData } from "../api/eventcrud";
 import { useDebounce } from "../hooks/useDebounce";
 
 export default function PerformListPage() {
     const today = new Date();
     const formattedToday = today.toISOString().split("T")[0];
-    const [date, setDate] = useState(formattedToday);
-    const [activeTab, setActiveTab] = useState("festival");
-    const [searchTerm, setSearchTerm] = useState("");
-    const observerRef = useRef(null);
+    const [date, setDate] = useState(formattedToday); // 날짜 상태
+    const [activeTab, setActiveTab] = useState("festival"); // 탭 상태
+    const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+    const observerRef = useRef(null); // IntersectionObserver 연결 요소
 
-    const debouncedSearchTerm = useDebounce(searchTerm, 1000);
+    const debouncedSearchTerm = useDebounce(searchTerm, 1000); // 검색어 디바운스
 
+    // API 호출 함수
     const fetchEvents = async ({ pageParam = 0 }) => {
         if (activeTab === "festival") {
             return await fetchFestivalData(date, pageParam);
@@ -26,21 +26,18 @@ export default function PerformListPage() {
         }
     };
 
+    // React Query로 데이터 무한 스크롤 처리
     const {
         data,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
         isLoading,
-    } = useInfiniteQuery(["events", date, activeTab], fetchEvents, {
+    } = useInfiniteQuery(["events", date, activeTab, debouncedSearchTerm], fetchEvents, {
         getNextPageParam: (lastPage) => lastPage?.nextPage,
     });
 
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
-        setSearchTerm("");
-    };
-
+    // IntersectionObserver 설정
     useEffect(() => {
         if (!observerRef.current) return;
 
@@ -55,9 +52,23 @@ export default function PerformListPage() {
         return () => observer.disconnect();
     }, [fetchNextPage]);
 
+    // 날짜 변경 핸들러
+    const handleDateChange = (days) => {
+        const newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + days);
+        setDate(newDate.toISOString().split("T")[0]);
+    };
+
+    // 탭 변경 핸들러
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSearchTerm(""); // 검색어 초기화
+    };
+
     return (
         <S.PerformContainer>
             <Close />
+            {/* 탭 변경 */}
             <S.SmallHeader>
                 <p
                     onClick={() => handleTabChange("festival")}
@@ -72,6 +83,15 @@ export default function PerformListPage() {
                     공연
                 </p>
             </S.SmallHeader>
+            {/* 날짜 변경 */}
+            <S.Header>
+                <button onClick={() => handleDateChange(-1)}>&lt;</button>
+                <span>
+                    {date} {activeTab === "festival" ? "축제" : "공연"} 정보
+                </span>
+                <button onClick={() => handleDateChange(1)}>&gt;</button>
+            </S.Header>
+            {/* 검색 입력 */}
             <S.SearchContainer>
                 <S.Input
                     type="text"
@@ -80,6 +100,7 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
+            {/* 로딩 및 데이터 렌더링 */}
             {isLoading ? (
                 <PropagateLoader color="#E6A4B4" />
             ) : (
