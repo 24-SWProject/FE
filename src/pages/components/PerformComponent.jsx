@@ -16,8 +16,10 @@ const PerformComponent = ({ selectedDate }) => {
 
                 console.log("선택된 날짜:", formattedDate);
 
-                const festivalData = await fetchFestivalData(formattedDate, 0);
-                const performanceData = await fetchPerformanceData(formattedDate, 0);
+                const [festivalData, performanceData] = await Promise.all([
+                    fetchFestivalData(formattedDate, 0),
+                    fetchPerformanceData(formattedDate, 0),
+                ]);
 
                 const mergedEvents = [
                     ...festivalData.content.map((festival) => ({

@@ -17,30 +17,14 @@ export default function PerformListPage() {
     const observerRef = useRef(null);
 
     const debouncedSearchTerm = useDebounce(searchTerm, 1000);
-    const [searchResults, setSearchResults] = useState([]);
-    const [isSearching, setIsSearching] = useState(false);
 
-    useEffect(() => {
-        const fetchSearchResults = async () => {
-            if (!debouncedSearchTerm.trim()) {
-                setSearchResults([]);
-                setIsSearching(false);
-                return;
-            }
-
-            setIsSearching(true);
-            try {
-                const results = await fetchEventDataByTitle(activeTab, debouncedSearchTerm);
-                setSearchResults(results.content || []);
-            } catch (error) {
-                console.error("Error fetching search results:", error);
-            } finally {
-                setIsSearching(false);
-            }
-        };
-
-        fetchSearchResults();
-    }, [debouncedSearchTerm, activeTab]);
+    const fetchEvents = async ({ pageParam = 0 }) => {
+        if (activeTab === "festival") {
+            return await fetchFestivalData(date, pageParam);
+        } else {
+            return await fetchPerformanceData(date, pageParam);
+        }
+    };
 
     const {
         data,
@@ -48,54 +32,28 @@ export default function PerformListPage() {
         hasNextPage,
         isFetchingNextPage,
         isLoading,
-    } = useInfiniteQuery(
-        ["events", date, activeTab],
-        async ({ pageParam = 0 }) => {
-            const response =
-                activeTab === "festival"
-                    ? await fetchFestivalData(date, pageParam)
-                    : await fetchPerformanceData(date, pageParam);
-
-            return response.content || [];
-        },
-        {
-            getNextPageParam: (lastPage, allPages) => {
-                if (!lastPage || lastPage.length < 10) return undefined;
-                return allPages.length + 1;
-            },
-        }
-    );
-
-    useEffect(() => {
-        if (!hasNextPage || isFetchingNextPage) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    fetchNextPage();
-                }
-            },
-            { threshold: 0.1 }
-        );
-
-        if (observerRef.current) observer.observe(observerRef.current);
-
-        return () => {
-            if (observerRef.current) observer.unobserve(observerRef.current);
-        };
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-    const handleDateChange = (days) => {
-        const currentDate = new Date(date);
-        currentDate.setDate(currentDate.getDate() + days);
-        setDate(currentDate.toISOString().split("T")[0]);
-    };
+    } = useInfiniteQuery(["events", date, activeTab], fetchEvents, {
+        getNextPageParam: (lastPage) => lastPage?.nextPage,
+    });
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
-        setSearchResults([]);
         setSearchTerm("");
     };
+
+    useEffect(() => {
+        if (!observerRef.current) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                fetchNextPage();
+            }
+        });
+
+        observer.observe(observerRef.current);
+
+        return () => observer.disconnect();
+    }, [fetchNextPage]);
 
     return (
         <S.PerformContainer>
@@ -103,30 +61,17 @@ export default function PerformListPage() {
             <S.SmallHeader>
                 <p
                     onClick={() => handleTabChange("festival")}
-                    style={{
-                        cursor: "pointer",
-                        fontWeight: activeTab === "festival" ? "bold" : "normal",
-                    }}
+                    style={{ fontWeight: activeTab === "festival" ? "bold" : "normal" }}
                 >
                     축제
                 </p>
                 <p
                     onClick={() => handleTabChange("performance")}
-                    style={{
-                        cursor: "pointer",
-                        fontWeight: activeTab === "performance" ? "bold" : "normal",
-                    }}
+                    style={{ fontWeight: activeTab === "performance" ? "bold" : "normal" }}
                 >
                     공연
                 </p>
             </S.SmallHeader>
-            <S.Header>
-                <button onClick={() => handleDateChange(-1)}>&lt;</button>
-                <span>
-                    {date} {activeTab === "festival" ? "축제" : "공연"} 정보
-                </span>
-                <button onClick={() => handleDateChange(1)}>&gt;</button>
-            </S.Header>
             <S.SearchContainer>
                 <S.Input
                     type="text"
@@ -135,59 +80,25 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
-            {isSearching ? (
-                <PropagateLoader color="#E6A4B4" size={15} />
-            ) : searchResults.length > 0 ? (
-                <S.EventContainer>
-                    {searchResults.map((event, index) => (
-                        <Card
-                            key={`search-${index}`}
-                            event={{
-                                title: event.title,
-                                date: `${event.openDate} ~ ${event.endDate}`,
-                                imageUrl: event.poster,
-                                linkText: "LINK",
-                                url: event.registerLink,
-                                id: event.id,
-                                bookmarked: event.bookmarked,
-                            }}
-                            type={activeTab}
-                        />
-                    ))}
-                </S.EventContainer>
+            {isLoading ? (
+                <PropagateLoader color="#E6A4B4" />
             ) : (
-                <>
-                    {isLoading ? (
-                        <PropagateLoader color="#E6A4B4" size={15} />
-                    ) : (
-                        <>
-                            {data?.pages?.map((page, pageIndex) => (
-                                <React.Fragment key={pageIndex}>
-                                    {page?.map((event, index) => (
-                                        <Card
-                                            key={`${pageIndex}-${index}`}
-                                            event={{
-                                                title: event.title,
-                                                date: `${event.openDate} ~ ${event.endDate}`,
-                                                imageUrl: event.poster,
-                                                linkText: "LINK",
-                                                url: event.registerLink,
-                                                id: event.id,
-                                                bookmarked: event.bookmarked,
-                                            }}
-                                            type={activeTab}
-                                        />
-                                    ))}
-                                </React.Fragment>
-                            ))}
-                            <div ref={observerRef} style={{ height: "50px" }}>
-                                {isFetchingNextPage && <PropagateLoader color="#E6A4B4" size={15} />}
-                            </div>
-                        </>
+                <S.EventContainer>
+                    {data?.pages.map((page) =>
+                        page.content.map((event) => (
+                            <Card
+                                key={event.id}
+                                event={{
+                                    title: event.title,
+                                    date: `${event.openDate} ~ ${event.endDate}`,
+                                    imageUrl: event.poster,
+                                }}
+                            />
+                        ))
                     )}
-                </>
+                    <div ref={observerRef}></div>
+                </S.EventContainer>
             )}
-            <SlideBar />
         </S.PerformContainer>
     );
 }
