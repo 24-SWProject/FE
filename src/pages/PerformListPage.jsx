@@ -1,47 +1,47 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import Card from "./components/Card"; // Card 컴포넌트 불러오기
+import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { PropagateLoader } from "react-spinners";
 import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
 import SlideBar from "./components/SlideBar";
-import { useDebounce } from "../hooks/useDebounce"; // useDebounce 커스텀 훅 불러오기
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function PerformListPage() {
     const today = new Date();
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
-    const [activeTab, setActiveTab] = useState("festival"); // 기본값: 축제
-    const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
-    const observerRef = useRef(null); // IntersectionObserver를 연결할 DOM 요소
+    const [activeTab, setActiveTab] = useState("festival");
+    const [searchTerm, setSearchTerm] = useState("");
+    const observerRef = useRef(null);
 
-    // 검색 결과 상태
+    const debouncedSearchTerm = useDebounce(searchTerm, 1000);
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
 
-    // 디바운스된 검색어
-    const debouncedSearchTerm = useDebounce(searchTerm, 1000);
-
-    // 디바운스된 검색어 변경 시 검색 수행
     useEffect(() => {
         const fetchSearchResults = async () => {
-            if (debouncedSearchTerm.trim() === "") {
-                setIsSearching(false);
+            if (!debouncedSearchTerm.trim()) {
                 setSearchResults([]);
+                setIsSearching(false);
                 return;
             }
 
             setIsSearching(true);
-            const results = await fetchEventDataByTitle(activeTab, debouncedSearchTerm);
-            setSearchResults(results.content || []);
-            setIsSearching(false);
+            try {
+                const results = await fetchEventDataByTitle(activeTab, debouncedSearchTerm);
+                setSearchResults(results.content || []);
+            } catch (error) {
+                console.error("Error fetching search results:", error);
+            } finally {
+                setIsSearching(false);
+            }
         };
 
         fetchSearchResults();
     }, [debouncedSearchTerm, activeTab]);
 
-    // useInfiniteQuery로 데이터 가져오기
     const {
         data,
         fetchNextPage,
@@ -56,21 +56,18 @@ export default function PerformListPage() {
                     ? await fetchFestivalData(date, pageParam)
                     : await fetchPerformanceData(date, pageParam);
 
-            // API 응답에서 content 배열 반환
             return response.content || [];
         },
         {
             getNextPageParam: (lastPage, allPages) => {
-                // 데이터가 10개 미만인 경우 더 이상 불러오지 않음
                 if (!lastPage || lastPage.length < 10) return undefined;
                 return allPages.length + 1;
             },
         }
     );
 
-    // IntersectionObserver 설정
     useEffect(() => {
-        if (!hasNextPage || isFetchingNextPage) return; // 더 이상 데이터가 없거나 로딩 중일 때 중단
+        if (!hasNextPage || isFetchingNextPage) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
@@ -78,33 +75,26 @@ export default function PerformListPage() {
                     fetchNextPage();
                 }
             },
-            { threshold: 0.1 } // 요소가 10% 이상 화면에 보이면 트리거
+            { threshold: 0.1 }
         );
 
-        if (observerRef.current) {
-            observer.observe(observerRef.current);
-        }
+        if (observerRef.current) observer.observe(observerRef.current);
 
         return () => {
-            if (observerRef.current) {
-                observer.unobserve(observerRef.current);
-            }
+            if (observerRef.current) observer.unobserve(observerRef.current);
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 날짜 변경 함수
     const handleDateChange = (days) => {
-        const currentDate = new Date(date); // 현재 상태의 날짜
+        const currentDate = new Date(date);
         currentDate.setDate(currentDate.getDate() + days);
-        const formattedDate = currentDate.toISOString().split("T")[0];
-        setDate(formattedDate);
+        setDate(currentDate.toISOString().split("T")[0]);
     };
 
-    // 탭 변경 함수
     const handleTabChange = (tab) => {
         setActiveTab(tab);
-        setSearchResults([]); // 탭 변경 시 검색 결과 초기화
-        setSearchTerm(""); // 검색어 초기화
+        setSearchResults([]);
+        setSearchTerm("");
     };
 
     return (
