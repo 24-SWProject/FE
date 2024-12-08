@@ -31,18 +31,17 @@ export default function PerformListPage() {
         hasNextPage,
         isFetchingNextPage,
         isLoading,
-        isError,
     } = useInfiniteQuery(
         ["events", activeTab, date],
         fetchData,
         {
             getNextPageParam: (lastPage) => {
                 if (lastPage.hasNext) {
-                    return lastPage.page + 1; // 다음 페이지 번호 반환
+                    return lastPage.page + 1;
                 }
-                return undefined; // 더 이상 페이지가 없을 경우
+                return undefined;
             },
-            enabled: !searchTerm.trim(), // 검색 중이 아닐 때만 실행
+            enabled: !searchTerm.trim(),
         }
     );
 
@@ -69,11 +68,13 @@ export default function PerformListPage() {
         fetchSearchResults();
     }, [debouncedSearchTerm, activeTab]);
 
-    // 무한 스크롤 Intersection Observer
+    // IntersectionObserver 설정
     useEffect(() => {
+        if (!hasNextPage || isFetchingNextPage) return;
+
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && hasNextPage) {
+                if (entries[0].isIntersecting) {
                     fetchNextPage();
                 }
             },
@@ -84,8 +85,10 @@ export default function PerformListPage() {
             observer.observe(observerRef.current);
         }
 
-        return () => observer.disconnect();
-    }, [fetchNextPage, hasNextPage]);
+        return () => {
+            if (observerRef.current) observer.unobserve(observerRef.current);
+        };
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // 날짜 변경 핸들러
     const handleDateChange = (days) => {
@@ -147,7 +150,7 @@ export default function PerformListPage() {
                 <S.EventContainer>
                     {dataToDisplay.map((event, index) => (
                         <Card
-                            key={index}
+                            key={`${event.id}-${index}`}
                             event={{
                                 title: event.title,
                                 date: `${event.openDate} ~ ${event.endDate}`,
@@ -156,9 +159,9 @@ export default function PerformListPage() {
                                 id: event.id,
                                 bookmarked: event.bookmarked,
                             }}
+                            type={activeTab} // 활성 탭 정보 전달
                         />
                     ))}
-                    {/* 무한 스크롤 요소 */}
                     <div ref={observerRef} style={{ height: "1px" }}></div>
                 </S.EventContainer>
             ) : (
