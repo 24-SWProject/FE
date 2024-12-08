@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const PerformContainer = styled.div`
-    width: 90%;
+    width: 85%;
     min-width: 300px;
     aspect-ratio: 3 / 2;
     background-color: #fff;
