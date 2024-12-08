@@ -104,6 +104,8 @@ export const Input = styled.input`
     box-sizing: border-box;
     font-family: Pretendard, sans-serif;
     font-size: clamp(15px, 1.2rem, 20px);
+    background-color: white;
+    color: #ccc;
     ::placeholder {
         color: #ccc;
     }
