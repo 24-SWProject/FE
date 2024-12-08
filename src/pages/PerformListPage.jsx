@@ -153,6 +153,8 @@ export default function PerformListPage() {
                                 date: `${event.openDate} ~ ${event.endDate}`,
                                 imageUrl: event.poster,
                                 url: event.registerLink,
+                                id: event.id,
+                                bookmarked: event.bookmarked,
                             }}
                         />
                     ))}
