@@ -8,7 +8,6 @@ import { fetchBookmarkedData } from "../api/bookmarkcrud";
 export default function BookmarkedPage() {
     const observerRef = useRef(null);
 
-    // 무한 스크롤을 위한 useInfiniteQuery
     const {
         data,
         fetchNextPage,
