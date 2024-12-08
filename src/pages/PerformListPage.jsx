@@ -133,7 +133,7 @@ export default function PerformListPage() {
                     ))}
                 </S.EventContainer>
             ) : (
-                <p>오늘은 축제 정보가 없어요 :(</p>
+                <p>오늘은 ${activeTab} 정보가 없어요 :(</p>
             )}
         </S.PerformContainer>
     );
