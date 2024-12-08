@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import * as S from "../../styles/components/TodoModal.style";
 
-export default function TodoModal({ onClose, onAdd, existingTodo, isAnniversary }) {
-    const [date, setDate] = useState("");
+export default function TodoModal({ onClose, onAdd, existingTodo, isAnniversary, defaultDate }) {
+    const [date, setDate] = useState(defaultDate || ""); // 기본값으로 선택된 날짜 사용
     const [task, setTask] = useState("");
 
     const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
@@ -12,10 +12,10 @@ export default function TodoModal({ onClose, onAdd, existingTodo, isAnniversary 
             setDate(existingTodo.date);
             setTask(existingTodo.content);
         } else {
-            setDate("");
+            setDate(defaultDate || ""); // 기본값으로 선택된 날짜 설정
             setTask("");
         }
-    }, [existingTodo]);
+    }, [existingTodo, defaultDate]);
 
     return (
         <S.ModalOverlay>

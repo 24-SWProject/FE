@@ -15,8 +15,11 @@ export default function RecordPage() {
         const today = new Date();
         return today.toISOString().slice(0, 7); // 기본값: 오늘 날짜의 월(YYYY-MM)
     });
+    const [selectedDate, setSelectedDate] = useState(() => {
+        const today = new Date();
+        return today.toISOString().split("T")[0]; // 기본값: 오늘 날짜(YYYY-MM-DD)
+    });
 
-    // 선택된 달의 일정 및 기념일 가져오기
     useEffect(() => {
         if (selectedMonth) {
             fetchSchedules(selectedMonth);
@@ -25,44 +28,38 @@ export default function RecordPage() {
 
     const fetchSchedules = async (month) => {
         try {
-            // 일정 데이터 가져오기
-            const scheduleData = await getSchedules(month); 
+            const scheduleData = await getSchedules(month);
             const formattedSchedules = scheduleData.map((todo) => ({
                 ...todo,
-                date: todo.scheduleDate, // 일정 날짜
-                isAnniversary: false, // 일반 일정
+                date: todo.scheduleDate,
+                isAnniversary: false,
             }));
-    
-            // 기념일 데이터 가져오기
+
             const anniversaryData = await getGroupAnniv();
-            const milestones = anniversaryData?.milestones || []; // milestones가 없을 경우 빈 배열로 설정
+            const milestones = anniversaryData?.milestones || [];
             const formattedAnniversaries = milestones
-                .filter((anniv) => anniv.date.startsWith(month)) // 해당 월의 기념일만 필터링
+                .filter((anniv) => anniv.date.startsWith(month))
                 .map((anniv) => ({
-                    content: `${anniv.day}일 ❤️`, // 기념일 내용
+                    content: `${anniv.day}일 ❤️`,
                     date: anniv.date,
-                    isAnniversary: true, // 기념일 여부
+                    isAnniversary: true,
                 }));
-    
-            // 일정과 기념일 병합
+
             setTodos([...formattedSchedules, ...formattedAnniversaries]);
         } catch (error) {
             console.error("일정 및 기념일 데이터를 불러오는 중 오류 발생:", error);
         }
     };
-    
 
     const handleAddOrEditTodo = async (todo) => {
         try {
             if (selectedTodo && !selectedTodo.isAnniversary) {
-                // 일정 수정
                 await updateSchedule(selectedTodo.id, {
                     id: selectedTodo.id,
                     content: todo.task,
                     scheduleDate: todo.date,
                 });
             } else if (!selectedTodo) {
-                // 일정 추가
                 await createSchedule(todo.task, todo.date);
             }
             fetchSchedules(selectedMonth); // 데이터 새로고침
@@ -86,6 +83,11 @@ export default function RecordPage() {
         setModalOpen(true);
     };
 
+    const openAddModal = () => {
+        setSelectedTodo(null);
+        setModalOpen(true);
+    };
+
     const closeModal = () => {
         setSelectedTodo(null);
         setModalOpen(false);
@@ -94,10 +96,13 @@ export default function RecordPage() {
     return (
         <S.RecordContainer>
             <Close />
-            <RecordCalendar onDateChange={setSelectedMonth} /> {/* 달력에서 선택한 월 */}
+            <RecordCalendar
+                onDateChange={setSelectedMonth} // 선택된 월
+                onDateSelect={setSelectedDate} // 선택된 날짜
+            />
             <MonthPlan
                 todos={todos}
-                onAdd={() => setModalOpen(true)} // 일정 추가 모달
+                onAdd={openAddModal} // 일정 추가 모달
                 onEdit={openEditModal} // 일정 수정 모달
                 onDelete={(todo) => {
                     if (!todo.isAnniversary) {
@@ -113,6 +118,7 @@ export default function RecordPage() {
                     onAdd={handleAddOrEditTodo}
                     existingTodo={selectedTodo}
                     isAnniversary={selectedTodo?.isAnniversary} // 기념일 여부
+                    defaultDate={selectedDate} // 선택된 날짜 전달
                 />
             )}
         </S.RecordContainer>
