@@ -94,8 +94,8 @@ export const SearchContainer = styled.div`
 `;
 
 export const Input = styled.input`
-    width: 85%;
-    min-height: 30px;
+    width: 95%;
+    min-height: 50px;
     aspect-ratio: 9 / 1;
     margin: 5px 0;
     padding: 10px;
