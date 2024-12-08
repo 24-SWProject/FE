@@ -71,7 +71,7 @@ export const Header = styled.div`
 `;
 
 export const EventContainer = styled.div`
-    width: 80%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -96,11 +96,12 @@ export const SearchContainer = styled.div`
 export const Input = styled.input`
     width: 85%;
     min-height: 30px;
-    aspect-ratio: 8 / 1;
+    aspect-ratio: 9 / 1;
     margin: 5px 0;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #FFDA76;
+    border-radius: 20px;
+    border: 2px solid #FFDA76;
+    box-sizing: border-box;
     font-family: Pretendard, sans-serif;
     font-size: clamp(15px, 1.2rem, 20px);
     ::placeholder {
