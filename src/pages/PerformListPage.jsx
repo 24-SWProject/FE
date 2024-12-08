@@ -4,22 +4,43 @@ import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { PropagateLoader } from "react-spinners";
-import { fetchEventDataByTitle } from "../api/eventcrud";
+import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
 import { useDebounce } from "../hooks/useDebounce";
 
 export default function PerformListPage() {
     const today = new Date();
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday); // 날짜 상태
-    const [activeTab, setActiveTab] = useState("festival"); // 기본 탭 설정: 축제
+    const [activeTab, setActiveTab] = useState("festival"); // 기본 탭: 축제
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
     const [isSearching, setIsSearching] = useState(false); // 검색 로딩 상태
+    const [initialData, setInitialData] = useState([]); // 초기 데이터 상태
 
-    const debouncedSearchTerm = useDebounce(searchTerm, 1000); // 디바운스된 검색어
+    const debouncedSearchTerm = useDebounce(searchTerm, 500); // 디바운스된 검색어
     const observerRef = useRef(null); // IntersectionObserver 연결 요소
 
-    // 디바운스된 검색어로 API 호출
+    // 탭 및 초기 데이터 로드
+    useEffect(() => {
+        const fetchInitialData = async () => {
+            setIsSearching(true);
+            try {
+                const response =
+                    activeTab === "festival"
+                        ? await fetchFestivalData(date, 0, 10)
+                        : await fetchPerformanceData(date, 0, 10);
+                setInitialData(response.content || []);
+            } catch (error) {
+                console.error("Error fetching initial data:", error);
+            } finally {
+                setIsSearching(false);
+            }
+        };
+
+        fetchInitialData();
+    }, [activeTab, date]);
+
+    // 디바운스된 검색어로 검색
     useEffect(() => {
         const fetchSearchResults = async () => {
             if (!debouncedSearchTerm.trim()) {
@@ -30,7 +51,7 @@ export default function PerformListPage() {
 
             setIsSearching(true); // 로딩 시작
             try {
-                const response = await fetchEventDataByTitle(activeTab, debouncedSearchTerm, 1, 10);
+                const response = await fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10);
                 setSearchResults(response.content || []); // 검색 결과 설정
             } catch (error) {
                 console.error("Error fetching search results:", error);
@@ -54,7 +75,10 @@ export default function PerformListPage() {
         setActiveTab(tab); // 탭 변경
         setSearchTerm(""); // 검색어 초기화
         setSearchResults([]); // 검색 결과 초기화
+        setInitialData([]); // 초기 데이터 초기화
     };
+
+    const dataToDisplay = searchTerm.trim() ? searchResults : initialData; // 표시할 데이터 결정
 
     return (
         <S.PerformContainer>
@@ -91,12 +115,12 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
-            {/* 로딩 및 검색 결과 렌더링 */}
+            {/* 로딩 및 데이터 렌더링 */}
             {isSearching ? (
                 <PropagateLoader color="#E6A4B4" />
-            ) : searchResults.length > 0 ? (
+            ) : dataToDisplay.length > 0 ? (
                 <S.EventContainer>
-                    {searchResults.map((event, index) => (
+                    {dataToDisplay.map((event, index) => (
                         <Card
                             key={index}
                             event={{
@@ -109,7 +133,7 @@ export default function PerformListPage() {
                     ))}
                 </S.EventContainer>
             ) : (
-                <p>검색 결과가 없습니다.</p>
+                <p>해당 조건에 맞는 데이터가 없습니다.</p>
             )}
         </S.PerformContainer>
     );
