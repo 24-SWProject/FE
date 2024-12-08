@@ -1,3 +1,9 @@
+import { useEffect } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import * as S from "../../styles/components/Calendar.style";
+import Close from "./Close";
+
 export default function RecordCalendar({ onDateChange, onDateSelect }) {
     const getCurrentMonth = (date) => {
         const year = date.getFullYear();
