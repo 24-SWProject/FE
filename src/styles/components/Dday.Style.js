@@ -55,6 +55,7 @@ export const CoupleImage = styled.div`
         background-image: url(${Logo});
         object-fit: cover;
         background-repeat: no-repeat;
+        background-size: cover;
     }
 `;
 
