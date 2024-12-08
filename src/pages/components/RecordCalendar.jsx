@@ -1,9 +1,3 @@
-import { useEffect } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import * as S from "../../styles/components/Calendar.style";
-import Close from "./Close";
-
 export default function RecordCalendar({ onDateChange, onDateSelect }) {
     const getCurrentMonth = (date) => {
         const year = date.getFullYear();
@@ -11,8 +5,15 @@ export default function RecordCalendar({ onDateChange, onDateSelect }) {
         return `${year}-${month.toString().padStart(2, "0")}`;
     };
 
+    const convertToKST = (date) => {
+        const utcDate = new Date(date);
+        const kstOffset = 9 * 60 * 60 * 1000; // UTC+9
+        return new Date(utcDate.getTime() + kstOffset);
+    };
+
     const handleDateClick = (date) => {
-        const selectedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
+        const kstDate = convertToKST(date); // KST로 변환
+        const selectedDate = kstDate.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
         onDateSelect(selectedDate); // 부모 컴포넌트로 선택된 날짜 전달
     };
 
@@ -40,7 +41,7 @@ export default function RecordCalendar({ onDateChange, onDateSelect }) {
                     next2Label={null}
                     prev2Label={null}
                     onActiveStartDateChange={handleMonthChange}
-                    onClickDay={handleDateClick} // 날짜 클릭 시 동작
+                    onClickDay={handleDateClick} // 날짜 클릭 시 KST로 변환
                 />
             </S.CalendarItem>
         </S.CalendarContainer>

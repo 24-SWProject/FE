@@ -2,17 +2,26 @@ import { useState, useEffect } from "react";
 import * as S from "../../styles/components/TodoModal.style";
 
 export default function TodoModal({ onClose, onAdd, existingTodo, isAnniversary, defaultDate }) {
-    const [date, setDate] = useState(defaultDate || ""); // 기본값으로 선택된 날짜 사용
+    const convertToKST = (date) => {
+        const utcDate = new Date(date);
+        const kstOffset = 9 * 60 * 60 * 1000; // UTC+9
+        return new Date(utcDate.getTime() + kstOffset);
+    };
+
+    const [date, setDate] = useState(
+        defaultDate ? convertToKST(defaultDate).toISOString().split("T")[0] : "" // KST로 변환된 기본값
+    );
     const [task, setTask] = useState("");
 
-    const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+    const today = new Date();
+    const todayKST = convertToKST(today).toISOString().split("T")[0]; // 오늘 날짜 (KST)
 
     useEffect(() => {
         if (existingTodo) {
             setDate(existingTodo.date);
             setTask(existingTodo.content);
         } else {
-            setDate(defaultDate || ""); // 기본값으로 선택된 날짜 설정
+            setDate(defaultDate ? convertToKST(defaultDate).toISOString().split("T")[0] : "");
             setTask("");
         }
     }, [existingTodo, defaultDate]);
@@ -26,7 +35,7 @@ export default function TodoModal({ onClose, onAdd, existingTodo, isAnniversary,
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    min={today}
+                    min={todayKST}
                     disabled={isAnniversary}
                 />
                 <S.Input
