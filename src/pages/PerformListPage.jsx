@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
@@ -8,6 +8,7 @@ import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "
 import { useDebounce } from "../hooks/useDebounce";
 
 export default function PerformListPage() {
+    const queryClient = useQueryClient();
     const today = new Date();
     const formattedToday = today.toISOString().split("T")[0];
     const [date, setDate] = useState(formattedToday);
@@ -19,30 +20,30 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // useInfiniteQuery 설정
+    // Fetch data for infinite scrolling
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
             : fetchPerformanceData(date, pageParam);
 
-        const {
-            data,
-            fetchNextPage,
-            hasNextPage,
-            isFetchingNextPage,
-            isLoading,
-        } = useInfiniteQuery(
-            ["events", activeTab, date],
-            fetchData,
-            {
-                getNextPageParam: (lastPage) => {
-                    return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
-                },
-                enabled: !debouncedSearchTerm.trim(), // 검색 중이 아닐 때만 실행
-            }
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading,
+    } = useInfiniteQuery(
+        ["events", activeTab, date],
+        fetchData,
+        {
+            getNextPageParam: (lastPage) => {
+                return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
+            },
+            enabled: !debouncedSearchTerm.trim(), // Only run when not searching
+        }
     );
 
-    // 디바운스된 검색어로 검색
+    // Fetch search results
     useEffect(() => {
         const fetchSearchResults = async () => {
             if (!debouncedSearchTerm.trim()) {
@@ -65,7 +66,7 @@ export default function PerformListPage() {
         fetchSearchResults();
     }, [debouncedSearchTerm, activeTab]);
 
-    // IntersectionObserver 설정
+    // IntersectionObserver setup for infinite scrolling
     useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -75,7 +76,7 @@ export default function PerformListPage() {
                     fetchNextPage();
                 }
             },
-            { threshold: 1.0 }
+            { threshold: 0.1, rootMargin: "100px" }
         );
 
         if (observerRef.current) {
@@ -87,14 +88,30 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 날짜 변경 핸들러
+    // Update bookmarked state
+    const handleBookmarkToggle = (id) => {
+        queryClient.setQueryData(["events", activeTab, date], (oldData) => {
+            if (!oldData) return oldData;
+            const updatedPages = oldData.pages.map((page) => ({
+                ...page,
+                content: page.content.map((event) =>
+                    event.id === id
+                        ? { ...event, bookmarked: !event.bookmarked }
+                        : event
+                ),
+            }));
+            return { ...oldData, pages: updatedPages };
+        });
+    };
+
+    // Handle date change
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
-    // 탭 변경 핸들러
+    // Handle tab change
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
@@ -108,7 +125,7 @@ export default function PerformListPage() {
     return (
         <S.PerformContainer>
             <Close />
-            {/* 탭 변경 */}
+            {/* Tab Switch */}
             <S.SmallHeader>
                 <p
                     onClick={() => handleTabChange("festival")}
@@ -123,7 +140,7 @@ export default function PerformListPage() {
                     공연
                 </p>
             </S.SmallHeader>
-            {/* 날짜 변경 */}
+            {/* Date Navigation */}
             <S.Header>
                 <button onClick={() => handleDateChange(-1)}>&lt;</button>
                 <span>
@@ -131,7 +148,7 @@ export default function PerformListPage() {
                 </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
-            {/* 검색 입력 */}
+            {/* Search Input */}
             <S.SearchContainer>
                 <S.Input
                     type="text"
@@ -140,7 +157,7 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
-            {/* 로딩 및 데이터 렌더링 */}
+            {/* Loading or Data Rendering */}
             {isSearching || isLoading ? (
                 <PropagateLoader color="#E6A4B4" />
             ) : dataToDisplay.length > 0 ? (
@@ -156,13 +173,16 @@ export default function PerformListPage() {
                                 id: event.id,
                                 bookmarked: event.bookmarked,
                             }}
-                            type={activeTab} // 활성 탭 정보 전달
+                            type={activeTab}
+                            onBookmarkToggle={() => handleBookmarkToggle(event.id)} // Handle bookmark toggle
                         />
                     ))}
-                    <div ref={observerRef} style={{ height: "1px" }}></div>
+                    {!debouncedSearchTerm.trim() && (
+                        <div ref={observerRef} style={{ height: "1px" }}></div>
+                    )}
                 </S.EventContainer>
             ) : (
-                <p>오늘은 {activeTab} 정보가 없어요 :(</p>
+                <h3>오늘은 {activeTab} 정보가 없어요 :(</h3>
             )}
             {isFetchingNextPage && <PropagateLoader color="#E6A4B4" />}
         </S.PerformContainer>

@@ -1,25 +1,14 @@
-import { useState } from "react";
+import React from "react";
 import * as S from "../../styles/components/PerformCard.style";
-import { toggleBookmark } from "../../api/bookmarkcrud";
 
-export default function Card({ event, type }) {
-    const [isBookmarked, setIsBookmarked] = useState(event.bookmarked);
-    console.log("isBookmarked: ", isBookmarked);
+export default function Card({ event, type, onBookmarkToggle }) {
+    const handleBookmarkClick = () => {
+        onBookmarkToggle();
+    };
 
-    // 링크 열기
     const handleLinkClick = () => {
         if (event.url) {
             window.open(event.url, "_blank");
-        }
-    };
-
-    // 북마크 토글
-    const handleBookmarkToggle = async () => {
-        try {
-            await toggleBookmark(type, event.id); // type과 id 전달
-            setIsBookmarked((prev) => !prev); // 상태 토글
-        } catch (error) {
-            console.error("북마크 처리 중 오류 발생:", error);
         }
     };
 
@@ -36,8 +25,8 @@ export default function Card({ event, type }) {
                         {event.linkText || "LINK"}
                     </S.LinkButton>
                     <S.BookmarkIcon
-                        isActive={isBookmarked}
-                        onClick={handleBookmarkToggle}
+                        isActive={event.bookmarked}
+                        onClick={handleBookmarkClick}
                     />
                 </S.BottomDiv>
             </S.CardContent>
