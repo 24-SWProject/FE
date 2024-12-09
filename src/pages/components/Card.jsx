@@ -1,14 +1,14 @@
 import React from "react";
 import * as S from "../../styles/components/PerformCard.style";
 
-export default function Card({ event, type, onBookmarkToggle }) {
+export default function Card({ event, onBookmarkToggle }) {
     const handleBookmarkClick = () => {
         onBookmarkToggle();
     };
 
     const handleLinkClick = () => {
-        if (event.url) {
-            window.open(event.url, "_blank");
+        if (event.registerLink) {
+            window.open(event.registerLink, "_blank");
         }
     };
 
@@ -25,7 +25,7 @@ export default function Card({ event, type, onBookmarkToggle }) {
                         {event.linkText || "LINK"}
                     </S.LinkButton>
                     <S.BookmarkIcon
-                        isActive={event.bookmarked}
+                        isActive={event.bookmarked} // 북마크 상태에 따라 UI 업데이트
                         onClick={handleBookmarkClick}
                     />
                 </S.BottomDiv>

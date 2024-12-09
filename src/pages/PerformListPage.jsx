@@ -42,7 +42,7 @@ export default function PerformListPage() {
     );
 
     // 검색 Query 설정
-    const { data: searchResultsData, refetch: refetchSearchResults } = useQuery(
+    const { data: searchResultsData } = useQuery(
         ["searchResults", activeTab, debouncedSearchTerm],
         () => fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10),
         {
@@ -104,7 +104,6 @@ export default function PerformListPage() {
         }
     };
 
-
     // 날짜 변경 핸들러
     const handleDateChange = (days) => {
         const newDate = new Date(date);
@@ -165,14 +164,7 @@ export default function PerformListPage() {
                     {dataToDisplay.map((event, index) => (
                         <Card
                             key={`${event.id}-${index}`}
-                            event={{
-                                title: event.title,
-                                date: `${event.openDate} ~ ${event.endDate}`,
-                                imageUrl: event.poster,
-                                url: event.registerLink,
-                                id: event.id,
-                                bookmarked: event.bookmarked,
-                            }}
+                            event={event}
                             type={activeTab}
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)} // Handle bookmark toggle
                         />
@@ -182,7 +174,7 @@ export default function PerformListPage() {
                     )}
                 </S.EventContainer>
             ) : (
-                <p>오늘은 {activeTab} 정보가 없어요 :(</p>
+                <h3>오늘은 {activeTab} 정보가 없어요 :(</h3>
             )}
         </S.PerformContainer>
     );
