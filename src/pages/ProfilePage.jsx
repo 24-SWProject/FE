@@ -54,7 +54,15 @@ export default function ProfileSet() {
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setProfileImageFile(file);
+            if (file.size > 1 * 1024 * 1024) { // 1MB 초과 여부 확인
+                convertImageToBlob(file).then((blob) => {
+                    setProfileImageFile(blob);
+                }).catch((error) => {
+                    console.error("이미지 Blob 변환 실패:", error);
+                });
+            } else {
+                setProfileImageFile(file);
+            }
         }
     };
 
@@ -96,9 +104,7 @@ export default function ProfileSet() {
             }
 
             let profileImgToSend = profileImageFile;
-            if (profileImgToSend) {
-                profileImgToSend = await convertImageToBlob(profileImgToSend); // Blob으로 변환
-            } else if (defaultData.profileImg) {
+            if (!profileImgToSend && defaultData.profileImg) {
                 // 기본 프로필 이미지를 파일 형식으로 변환
                 profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
             }
@@ -115,19 +121,6 @@ export default function ProfileSet() {
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
-    };
-
-    const convertBase64ToFile = (base64String, fileName) => {
-        const byteString = atob(base64String.split(",")[1]);
-        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        return new File([ab], fileName, { type: mimeString });
     };
 
     if (!defaultData) {
