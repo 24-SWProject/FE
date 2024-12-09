@@ -56,21 +56,28 @@ export default function ProfileSet() {
         const file = event.target.files[0];
         if (file) {
             if (file.type === "image/heic") {
-                // HEIC 파일 변환
                 try {
-                    const convertedBlob = await heic2any({
-                        blob: file,
-                        toType: "image/jpeg", // 변환할 포맷
-                    });
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        const arrayBuffer = reader.result;
+                        const blob = new Blob([arrayBuffer], { type: "image/heic" });
 
-                    // Blob을 File로 변환
-                    const convertedFile = new File(
-                        [convertedBlob],
-                        file.name.replace(/\.heic$/i, ".jpeg"),
-                        { type: "image/jpeg" }
-                    );
+                        // HEIC → JPEG 변환
+                        const convertedBlob = await heic2any({
+                            blob: blob,
+                            toType: "image/jpeg",
+                        });
 
-                    setProfileImageFile(convertedFile);
+                        // Blob을 File로 변환
+                        const convertedFile = new File(
+                            [convertedBlob],
+                            file.name.replace(/\.heic$/i, ".jpeg"),
+                            { type: "image/jpeg" }
+                        );
+
+                        setProfileImageFile(convertedFile);
+                    };
+                    reader.readAsArrayBuffer(file);
                 } catch (error) {
                     console.error("HEIC 변환 실패:", error);
                     alert("HEIC 파일 변환에 실패했습니다. 다른 이미지 포맷을 사용해주세요.");
