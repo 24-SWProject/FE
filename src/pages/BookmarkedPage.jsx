@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
-import { fetchBookmarkedData } from "../api/bookmarkcrud";
+import { fetchBookmarkedData, toggleBookmark } from "../api/bookmarkcrud";
 
 export default function BookmarkedPage() {
+    const queryClient = useQueryClient();
     const observerRef = useRef(null);
 
     const {
@@ -17,16 +18,15 @@ export default function BookmarkedPage() {
         error,
     } = useInfiniteQuery(
         "bookmarkedData",
-        ({ pageParam = 0 }) => fetchBookmarkedData(pageParam), // pageParam으로 페이지 번호 전달
+        ({ pageParam = 0 }) => fetchBookmarkedData(pageParam),
         {
             getNextPageParam: (lastPage) => {
-                // 다음 페이지가 있는지 확인하고 페이지 번호 반환
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
         }
     );
 
-    // IntersectionObserver로 무한 스크롤 구현
+    // IntersectionObserver 설정
     React.useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -45,6 +45,27 @@ export default function BookmarkedPage() {
             if (observerRef.current) observer.unobserve(observerRef.current);
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    // 북마크 상태 업데이트 함수
+    const handleBookmarkToggle = async (id) => {
+        try {
+            await toggleBookmark("bookmark", id);
+
+            // React Query 캐시 데이터 업데이트
+            queryClient.setQueryData("bookmarkedData", (oldData) => {
+                if (!oldData || !oldData.pages) return oldData;
+                const updatedPages = oldData.pages.map((page) => ({
+                    ...page,
+                    content: page.content.map((event) =>
+                        event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
+                    ),
+                }));
+                return { ...oldData, pages: updatedPages };
+            });
+        } catch (error) {
+            console.error("북마크 상태 업데이트 중 오류 발생:", error);
+        }
+    };
 
     if (isLoading) return <p>로딩 중...</p>;
     if (error) return <p>에러 발생: {error.message}</p>;
@@ -66,7 +87,7 @@ export default function BookmarkedPage() {
                             imageUrl={event.poster}
                             url={event.registerLink}
                             bookmarked={event.bookmarked}
-                            type={activeTab}
+                            type="bookmark" // 북마크 타입 전달
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
