@@ -53,42 +53,40 @@ export default function ProfileSet() {
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
-
-        if (file && file.type === "image/heic") {
-            convertHeicToJpeg(file)
-                .then((jpegBlob) => {
-                    setProfileImageFile(jpegBlob);
-                })
-                .catch((error) => {
-                    console.error("HEIC 변환 실패:", error);
-                });
-        } else {
-            setProfileImageFile(file);
+        if (file) {
+            convertImageToBlob(file).then((blob) => {
+                setProfileImageFile(blob);
+            }).catch((error) => {
+                console.error("이미지 변환 실패:", error);
+            });
         }
     };
 
-    const convertHeicToJpeg = async (file) => {
+    const convertImageToBlob = async (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => {
                 const img = new Image();
                 img.onload = () => {
+                    const maxDimension = 1024; // 최대 해상도
+                    const scale = Math.min(maxDimension / img.width, maxDimension / img.height);
+
                     const canvas = document.createElement("canvas");
-                    canvas.width = img.width;
-                    canvas.height = img.height;
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
 
                     const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                     canvas.toBlob(
                         (blob) => {
                             if (blob) {
-                                resolve(blob);
+                                resolve(blob); // Blob 반환
                             } else {
-                                reject(new Error("JPEG 변환 실패"));
+                                reject(new Error("Blob 변환 실패"));
                             }
                         },
-                        "image/jpeg"
+                        file.type // 원본 MIME 타입 유지
                     );
                 };
                 img.onerror = reject;
@@ -108,10 +106,16 @@ export default function ProfileSet() {
                 formattedDate = kstDate.toISOString().split("T")[0];
             }
 
+            let profileImgToSend = profileImageFile;
+            if (!profileImgToSend && defaultData.profileImg) {
+                // 기본 프로필 이미지를 파일 형식으로 변환
+                profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
+            }
+
             const updatedData = {
                 nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName,
                 anniversary: formattedDate,
-                profileImg: profileImageFile,
+                profileImg: profileImgToSend,
             };
 
             console.log("전송 데이터:", updatedData);
@@ -120,6 +124,19 @@ export default function ProfileSet() {
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
+    };
+
+    const convertBase64ToFile = (base64String, fileName) => {
+        const byteString = atob(base64String.split(",")[1]);
+        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([ab], fileName, { type: mimeString });
     };
 
     if (!defaultData) {
