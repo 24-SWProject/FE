@@ -73,7 +73,7 @@ export default function BookmarkPage() {
                             imageUrl={event.poster}
                             url={event.registerLink}
                             bookmarked={event.bookmarked}
-                            type={activeTab}
+                            type={event.type}
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
