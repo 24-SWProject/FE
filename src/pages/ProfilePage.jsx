@@ -58,17 +58,32 @@ export default function ProfileSet() {
         }
     };
 
-    const convertBase64ToFile = (base64String, fileName) => {
-        const byteString = atob(base64String.split(",")[1]);
-        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
+    const convertImageToBlob = async (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
 
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        return new File([ab], fileName, { type: mimeString });
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject(new Error("Blob 변환 실패"));
+                        }
+                    }, file.type);
+                };
+                img.onerror = reject;
+                img.src = reader.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     };
 
     const onSubmit = async (data) => {
@@ -81,7 +96,9 @@ export default function ProfileSet() {
             }
 
             let profileImgToSend = profileImageFile;
-            if (!profileImgToSend && defaultData.profileImg) {
+            if (profileImgToSend) {
+                profileImgToSend = await convertImageToBlob(profileImgToSend); // Blob으로 변환
+            } else if (defaultData.profileImg) {
                 // 기본 프로필 이미지를 파일 형식으로 변환
                 profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
             }
@@ -98,6 +115,19 @@ export default function ProfileSet() {
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
+    };
+
+    const convertBase64ToFile = (base64String, fileName) => {
+        const byteString = atob(base64String.split(",")[1]);
+        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([ab], fileName, { type: mimeString });
     };
 
     if (!defaultData) {
