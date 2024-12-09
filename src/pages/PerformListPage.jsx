@@ -16,7 +16,7 @@ export default function PerformListPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const observerRef = useRef(null);
 
-    // Infinite Query for normal data
+    // Infinite Query for normal fetching
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)

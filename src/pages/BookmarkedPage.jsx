@@ -5,10 +5,11 @@ import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { fetchBookmarkedData, toggleBookmark } from "../api/bookmarkcrud";
 
-export default function BookmarkedPage() {
+export default function BookmarkPage() {
     const queryClient = useQueryClient();
     const observerRef = useRef(null);
 
+    // Infinite Query 설정
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
         "bookmarkedData",
         ({ pageParam = 0 }) => fetchBookmarkedData(pageParam),
@@ -19,6 +20,7 @@ export default function BookmarkedPage() {
         }
     );
 
+    // IntersectionObserver로 무한 스크롤 구현
     React.useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -31,18 +33,21 @@ export default function BookmarkedPage() {
             { threshold: 0.1 }
         );
 
-        if (observerRef.current) observer.observe(observerRef.current);
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
 
         return () => {
             if (observerRef.current) observer.unobserve(observerRef.current);
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+    // 북마크 토글 함수
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark("bookmark", id);
 
-            // React Query 캐시 무효화
+            // React Query 캐시 데이터 무효화하여 목록 새로고침
             queryClient.invalidateQueries("bookmarkedData");
         } catch (error) {
             console.error("북마크 상태 업데이트 중 오류 발생:", error);
@@ -68,7 +73,8 @@ export default function BookmarkedPage() {
                             imageUrl={event.poster}
                             url={event.registerLink}
                             bookmarked={event.bookmarked}
-                            onBookmarkToggle={handleBookmarkToggle}
+                            type="bookmark" // 북마크 타입 전달
+                            onBookmarkToggle={() => handleBookmarkToggle(event.id)} // 토글 함수 전달
                         />
                     ))}
                 </React.Fragment>
