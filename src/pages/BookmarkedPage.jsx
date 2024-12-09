@@ -9,14 +9,7 @@ export default function BookmarkedPage() {
     const queryClient = useQueryClient();
     const observerRef = useRef(null);
 
-    const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading,
-        error,
-    } = useInfiniteQuery(
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
         "bookmarkedData",
         ({ pageParam = 0 }) => fetchBookmarkedData(pageParam),
         {
@@ -26,7 +19,6 @@ export default function BookmarkedPage() {
         }
     );
 
-    // IntersectionObserver 설정
     React.useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -46,12 +38,11 @@ export default function BookmarkedPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 북마크 상태 업데이트 함수
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark("bookmark", id);
 
-            // React Query 캐시 데이터 무효화하여 새로고침 트리거
+            // React Query 캐시 무효화
             queryClient.invalidateQueries("bookmarkedData");
         } catch (error) {
             console.error("북마크 상태 업데이트 중 오류 발생:", error);
@@ -59,7 +50,6 @@ export default function BookmarkedPage() {
     };
 
     if (isLoading) return <p>로딩 중...</p>;
-    if (error) return <p>에러 발생: {error.message}</p>;
 
     return (
         <S.PerformContainer>
@@ -69,17 +59,16 @@ export default function BookmarkedPage() {
             </S.SmallHeader>
             {data?.pages?.map((page, pageIndex) => (
                 <React.Fragment key={pageIndex}>
-                    {page.content.map((event, index) => (
+                    {page.content.map((event) => (
                         <Card
-                            key={`${event.id}-${index}`}
+                            key={event.id}
                             id={event.id}
                             title={event.title}
                             date={`${event.openDate} ~ ${event.endDate}`}
                             imageUrl={event.poster}
                             url={event.registerLink}
                             bookmarked={event.bookmarked}
-                            type="bookmark" // 북마크 타입 전달
-                            onBookmarkToggle={() => handleBookmarkToggle(event.id)}
+                            onBookmarkToggle={handleBookmarkToggle}
                         />
                     ))}
                 </React.Fragment>

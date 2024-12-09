@@ -18,7 +18,7 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // Infinite Query for normal fetching
+    // 일반 데이터 Infinite Query
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
@@ -37,11 +37,11 @@ export default function PerformListPage() {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !debouncedSearchTerm.trim(), // Only fetch when not searching
+            enabled: !debouncedSearchTerm.trim(), // 검색 중이 아닐 때만 실행
         }
     );
 
-    // Infinite Query for search results
+    // 검색 데이터 Infinite Query
     const fetchSearchData = ({ pageParam = 0 }) =>
         fetchEventDataByTitle(activeTab, debouncedSearchTerm, pageParam, 10);
 
@@ -58,11 +58,11 @@ export default function PerformListPage() {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !!debouncedSearchTerm.trim(), // Only fetch when searching
+            enabled: !!debouncedSearchTerm.trim(), // 검색 중일 때만 실행
         }
     );
 
-    // IntersectionObserver for infinite scrolling
+    // IntersectionObserver 설정
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -86,10 +86,10 @@ export default function PerformListPage() {
         };
     }, [hasNextNormalPage, hasNextSearchPage, fetchNextNormalPage, fetchNextSearchPage, debouncedSearchTerm]);
 
-    // Bookmark toggle function
+    // 북마크 토글
     const handleBookmarkToggle = async (id) => {
         try {
-            const updatedBookmark = await toggleBookmark(activeTab, id);
+            await toggleBookmark(activeTab, id);
 
             const queryKey = debouncedSearchTerm.trim()
                 ? ["searchResults", activeTab, debouncedSearchTerm]
@@ -101,7 +101,7 @@ export default function PerformListPage() {
                 const updatedPages = oldData.pages.map((page) => ({
                     ...page,
                     content: page.content.map((event) =>
-                        event.id === id ? { ...event, bookmarked: updatedBookmark } : event
+                        event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
                     ),
                 }));
 
@@ -112,19 +112,20 @@ export default function PerformListPage() {
         }
     };
 
-    // Date change handler
+    // 날짜 변경
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
-    // Tab change handler
+    // 탭 변경
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
     };
 
+    // 데이터 결정
     const isLoading = isLoadingNormal || isLoadingSearch;
     const isFetchingNextPage = isFetchingNextNormalPage || isFetchingNextSearchPage;
     const dataToDisplay = debouncedSearchTerm.trim()
@@ -176,7 +177,6 @@ export default function PerformListPage() {
                             imageUrl={event.poster}
                             url={event.registerLink}
                             bookmarked={event.bookmarked}
-                            type={activeTab}
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
