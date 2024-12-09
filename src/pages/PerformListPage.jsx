@@ -5,7 +5,6 @@ import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
 import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
 import { toggleBookmark } from "../api/bookmarkcrud";
-import { useDebounce } from "../hooks/useDebounce";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 export default function PerformListPage() {
@@ -15,10 +14,9 @@ export default function PerformListPage() {
     const [date, setDate] = useState(formattedToday);
     const [activeTab, setActiveTab] = useState("festival");
     const [searchTerm, setSearchTerm] = useState("");
-    const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // 일반 데이터 Infinite Query
+    // Infinite Query for normal data
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
@@ -37,13 +35,13 @@ export default function PerformListPage() {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !debouncedSearchTerm.trim(), // 검색 중이 아닐 때만 실행
+            enabled: !searchTerm.trim(), // Only fetch when not searching
         }
     );
 
-    // 검색 데이터 Infinite Query
+    // Infinite Query for search results
     const fetchSearchData = ({ pageParam = 0 }) =>
-        fetchEventDataByTitle(activeTab, debouncedSearchTerm, pageParam, 10);
+        fetchEventDataByTitle(activeTab, searchTerm.trim(), pageParam, 10);
 
     const {
         data: searchData,
@@ -52,24 +50,24 @@ export default function PerformListPage() {
         isFetchingNextPage: isFetchingNextSearchPage,
         isLoading: isLoadingSearch,
     } = useInfiniteQuery(
-        ["searchResults", activeTab, debouncedSearchTerm],
+        ["searchResults", activeTab, searchTerm],
         fetchSearchData,
         {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !!debouncedSearchTerm.trim(), // 검색 중일 때만 실행
+            enabled: searchTerm.trim().length > 0, // Only fetch when searching
         }
     );
 
-    // IntersectionObserver 설정
+    // IntersectionObserver for infinite scrolling
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    if (debouncedSearchTerm.trim() && hasNextSearchPage) {
+                    if (searchTerm.trim() && hasNextSearchPage) {
                         fetchNextSearchPage();
-                    } else if (!debouncedSearchTerm.trim() && hasNextNormalPage) {
+                    } else if (!searchTerm.trim() && hasNextNormalPage) {
                         fetchNextNormalPage();
                     }
                 }
@@ -84,15 +82,15 @@ export default function PerformListPage() {
         return () => {
             if (observerRef.current) observer.unobserve(observerRef.current);
         };
-    }, [hasNextNormalPage, hasNextSearchPage, fetchNextNormalPage, fetchNextSearchPage, debouncedSearchTerm]);
+    }, [hasNextNormalPage, hasNextSearchPage, fetchNextNormalPage, fetchNextSearchPage, searchTerm]);
 
-    // 북마크 토글
+    // Bookmark toggle function
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark(activeTab, id);
 
-            const queryKey = debouncedSearchTerm.trim()
-                ? ["searchResults", activeTab, debouncedSearchTerm]
+            const queryKey = searchTerm.trim()
+                ? ["searchResults", activeTab, searchTerm]
                 : ["events", activeTab, date];
 
             queryClient.setQueryData(queryKey, (oldData) => {
@@ -112,23 +110,22 @@ export default function PerformListPage() {
         }
     };
 
-    // 날짜 변경
+    // Date change handler
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
-    // 탭 변경
+    // Tab change handler
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
     };
 
-    // 데이터 결정
     const isLoading = isLoadingNormal || isLoadingSearch;
     const isFetchingNextPage = isFetchingNextNormalPage || isFetchingNextSearchPage;
-    const dataToDisplay = debouncedSearchTerm.trim()
+    const dataToDisplay = searchTerm.trim()
         ? searchData?.pages.flatMap((page) => page.content) || []
         : normalData?.pages.flatMap((page) => page.content) || [];
 
@@ -177,6 +174,7 @@ export default function PerformListPage() {
                             imageUrl={event.poster}
                             url={event.registerLink}
                             bookmarked={event.bookmarked}
+                            type={activeTab}
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
