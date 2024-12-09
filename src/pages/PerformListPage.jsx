@@ -89,19 +89,36 @@ export default function PerformListPage() {
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // Update bookmarked state
-    const handleBookmarkToggle = (id) => {
-        queryClient.setQueryData(["events", activeTab, date], (oldData) => {
-            if (!oldData) return oldData;
-            const updatedPages = oldData.pages.map((page) => ({
-                ...page,
-                content: page.content.map((event) =>
-                    event.id === id
-                        ? { ...event, bookmarked: !event.bookmarked }
-                        : event
-                ),
-            }));
-            return { ...oldData, pages: updatedPages };
-        });
+    const handleBookmarkToggle = async (id) => {
+        try {
+            await toggleBookmark(activeTab, id); // API 호출
+            if (searchTerm.trim()) {
+                // 검색 결과 상태 업데이트
+                setSearchResults((prevResults) =>
+                    prevResults.map((event) =>
+                        event.id === id
+                            ? { ...event, bookmarked: !event.bookmarked }
+                            : event
+                    )
+                );
+            } else {
+                // React Query 캐시 업데이트
+                queryClient.setQueryData(["events", activeTab, date], (oldData) => {
+                    if (!oldData) return oldData;
+                    const updatedPages = oldData.pages.map((page) => ({
+                        ...page,
+                        content: page.content.map((event) =>
+                            event.id === id
+                                ? { ...event, bookmarked: !event.bookmarked }
+                                : event
+                        ),
+                    }));
+                    return { ...oldData, pages: updatedPages };
+                });
+            }
+        } catch (error) {
+            console.error("북마크 상태 업데이트 중 오류 발생:", error);
+        }
     };
 
     // Handle date change
@@ -182,7 +199,7 @@ export default function PerformListPage() {
                     )}
                 </S.EventContainer>
             ) : (
-                <h3>오늘은 {activeTab} 정보가 없어요 :(</h3>
+                <p>오늘은 {activeTab} 정보가 없어요 :(</p>
             )}
             {isFetchingNextPage && <PropagateLoader color="#E6A4B4" />}
         </S.PerformContainer>

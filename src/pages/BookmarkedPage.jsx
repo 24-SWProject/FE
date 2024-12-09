@@ -17,7 +17,7 @@ export default function BookmarkedPage() {
         error,
     } = useInfiniteQuery(
         "bookmarkedData",
-        ({ pageParam = 0 }) => fetchBookmarkedData(pageParam, 10), // pageParam으로 페이지 번호 전달
+        ({ pageParam = 0 }) => fetchBookmarkedData(pageParam), // pageParam으로 페이지 번호 전달
         {
             getNextPageParam: (lastPage) => {
                 // 다음 페이지가 있는지 확인하고 페이지 번호 반환
@@ -70,6 +70,7 @@ export default function BookmarkedPage() {
                                 bookmarked: event.bookmarked,
                             }}
                             type={event.type} // 북마크 타입 전달
+                            onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
                 </React.Fragment>
