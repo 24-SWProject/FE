@@ -10,7 +10,6 @@ import { getGroupProfile, updateGroupProfile } from "../api/groupcrud";
 export default function ProfileSet() {
     const [profileImageFile, setProfileImageFile] = useState(null);
     const [defaultData, setDefaultData] = useState(null);
-    const [isFormValid, setIsFormValid] = useState(false);
     const navigate = useNavigate();
 
     const schema = yup.object().shape({
@@ -18,7 +17,7 @@ export default function ProfileSet() {
         datingDate: yup.date().max(new Date()).nullable(),
     });
 
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
         mode: "onChange",
     });
@@ -43,14 +42,6 @@ export default function ProfileSet() {
         }
     }, [defaultData, setValue]);
 
-    useEffect(() => {
-        const isNicknameChanged = watch("nickname") !== defaultData?.nickName;
-        const isDateChanged = watch("datingDate") !== defaultData?.anniversary;
-        const isImageChanged = !!profileImageFile;
-
-        setIsFormValid(isNicknameChanged || isDateChanged || isImageChanged);
-    }, [watch, profileImageFile, defaultData]);
-
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -74,7 +65,7 @@ export default function ProfileSet() {
     const onSubmit = async (data) => {
         try {
             let formattedDate = defaultData.anniversary;
-            if (data.datingDate && data.datingDate !== defaultData.anniversary) {
+            if (data.datingDate) {
                 const localDate = new Date(data.datingDate);
                 const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000);
                 formattedDate = kstDate.toISOString().split("T")[0];
@@ -87,7 +78,7 @@ export default function ProfileSet() {
             }
 
             const updatedData = {
-                nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName,
+                nickName: data.nickname || defaultData.nickName,
                 anniversary: formattedDate,
                 profileImg: profileImgToSend,
             };
@@ -127,7 +118,7 @@ export default function ProfileSet() {
                 <S.InputField id="datingDate" type="date" {...register("datingDate")} />
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
 
-                <S.SetButton type="submit" disabled={!isFormValid}>수정하기</S.SetButton>
+                <S.SetButton type="submit">수정하기</S.SetButton>
             </S.FormContainer>
         </S.ProfileContainer>
     );
