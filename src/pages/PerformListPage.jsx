@@ -73,32 +73,37 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 북마크 상태 업데이트
+    // 북마크 상태 업데이트 함수
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark(activeTab, id); // API 호출
-            // 검색 결과 업데이트
-            queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
-                if (!oldData) return oldData;
-                return oldData.map((event) =>
-                    event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
-                );
-            });
-            // 무한 스크롤 데이터 업데이트
-            queryClient.setQueryData(["events", activeTab, date], (oldData) => {
-                if (!oldData) return oldData;
-                const updatedPages = oldData.pages.map((page) => ({
-                    ...page,
-                    content: page.content.map((event) =>
+
+            if (debouncedSearchTerm.trim()) {
+                // 검색 결과 상태 업데이트
+                queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
+                    if (!oldData || !Array.isArray(oldData)) return oldData; // 데이터 유효성 검사
+                    return oldData.map((event) =>
                         event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
-                    ),
-                }));
-                return { ...oldData, pages: updatedPages };
-            });
+                    );
+                });
+            } else {
+                // 무한 스크롤 데이터 업데이트
+                queryClient.setQueryData(["events", activeTab, date], (oldData) => {
+                    if (!oldData || !oldData.pages) return oldData; // 데이터 유효성 검사
+                    const updatedPages = oldData.pages.map((page) => ({
+                        ...page,
+                        content: page.content.map((event) =>
+                            event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
+                        ),
+                    }));
+                    return { ...oldData, pages: updatedPages };
+                });
+            }
         } catch (error) {
             console.error("북마크 상태 업데이트 중 오류 발생:", error);
         }
     };
+
 
     // 날짜 변경 핸들러
     const handleDateChange = (days) => {
