@@ -18,7 +18,6 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // Infinite Query 설정
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
@@ -37,21 +36,19 @@ export default function PerformListPage() {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !debouncedSearchTerm.trim(), // 검색 중이 아닐 때만 실행
+            enabled: !debouncedSearchTerm.trim(),
         }
     );
 
-    // 검색 Query 설정
     const { data: searchResultsData } = useQuery(
         ["searchResults", activeTab, debouncedSearchTerm],
         () => fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10),
         {
-            enabled: !!debouncedSearchTerm.trim(), // 검색어가 있을 때만 실행
+            enabled: !!debouncedSearchTerm.trim(),
             select: (response) => response.content || [],
         }
     );
 
-    // IntersectionObserver 설정
     useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -73,23 +70,20 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 북마크 상태 업데이트 함수
     const handleBookmarkToggle = async (id) => {
         try {
-            await toggleBookmark(activeTab, id); // API 호출
+            await toggleBookmark(activeTab, id);
 
             if (debouncedSearchTerm.trim()) {
-                // 검색 결과 상태 업데이트
                 queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
-                    if (!oldData || !Array.isArray(oldData)) return oldData; // 데이터 유효성 검사
+                    if (!oldData || !Array.isArray(oldData)) return oldData;
                     return oldData.map((event) =>
                         event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
                     );
                 });
             } else {
-                // 무한 스크롤 데이터 업데이트
                 queryClient.setQueryData(["events", activeTab, date], (oldData) => {
-                    if (!oldData || !oldData.pages) return oldData; // 데이터 유효성 검사
+                    if (!oldData || !oldData.pages) return oldData;
                     const updatedPages = oldData.pages.map((page) => ({
                         ...page,
                         content: page.content.map((event) =>
@@ -104,14 +98,12 @@ export default function PerformListPage() {
         }
     };
 
-    // 날짜 변경 핸들러
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
-    // 탭 변경 핸들러
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
@@ -124,7 +116,6 @@ export default function PerformListPage() {
     return (
         <S.PerformContainer>
             <Close />
-            {/* 탭 변경 */}
             <S.SmallHeader>
                 <p
                     onClick={() => handleTabChange("festival")}
@@ -139,7 +130,6 @@ export default function PerformListPage() {
                     공연
                 </p>
             </S.SmallHeader>
-            {/* 날짜 변경 */}
             <S.Header>
                 <button onClick={() => handleDateChange(-1)}>&lt;</button>
                 <span>
@@ -147,7 +137,6 @@ export default function PerformListPage() {
                 </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
-            {/* 검색 입력 */}
             <S.SearchContainer>
                 <S.Input
                     type="text"
@@ -156,7 +145,6 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
-            {/* 로딩 및 데이터 렌더링 */}
             {isLoading || (!debouncedSearchTerm.trim() && isFetchingNextPage) ? (
                 <PropagateLoader color="#E6A4B4" />
             ) : dataToDisplay.length > 0 ? (
@@ -164,9 +152,14 @@ export default function PerformListPage() {
                     {dataToDisplay.map((event, index) => (
                         <Card
                             key={`${event.id}-${index}`}
-                            event={event}
+                            id={event.id}
+                            title={event.title}
+                            date={`${event.openDate} ~ ${event.endDate}`}
+                            imageUrl={event.poster}
+                            url={event.registerLink}
+                            bookmarked={event.bookmarked}
                             type={activeTab}
-                            onBookmarkToggle={() => handleBookmarkToggle(event.id)} // Handle bookmark toggle
+                            onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
                     {!debouncedSearchTerm.trim() && (
@@ -174,7 +167,7 @@ export default function PerformListPage() {
                     )}
                 </S.EventContainer>
             ) : (
-                <h3>오늘은 {activeTab} 정보가 없어요 :(</h3>
+                <h3>{date}의 {activeTab} 정보가 없어요 :(</h3>
             )}
         </S.PerformContainer>
     );
