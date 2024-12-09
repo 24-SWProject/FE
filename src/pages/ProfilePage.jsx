@@ -1,3 +1,4 @@
+import heic2any from "heic2any";
 import * as S from "../styles/pages/Profile.style";
 import { useForm } from "react-hook-form";
 import Close from "./components/Close";
@@ -51,78 +52,33 @@ export default function ProfileSet() {
         setIsFormValid(isNicknameChanged || isDateChanged || isImageChanged);
     }, [watch, profileImageFile, defaultData]);
 
-    const handleImageChange = (event) => {
+    const handleImageChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            convertImageToBlob(file).then((blob) => {
-                setProfileImageFile(blob);
-            }).catch((error) => {
-                console.error("이미지 변환 실패:", error);
-            });
-        }
-    };
+            if (file.type === "image/heic") {
+                // HEIC 파일 변환
+                try {
+                    const convertedBlob = await heic2any({
+                        blob: file,
+                        toType: "image/jpeg", // 변환할 포맷
+                    });
 
-    const convertImageToBlob = async (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const img = new Image();
-                img.onload = () => {
-                    const maxDimension = 1024; // 최대 해상도
-                    const scale = Math.min(maxDimension / img.width, maxDimension / img.height);
-
-                    const canvas = document.createElement("canvas");
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
-
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                    canvas.toBlob(
-                        (blob) => {
-                            if (blob) {
-                                resolve(blob); // Blob 반환
-                            } else {
-                                reject(new Error("Blob 변환 실패"));
-                            }
-                        },
-                        file.type // 원본 MIME 타입 유지
+                    // Blob을 File로 변환
+                    const convertedFile = new File(
+                        [convertedBlob],
+                        file.name.replace(/\.heic$/i, ".jpeg"),
+                        { type: "image/jpeg" }
                     );
-                };
-                img.onerror = reject;
-                img.src = reader.result;
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    };
 
-    const onSubmit = async (data) => {
-        try {
-            let formattedDate = defaultData.anniversary;
-            if (data.datingDate && data.datingDate !== defaultData.anniversary) {
-                const localDate = new Date(data.datingDate);
-                const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000);
-                formattedDate = kstDate.toISOString().split("T")[0];
+                    setProfileImageFile(convertedFile);
+                } catch (error) {
+                    console.error("HEIC 변환 실패:", error);
+                    alert("HEIC 파일 변환에 실패했습니다. 다른 이미지 포맷을 사용해주세요.");
+                }
+            } else {
+                // HEIC가 아닌 경우 그대로 사용
+                setProfileImageFile(file);
             }
-
-            let profileImgToSend = profileImageFile;
-            if (!profileImgToSend && defaultData.profileImg) {
-                // 기본 프로필 이미지를 파일 형식으로 변환
-                profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
-            }
-
-            const updatedData = {
-                nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName,
-                anniversary: formattedDate,
-                profileImg: profileImgToSend,
-            };
-
-            console.log("전송 데이터:", updatedData);
-            await updateGroupProfile(updatedData);
-            navigate("/main");
-        } catch (error) {
-            console.error("프로필 수정 실패:", error);
         }
     };
 
@@ -139,6 +95,37 @@ export default function ProfileSet() {
         return new File([ab], fileName, { type: mimeString });
     };
 
+    const onSubmit = async (data) => {
+        try {
+            let formattedDate = defaultData.anniversary;
+            if (data.datingDate && data.datingDate !== defaultData.anniversary) {
+                const localDate = new Date(data.datingDate);
+                const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000);
+                formattedDate = kstDate.toISOString().split("T")[0];
+            }
+
+            let profileImgToSend = profileImageFile;
+            if (!profileImgToSend && defaultData.profileImg) {
+                profileImgToSend = convertBase64ToFile(
+                    `data:image/jpeg;base64,${defaultData.profileImg}`,
+                    "defaultProfile.jpg"
+                );
+            }
+
+            const updatedData = {
+                nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName,
+                anniversary: formattedDate,
+                profileImg: profileImgToSend,
+            };
+
+            console.log("전송 데이터:", updatedData);
+            await updateGroupProfile(updatedData);
+            navigate("/main");
+        } catch (error) {
+            console.error("프로필 수정 실패:", error);
+        }
+    };
+
     if (!defaultData) {
         return <p>로딩 중...</p>;
     }
@@ -149,14 +136,28 @@ export default function ProfileSet() {
             <S.Title>커플 프로필 설정</S.Title>
             <S.CoupleImage onClick={() => document.getElementById("imageUpload").click()}>
                 {profileImageFile ? (
-                    <img src={URL.createObjectURL(profileImageFile)} alt="프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                    <img
+                        src={URL.createObjectURL(profileImageFile)}
+                        alt="프로필 이미지"
+                        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+                    />
                 ) : defaultData.profileImg ? (
-                    <img src={`data:image/jpeg;base64,${defaultData.profileImg}`} alt="기본 프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                    <img
+                        src={`data:image/jpeg;base64,${defaultData.profileImg}`}
+                        alt="기본 프로필 이미지"
+                        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+                    />
                 ) : (
                     <span>이미지 선택</span>
                 )}
             </S.CoupleImage>
-            <input id="imageUpload" type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageChange} />
+            <input
+                id="imageUpload"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+            />
 
             <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
                 <S.InputField placeholder="Couple Nickname" {...register("nickname")} />
@@ -166,7 +167,9 @@ export default function ProfileSet() {
                 <S.InputField id="datingDate" type="date" {...register("datingDate")} />
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
 
-                <S.SetButton type="submit" disabled={!isFormValid}>수정하기</S.SetButton>
+                <S.SetButton type="submit" disabled={!isFormValid}>
+                    수정하기
+                </S.SetButton>
             </S.FormContainer>
         </S.ProfileContainer>
     );
