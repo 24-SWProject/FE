@@ -53,38 +53,26 @@ export default function ProfileSet() {
     }, [watch, profileImageFile, defaultData]);
 
     const handleImageChange = async (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            if (file.type === "image/heic") {
-                try {
-                    const reader = new FileReader();
-                    reader.onload = async () => {
-                        const arrayBuffer = reader.result;
-                        const blob = new Blob([arrayBuffer], { type: "image/heic" });
+        let fileBlob = event.target.files[0];
+        if (fileBlob) {
+            try {
+                // HEIC 확장자 확인 후 변환
+                if (/\.(heic)$/i.test(fileBlob.name)) {
+                    fileBlob = await heic2any({ blob: fileBlob, toType: "image/jpeg" });
 
-                        // HEIC → JPEG 변환
-                        const convertedBlob = await heic2any({
-                            blob: blob,
-                            toType: "image/jpeg",
-                        });
+                    // Blob을 File로 변환
+                    const convertedFile = new File([fileBlob], fileBlob.name.replace(/\.heic$/i, ".jpeg"), {
+                        type: "image/jpeg",
+                    });
 
-                        // Blob을 File로 변환
-                        const convertedFile = new File(
-                            [convertedBlob],
-                            file.name.replace(/\.heic$/i, ".jpeg"),
-                            { type: "image/jpeg" }
-                        );
-
-                        setProfileImageFile(convertedFile);
-                    };
-                    reader.readAsArrayBuffer(file);
-                } catch (error) {
-                    console.error("HEIC 변환 실패:", error);
-                    alert("HEIC 파일 변환에 실패했습니다. 다른 이미지 포맷을 사용해주세요.");
+                    setProfileImageFile(convertedFile);
+                } else {
+                    // HEIC가 아니면 그대로 파일 설정
+                    setProfileImageFile(fileBlob);
                 }
-            } else {
-                // HEIC가 아닌 경우 그대로 사용
-                setProfileImageFile(file);
+            } catch (error) {
+                console.error("HEIC 변환 실패:", error);
+                alert("HEIC 파일 변환에 실패했습니다. 다른 이미지 포맷을 사용해주세요.");
             }
         }
     };
