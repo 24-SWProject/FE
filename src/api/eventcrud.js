@@ -44,7 +44,7 @@ export const fetchMovieData = async () => {
 };
 
 // 제목으로 이벤트 검색 요청
-export const fetchEventDataByTitle = async (type, title, page = 1, size = 10) => {
+export const fetchEventDataByTitle = async (type, title, page, size = 10) => {
     try {
         console.log(`Fetching event data by title - Type: ${type}, Title: ${title}, Page: ${page}, Size: ${size}`);
         const response = await instance.post(
