@@ -4,6 +4,7 @@ import { toggleBookmark } from "../../api/bookmarkcrud";
 
 export default function Card({ event, type }) {
     const [isBookmarked, setIsBookmarked] = useState(event.bookmarked);
+    console.log("isBookmarked: ", isBookmarked);
 
     // 링크 열기
     const handleLinkClick = () => {

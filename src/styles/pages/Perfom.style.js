@@ -7,6 +7,7 @@ export const PerformContainer = styled.div`
     padding: 0px;
     display: flex;
     overflow-y: auto;
+    overflow-x: hidden;
     flex-direction: column;
     align-items: center;
     margin: 0;
@@ -105,7 +106,7 @@ export const Input = styled.input`
     font-family: Pretendard, sans-serif;
     font-size: clamp(15px, 1.2rem, 20px);
     background-color: white;
-    color: #ccc;
+    color: #444;
     ::placeholder {
         color: #ccc;
     }

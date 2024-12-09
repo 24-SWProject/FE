@@ -22,27 +22,24 @@ export default function PerformListPage() {
     // useInfiniteQuery 설정
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
-            ? fetchFestivalData(date, pageParam, 10)
-            : fetchPerformanceData(date, pageParam, 10);
+            ? fetchFestivalData(date, pageParam)
+            : fetchPerformanceData(date, pageParam);
 
-    const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading,
-    } = useInfiniteQuery(
-        ["events", activeTab, date],
-        fetchData,
-        {
-            getNextPageParam: (lastPage) => {
-                if (lastPage.hasNext) {
-                    return lastPage.page + 1;
-                }
-                return undefined;
-            },
-            enabled: !searchTerm.trim(),
-        }
+        const {
+            data,
+            fetchNextPage,
+            hasNextPage,
+            isFetchingNextPage,
+            isLoading,
+        } = useInfiniteQuery(
+            ["events", activeTab, date],
+            fetchData,
+            {
+                getNextPageParam: (lastPage) => {
+                    return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
+                },
+                enabled: !debouncedSearchTerm.trim(), // 검색 중이 아닐 때만 실행
+            }
     );
 
     // 디바운스된 검색어로 검색
