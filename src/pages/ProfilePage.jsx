@@ -54,15 +54,11 @@ export default function ProfileSet() {
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            if (file.size > 1 * 1024 * 1024) { // 1MB 초과 여부 확인
-                convertImageToBlob(file).then((blob) => {
-                    setProfileImageFile(blob);
-                }).catch((error) => {
-                    console.error("이미지 Blob 변환 실패:", error);
-                });
-            } else {
-                setProfileImageFile(file);
-            }
+            convertImageToBlob(file).then((blob) => {
+                setProfileImageFile(blob);
+            }).catch((error) => {
+                console.error("이미지 변환 실패:", error);
+            });
         }
     };
 
@@ -72,19 +68,26 @@ export default function ProfileSet() {
             reader.onload = () => {
                 const img = new Image();
                 img.onload = () => {
-                    const canvas = document.createElement("canvas");
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0);
+                    const maxDimension = 1024; // 최대 해상도
+                    const scale = Math.min(maxDimension / img.width, maxDimension / img.height);
 
-                    canvas.toBlob((blob) => {
-                        if (blob) {
-                            resolve(blob);
-                        } else {
-                            reject(new Error("Blob 변환 실패"));
-                        }
-                    }, file.type);
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob(
+                        (blob) => {
+                            if (blob) {
+                                resolve(blob); // Blob 반환
+                            } else {
+                                reject(new Error("Blob 변환 실패"));
+                            }
+                        },
+                        file.type // 원본 MIME 타입 유지
+                    );
                 };
                 img.onerror = reject;
                 img.src = reader.result;
@@ -121,6 +124,19 @@ export default function ProfileSet() {
         } catch (error) {
             console.error("프로필 수정 실패:", error);
         }
+    };
+
+    const convertBase64ToFile = (base64String, fileName) => {
+        const byteString = atob(base64String.split(",")[1]);
+        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([ab], fileName, { type: mimeString });
     };
 
     if (!defaultData) {
