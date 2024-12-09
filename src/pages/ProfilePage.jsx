@@ -1,8 +1,6 @@
 import * as S from "../styles/pages/Profile.style";
 import { useForm } from "react-hook-form";
 import Close from "./components/Close";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGroupProfile, updateGroupProfile } from "../api/groupcrud";
@@ -11,16 +9,6 @@ export default function ProfileSet() {
     const [profileImageFile, setProfileImageFile] = useState(null);
     const [defaultData, setDefaultData] = useState(null);
     const navigate = useNavigate();
-
-    const schema = yup.object().shape({
-        nickname: yup.string().min(2).max(8).nullable(),
-        datingDate: yup.date().max(new Date()).nullable(),
-    });
-
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({
-        resolver: yupResolver(schema),
-        mode: "onChange",
-    });
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -35,56 +23,45 @@ export default function ProfileSet() {
         fetchProfile();
     }, []);
 
-    useEffect(() => {
-        if (defaultData) {
-            setValue("nickname", defaultData.nickName || "");
-            setValue("datingDate", defaultData.anniversary || "");
-        }
-    }, [defaultData, setValue]);
-
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
+            console.log("선택된 파일:", file);
             setProfileImageFile(file);
+        } else {
+            console.error("파일 선택에 실패했습니다.");
         }
     };
 
-    const convertBase64ToFile = (base64String, fileName) => {
-        const byteString = atob(base64String.split(",")[1]);
-        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
+    const onSubmit = async (event) => {
+        event.preventDefault(); // 기본 폼 제출 동작 방지
 
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
+        if (!profileImageFile && !defaultData) {
+            alert("업로드할 파일이 없습니다.");
+            return;
         }
 
-        return new File([ab], fileName, { type: mimeString });
-    };
-
-    const onSubmit = async (data) => {
         try {
-            let formattedDate = defaultData.anniversary;
-            if (data.datingDate) {
-                const localDate = new Date(data.datingDate);
-                const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000);
-                formattedDate = kstDate.toISOString().split("T")[0];
+            // FormData 생성
+            const formData = new FormData();
+
+            // 닉네임 및 날짜 추가
+            const nickname = event.target.nickname.value || defaultData.nickName;
+            const anniversary = event.target.datingDate.value || defaultData.anniversary;
+
+            formData.append("nickName", nickname);
+            formData.append("anniversary", anniversary);
+
+            // 이미지 파일 추가
+            if (profileImageFile) {
+                formData.append("profileImg", profileImageFile);
             }
 
-            let profileImgToSend = profileImageFile;
-            if (!profileImgToSend && defaultData.profileImg) {
-                // 기본 프로필 이미지를 파일 형식으로 변환
-                profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
-            }
+            console.log("전송 데이터:", Object.fromEntries(formData.entries()));
 
-            const updatedData = {
-                nickName: data.nickname || defaultData.nickName,
-                anniversary: formattedDate,
-                profileImg: profileImgToSend,
-            };
+            // 서버로 전송
+            await updateGroupProfile(formData);
 
-            console.log("전송 데이터:", updatedData);
-            await updateGroupProfile(updatedData);
             navigate("/main");
         } catch (error) {
             console.error("프로필 수정 실패:", error);
@@ -101,23 +78,27 @@ export default function ProfileSet() {
             <S.Title>커플 프로필 설정</S.Title>
             <S.CoupleImage onClick={() => document.getElementById("imageUpload").click()}>
                 {profileImageFile ? (
-                    <img src={URL.createObjectURL(profileImageFile)} alt="프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                    <img
+                        src={URL.createObjectURL(profileImageFile)}
+                        alt="프로필 이미지"
+                        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+                    />
                 ) : defaultData.profileImg ? (
-                    <img src={`data:image/jpeg;base64,${defaultData.profileImg}`} alt="기본 프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                    <img
+                        src={`data:image/jpeg;base64,${defaultData.profileImg}`}
+                        alt="기본 프로필 이미지"
+                        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+                    />
                 ) : (
                     <span>이미지 선택</span>
                 )}
             </S.CoupleImage>
             <input id="imageUpload" type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageChange} />
 
-            <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
-                <S.InputField placeholder="Couple Nickname" {...register("nickname")} />
-                {errors.nickname && <S.ErrorMessage>{errors.nickname.message}</S.ErrorMessage>}
-
+            <S.FormContainer onSubmit={onSubmit}>
+                <S.InputField name="nickname" placeholder="Couple Nickname" defaultValue={defaultData.nickName || ""} />
                 <label htmlFor="datingDate">사귄 날짜를 입력해주세요</label>
-                <S.InputField id="datingDate" type="date" {...register("datingDate")} />
-                {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
-
+                <S.InputField name="datingDate" id="datingDate" type="date" defaultValue={defaultData.anniversary || ""} />
                 <S.SetButton type="submit">수정하기</S.SetButton>
             </S.FormContainer>
         </S.ProfileContainer>
