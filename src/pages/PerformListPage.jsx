@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 import Card from "./components/Card";
 import * as S from "../styles/pages/Perfom.style";
 import Close from "./components/Close";
@@ -18,18 +18,18 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // Fetch data for infinite scrolling
+    // Infinite Query for normal fetching
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
             : fetchPerformanceData(date, pageParam);
 
     const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading,
+        data: normalData,
+        fetchNextPage: fetchNextNormalPage,
+        hasNextPage: hasNextNormalPage,
+        isFetchingNextPage: isFetchingNextNormalPage,
+        isLoading: isLoadingNormal,
     } = useInfiniteQuery(
         ["events", activeTab, date],
         fetchData,
@@ -41,24 +41,37 @@ export default function PerformListPage() {
         }
     );
 
-    // Fetch search results
-    const { data: searchResultsData } = useQuery(
+    // Infinite Query for search results
+    const fetchSearchData = ({ pageParam = 0 }) =>
+        fetchEventDataByTitle(activeTab, debouncedSearchTerm, pageParam, 10);
+
+    const {
+        data: searchData,
+        fetchNextPage: fetchNextSearchPage,
+        hasNextPage: hasNextSearchPage,
+        isFetchingNextPage: isFetchingNextSearchPage,
+        isLoading: isLoadingSearch,
+    } = useInfiniteQuery(
         ["searchResults", activeTab, debouncedSearchTerm],
-        () => fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10),
+        fetchSearchData,
         {
-            enabled: !!debouncedSearchTerm.trim(),
-            select: (response) => response.content || [],
+            getNextPageParam: (lastPage) => {
+                return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
+            },
+            enabled: !!debouncedSearchTerm.trim(), // Only fetch when searching
         }
     );
 
-    // IntersectionObserver setup for infinite scrolling
+    // IntersectionObserver for infinite scrolling
     useEffect(() => {
-        if (!hasNextPage || isFetchingNextPage) return;
-
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    fetchNextPage();
+                    if (debouncedSearchTerm.trim() && hasNextSearchPage) {
+                        fetchNextSearchPage();
+                    } else if (!debouncedSearchTerm.trim() && hasNextNormalPage) {
+                        fetchNextNormalPage();
+                    }
                 }
             },
             { threshold: 0.1, rootMargin: "100px" }
@@ -71,32 +84,27 @@ export default function PerformListPage() {
         return () => {
             if (observerRef.current) observer.unobserve(observerRef.current);
         };
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [hasNextNormalPage, hasNextSearchPage, fetchNextNormalPage, fetchNextSearchPage, debouncedSearchTerm]);
 
     // Bookmark toggle function
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark(activeTab, id);
 
-            if (debouncedSearchTerm.trim()) {
-                // Update search results
-                queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
-                    if (!oldData || !Array.isArray(oldData)) return oldData;
-                    return oldData.map((event) =>
-                        event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
-                    );
-                });
-            }
+            const queryKey = debouncedSearchTerm.trim()
+                ? ["searchResults", activeTab, debouncedSearchTerm]
+                : ["events", activeTab, date];
 
-            // Update infinite scroll data
-            queryClient.setQueryData(["events", activeTab, date], (oldData) => {
+            queryClient.setQueryData(queryKey, (oldData) => {
                 if (!oldData || !oldData.pages) return oldData;
+
                 const updatedPages = oldData.pages.map((page) => ({
                     ...page,
                     content: page.content.map((event) =>
                         event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
                     ),
                 }));
+
                 return { ...oldData, pages: updatedPages };
             });
         } catch (error) {
@@ -104,22 +112,24 @@ export default function PerformListPage() {
         }
     };
 
-    // Handle date change
+    // Date change handler
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
-    // Handle tab change
+    // Tab change handler
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
     };
 
+    const isLoading = isLoadingNormal || isLoadingSearch;
+    const isFetchingNextPage = isFetchingNextNormalPage || isFetchingNextSearchPage;
     const dataToDisplay = debouncedSearchTerm.trim()
-        ? searchResultsData || []
-        : data?.pages.flatMap((page) => page.content) || [];
+        ? searchData?.pages.flatMap((page) => page.content) || []
+        : normalData?.pages.flatMap((page) => page.content) || [];
 
     return (
         <S.PerformContainer>
@@ -153,7 +163,7 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
-            {isLoading || (!debouncedSearchTerm.trim() && isFetchingNextPage) ? (
+            {isLoading ? (
                 <PropagateLoader color="#E6A4B4" />
             ) : dataToDisplay.length > 0 ? (
                 <S.EventContainer>
@@ -170,9 +180,7 @@ export default function PerformListPage() {
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
-                    {!debouncedSearchTerm.trim() && (
-                        <div ref={observerRef} style={{ height: "1px" }}></div>
-                    )}
+                    <div ref={observerRef} style={{ height: "1px" }}></div>
                 </S.EventContainer>
             ) : (
                 <h3>{date}의 {activeTab} 정보가 없어요 :(</h3>
