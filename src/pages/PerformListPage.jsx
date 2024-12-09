@@ -18,7 +18,7 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // Infinite Query 설정
+    // Fetch data for infinite scrolling
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
@@ -37,19 +37,21 @@ export default function PerformListPage() {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !debouncedSearchTerm.trim(),
+            enabled: !debouncedSearchTerm.trim(), // Only run when not searching
         }
     );
 
-    const { data: searchResultsData, refetch: refetchSearchResults } = useQuery(
+    // Fetch search results
+    const { data: searchResultsData } = useQuery(
         ["searchResults", activeTab, debouncedSearchTerm],
         () => fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10),
         {
-            enabled: !!debouncedSearchTerm.trim(),
+            enabled: !!debouncedSearchTerm.trim(), // Only run when searching
             select: (response) => response.content || [],
         }
     );
 
+    // Set up IntersectionObserver for infinite scrolling
     useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -71,21 +73,19 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 북마크 상태 업데이트 함수
+    // Handle bookmark toggle
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark(activeTab, id);
 
-            // 검색 상태 업데이트
             if (debouncedSearchTerm.trim()) {
                 queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
-                    if (!oldData) return oldData;
+                    if (!oldData || !Array.isArray(oldData)) return oldData;
                     return oldData.map((event) =>
                         event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
                     );
                 });
             } else {
-                // 일반 데이터 업데이트
                 queryClient.setQueryData(["events", activeTab, date], (oldData) => {
                     if (!oldData || !oldData.pages) return oldData;
                     const updatedPages = oldData.pages.map((page) => ({
@@ -98,16 +98,18 @@ export default function PerformListPage() {
                 });
             }
         } catch (error) {
-            console.error("북마크 상태 업데이트 중 오류 발생:", error);
+            console.error("Bookmark update failed:", error);
         }
     };
 
+    // Handle date change
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
+    // Handle tab change
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
