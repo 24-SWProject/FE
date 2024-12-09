@@ -18,6 +18,7 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
+    // Infinite Query 설정
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
@@ -40,7 +41,7 @@ export default function PerformListPage() {
         }
     );
 
-    const { data: searchResultsData } = useQuery(
+    const { data: searchResultsData, refetch: refetchSearchResults } = useQuery(
         ["searchResults", activeTab, debouncedSearchTerm],
         () => fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10),
         {
@@ -70,18 +71,21 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+    // 북마크 상태 업데이트 함수
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark(activeTab, id);
 
+            // 검색 상태 업데이트
             if (debouncedSearchTerm.trim()) {
                 queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
-                    if (!oldData || !Array.isArray(oldData)) return oldData;
+                    if (!oldData) return oldData;
                     return oldData.map((event) =>
                         event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
                     );
                 });
             } else {
+                // 일반 데이터 업데이트
                 queryClient.setQueryData(["events", activeTab, date], (oldData) => {
                     if (!oldData || !oldData.pages) return oldData;
                     const updatedPages = oldData.pages.map((page) => ({
