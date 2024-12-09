@@ -18,7 +18,7 @@ export default function PerformListPage() {
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
     const observerRef = useRef(null);
 
-    // Fetch data for infinite scrolling
+    // Infinite Query 설정
     const fetchData = ({ pageParam = 0 }) =>
         activeTab === "festival"
             ? fetchFestivalData(date, pageParam)
@@ -37,21 +37,21 @@ export default function PerformListPage() {
             getNextPageParam: (lastPage) => {
                 return lastPage.last ? undefined : lastPage.pageable.pageNumber + 1;
             },
-            enabled: !debouncedSearchTerm.trim(), // Only run when not searching
+            enabled: !debouncedSearchTerm.trim(),
         }
     );
 
-    // Fetch search results
+    // Search Query 설정
     const { data: searchResultsData } = useQuery(
         ["searchResults", activeTab, debouncedSearchTerm],
         () => fetchEventDataByTitle(activeTab, debouncedSearchTerm, 0, 10),
         {
-            enabled: !!debouncedSearchTerm.trim(), // Only run when searching
+            enabled: !!debouncedSearchTerm.trim(),
             select: (response) => response.content || [],
         }
     );
 
-    // Set up IntersectionObserver for infinite scrolling
+    // IntersectionObserver 설정
     useEffect(() => {
         if (!hasNextPage || isFetchingNextPage) return;
 
@@ -73,12 +73,13 @@ export default function PerformListPage() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // Handle bookmark toggle
+    // 북마크 상태 업데이트 함수
     const handleBookmarkToggle = async (id) => {
         try {
             await toggleBookmark(activeTab, id);
 
             if (debouncedSearchTerm.trim()) {
+                // 검색 데이터 업데이트
                 queryClient.setQueryData(["searchResults", activeTab, debouncedSearchTerm], (oldData) => {
                     if (!oldData || !Array.isArray(oldData)) return oldData;
                     return oldData.map((event) =>
@@ -86,6 +87,7 @@ export default function PerformListPage() {
                     );
                 });
             } else {
+                // 무한 스크롤 데이터 업데이트
                 queryClient.setQueryData(["events", activeTab, date], (oldData) => {
                     if (!oldData || !oldData.pages) return oldData;
                     const updatedPages = oldData.pages.map((page) => ({
@@ -98,18 +100,18 @@ export default function PerformListPage() {
                 });
             }
         } catch (error) {
-            console.error("Bookmark update failed:", error);
+            console.error("북마크 상태 업데이트 중 오류 발생:", error);
         }
     };
 
-    // Handle date change
+    // 날짜 변경 핸들러
     const handleDateChange = (days) => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         setDate(newDate.toISOString().split("T")[0]);
     };
 
-    // Handle tab change
+    // 탭 변경 핸들러
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSearchTerm("");
@@ -122,6 +124,7 @@ export default function PerformListPage() {
     return (
         <S.PerformContainer>
             <Close />
+            {/* 탭 변경 */}
             <S.SmallHeader>
                 <p
                     onClick={() => handleTabChange("festival")}
@@ -136,6 +139,7 @@ export default function PerformListPage() {
                     공연
                 </p>
             </S.SmallHeader>
+            {/* 날짜 변경 */}
             <S.Header>
                 <button onClick={() => handleDateChange(-1)}>&lt;</button>
                 <span>
@@ -143,6 +147,7 @@ export default function PerformListPage() {
                 </span>
                 <button onClick={() => handleDateChange(1)}>&gt;</button>
             </S.Header>
+            {/* 검색 입력 */}
             <S.SearchContainer>
                 <S.Input
                     type="text"
@@ -151,6 +156,7 @@ export default function PerformListPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </S.SearchContainer>
+            {/* 데이터 렌더링 */}
             {isLoading || (!debouncedSearchTerm.trim() && isFetchingNextPage) ? (
                 <PropagateLoader color="#E6A4B4" />
             ) : dataToDisplay.length > 0 ? (

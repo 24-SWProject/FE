@@ -59,17 +59,14 @@ export default function BookmarkedPage() {
                 <React.Fragment key={pageIndex}>
                     {page.content.map((event, index) => (
                         <Card
-                            key={`${pageIndex}-${index}`}
-                            event={{
-                                title: event.title,
-                                date: `${event.openDate} ~ ${event.endDate}`,
-                                imageUrl: event.poster,
-                                linkText: "LINK",
-                                url: event.registerLink,
-                                id: event.id,
-                                bookmarked: event.bookmarked,
-                            }}
-                            type={event.type} // 북마크 타입 전달
+                            key={`${event.id}-${index}`}
+                            id={event.id}
+                            title={event.title}
+                            date={`${event.openDate} ~ ${event.endDate}`}
+                            imageUrl={event.poster}
+                            url={event.registerLink}
+                            bookmarked={event.bookmarked}
+                            type={activeTab}
                             onBookmarkToggle={() => handleBookmarkToggle(event.id)}
                         />
                     ))}
