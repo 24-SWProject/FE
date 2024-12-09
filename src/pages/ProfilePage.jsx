@@ -1,4 +1,3 @@
-import heic2any from "heic2any";
 import * as S from "../styles/pages/Profile.style";
 import { useForm } from "react-hook-form";
 import Close from "./components/Close";
@@ -52,96 +51,50 @@ export default function ProfileSet() {
         setIsFormValid(isNicknameChanged || isDateChanged || isImageChanged);
     }, [watch, profileImageFile, defaultData]);
 
-    const handleImageChange = async (event) => {
+    const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            try {
-                // HEIC 파일 변환
-                let processedFile = file;
-                if (/\.(heic)$/i.test(file.name)) {
-                    const convertedBlob = await heic2any({ blob: file, toType: "image/jpeg" });
-                    processedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, ".jpeg"), {
-                        type: "image/jpeg",
-                    });
-                }
-    
-                // 이미지 해상도 줄이기
-                const resizedBlob = await resizeImage(processedFile);
-                setProfileImageBlob(resizedBlob);
-    
-                // 미리보기 설정
-                const reader = new FileReader();
-                reader.onload = () => {
-                    setProfileImage(reader.result); // Base64 URL
-                };
-                reader.readAsDataURL(resizedBlob);
-            } catch (error) {
-                console.error("이미지 처리 실패:", error);
-                alert("이미지를 처리하는 데 실패했습니다.");
-            }
+            convertImageToBlob(file).then((blob) => {
+                setProfileImageFile(blob);
+            }).catch((error) => {
+                console.error("이미지 변환 실패:", error);
+            });
         }
     };
-    
-    const resizeImage = async (file) => {
+
+    const convertImageToBlob = async (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => {
                 const img = new Image();
                 img.onload = () => {
-                    const maxWidth = 1024; // 최대 너비
-                    const maxHeight = 1024; // 최대 높이
-                    let width = img.width;
-                    let height = img.height;
-    
-                    // 비율 유지하며 크기 조정
-                    if (width > height) {
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-                    } else {
-                        if (height > maxHeight) {
-                            width = Math.round((width * maxHeight) / height);
-                            height = maxHeight;
-                        }
-                    }
-    
+                    const maxDimension = 1024; // 최대 해상도
+                    const scale = Math.min(maxDimension / img.width, maxDimension / img.height);
+
                     const canvas = document.createElement("canvas");
-                    canvas.width = width;
-                    canvas.height = height;
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+
                     const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, width, height);
-    
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
                     canvas.toBlob(
                         (blob) => {
                             if (blob) {
-                                resolve(blob);
+                                resolve(blob); // Blob 반환
                             } else {
-                                reject(new Error("Blob 생성 실패"));
+                                reject(new Error("Blob 변환 실패"));
                             }
                         },
                         file.type // 원본 MIME 타입 유지
                     );
                 };
+                img.onerror = reject;
                 img.src = reader.result;
             };
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
-    };
-    
-
-    const convertBase64ToFile = (base64String, fileName) => {
-        const byteString = atob(base64String.split(",")[1]);
-        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        return new File([ab], fileName, { type: mimeString });
     };
 
     const onSubmit = async (data) => {
@@ -155,10 +108,8 @@ export default function ProfileSet() {
 
             let profileImgToSend = profileImageFile;
             if (!profileImgToSend && defaultData.profileImg) {
-                profileImgToSend = convertBase64ToFile(
-                    `data:image/jpeg;base64,${defaultData.profileImg}`,
-                    "defaultProfile.jpg"
-                );
+                // 기본 프로필 이미지를 파일 형식으로 변환
+                profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
             }
 
             const updatedData = {
@@ -175,6 +126,19 @@ export default function ProfileSet() {
         }
     };
 
+    const convertBase64ToFile = (base64String, fileName) => {
+        const byteString = atob(base64String.split(",")[1]);
+        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([ab], fileName, { type: mimeString });
+    };
+
     if (!defaultData) {
         return <p>로딩 중...</p>;
     }
@@ -185,28 +149,14 @@ export default function ProfileSet() {
             <S.Title>커플 프로필 설정</S.Title>
             <S.CoupleImage onClick={() => document.getElementById("imageUpload").click()}>
                 {profileImageFile ? (
-                    <img
-                        src={URL.createObjectURL(profileImageFile)}
-                        alt="프로필 이미지"
-                        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
-                    />
+                    <img src={URL.createObjectURL(profileImageFile)} alt="프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                 ) : defaultData.profileImg ? (
-                    <img
-                        src={`data:image/jpeg;base64,${defaultData.profileImg}`}
-                        alt="기본 프로필 이미지"
-                        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
-                    />
+                    <img src={`data:image/jpeg;base64,${defaultData.profileImg}`} alt="기본 프로필 이미지" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                 ) : (
                     <span>이미지 선택</span>
                 )}
             </S.CoupleImage>
-            <input
-                id="imageUpload"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleImageChange}
-            />
+            <input id="imageUpload" type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageChange} />
 
             <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
                 <S.InputField placeholder="Couple Nickname" {...register("nickname")} />
@@ -216,9 +166,7 @@ export default function ProfileSet() {
                 <S.InputField id="datingDate" type="date" {...register("datingDate")} />
                 {errors.datingDate && <S.ErrorMessage>{errors.datingDate.message}</S.ErrorMessage>}
 
-                <S.SetButton type="submit" disabled={!isFormValid}>
-                    수정하기
-                </S.SetButton>
+                <S.SetButton type="submit" disabled={!isFormValid}>수정하기</S.SetButton>
             </S.FormContainer>
         </S.ProfileContainer>
     );
