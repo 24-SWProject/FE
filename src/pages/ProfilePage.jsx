@@ -1,11 +1,11 @@
-import * as S from "../styles/pages/Profile.style";
+import React, { useRef, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import Close from "./components/Close";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGroupProfile, updateGroupProfile } from "../api/groupcrud"; // API 호출 함수
+import * as yup from "yup";
+import * as S from "../styles/pages/Profile.style";
+import Close from "./components/Close";
+import { getGroupProfile, updateGroupProfile } from "../api/groupcrud";
 
 export default function ProfileSet() {
     const [profileImageFile, setProfileImageFile] = useState(null);
@@ -23,6 +23,9 @@ export default function ProfileSet() {
         mode: "onChange",
     });
 
+    const nickname = watch("nickname");
+    const datingDate = watch("datingDate");
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -39,17 +42,17 @@ export default function ProfileSet() {
     useEffect(() => {
         if (defaultData) {
             setValue("nickname", defaultData.nickName || "");
-            setValue("datingDate", defaultData.anniversary || undefined);
+            setValue("datingDate", defaultData.anniversary || "");
         }
     }, [defaultData, setValue]);
 
     useEffect(() => {
-        const isNicknameChanged = watch("nickname") !== defaultData?.nickName;
-        const isDateChanged = watch("datingDate") !== defaultData?.anniversary;
+        const isNicknameChanged = nickname !== defaultData?.nickName;
+        const isDateChanged = datingDate !== defaultData?.anniversary;
         const isImageChanged = !!profileImageFile;
 
         setIsFormValid(isNicknameChanged || isDateChanged || isImageChanged);
-    }, [watch, profileImageFile, defaultData]);
+    }, [nickname, datingDate, profileImageFile, defaultData]);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -60,12 +63,9 @@ export default function ProfileSet() {
 
     const onSubmit = async (data) => {
         try {
-            let formattedDate = defaultData.anniversary;
-            if (data.datingDate && data.datingDate !== defaultData.anniversary) {
-                const localDate = new Date(data.datingDate);
-                const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000);
-                formattedDate = kstDate.toISOString().split("T")[0];
-            }
+            const formattedDate = data.datingDate !== defaultData?.anniversary 
+                ? new Date(data.datingDate).toISOString().split("T")[0] 
+                : defaultData.anniversary;
 
             const updatedData = {
                 nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName,
