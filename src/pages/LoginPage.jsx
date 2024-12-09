@@ -20,10 +20,6 @@ export default function LoginPage() {
 
             // 메인 페이지로 이동
             navigate("/main");
-        } else {
-            // accessToken이 없으면 /로 리다이렉트
-            console.error("AccessToken이 없습니다. 로그인 페이지로 리다이렉트합니다.");
-            navigate("/");
         }
     }, [location.search, navigate]);
 
