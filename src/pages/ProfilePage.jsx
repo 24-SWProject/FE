@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
 import * as S from "../styles/pages/Profile.style";
+import { useForm } from "react-hook-form";
 import Close from "./components/Close";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getGroupProfile, updateGroupProfile } from "../api/groupcrud";
 
 export default function ProfileSet() {
@@ -22,9 +22,6 @@ export default function ProfileSet() {
         resolver: yupResolver(schema),
         mode: "onChange",
     });
-
-    const nickname = watch("nickname");
-    const datingDate = watch("datingDate");
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -47,12 +44,12 @@ export default function ProfileSet() {
     }, [defaultData, setValue]);
 
     useEffect(() => {
-        const isNicknameChanged = nickname !== defaultData?.nickName;
-        const isDateChanged = datingDate !== defaultData?.anniversary;
+        const isNicknameChanged = watch("nickname") !== defaultData?.nickName;
+        const isDateChanged = watch("datingDate") !== defaultData?.anniversary;
         const isImageChanged = !!profileImageFile;
 
         setIsFormValid(isNicknameChanged || isDateChanged || isImageChanged);
-    }, [nickname, datingDate, profileImageFile, defaultData]);
+    }, [watch, profileImageFile, defaultData]);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -61,16 +58,38 @@ export default function ProfileSet() {
         }
     };
 
+    const convertBase64ToFile = (base64String, fileName) => {
+        const byteString = atob(base64String.split(",")[1]);
+        const mimeString = base64String.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([ab], fileName, { type: mimeString });
+    };
+
     const onSubmit = async (data) => {
         try {
-            const formattedDate = data.datingDate !== defaultData?.anniversary 
-                ? new Date(data.datingDate).toISOString().split("T")[0] 
-                : defaultData.anniversary;
+            let formattedDate = defaultData.anniversary;
+            if (data.datingDate && data.datingDate !== defaultData.anniversary) {
+                const localDate = new Date(data.datingDate);
+                const kstDate = new Date(localDate.getTime() + 9 * 60 * 60 * 1000);
+                formattedDate = kstDate.toISOString().split("T")[0];
+            }
+
+            let profileImgToSend = profileImageFile;
+            if (!profileImgToSend && defaultData.profileImg) {
+                // 기본 프로필 이미지를 파일 형식으로 변환
+                profileImgToSend = convertBase64ToFile(`data:image/jpeg;base64,${defaultData.profileImg}`, "defaultProfile.jpg");
+            }
 
             const updatedData = {
                 nickName: data.nickname !== defaultData.nickName ? data.nickname : defaultData.nickName,
                 anniversary: formattedDate,
-                profileImg: profileImageFile || defaultData.profileImg,
+                profileImg: profileImgToSend,
             };
 
             console.log("전송 데이터:", updatedData);
