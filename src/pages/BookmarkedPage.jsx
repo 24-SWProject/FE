@@ -66,7 +66,7 @@ export default function BookmarkPage() {
                 <React.Fragment key={pageIndex}>
                     {page.content.map((event) => (
                         <Card
-                            key={`${event.id}-${index}`}
+                            key={event.id}
                             id={event.id}
                             title={event.title}
                             date={`${event.openDate} ~ ${event.endDate}`}
