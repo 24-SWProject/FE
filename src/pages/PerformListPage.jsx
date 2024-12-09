@@ -6,6 +6,7 @@ import Close from "./components/Close";
 import { PropagateLoader } from "react-spinners";
 import { fetchPerformanceData, fetchFestivalData, fetchEventDataByTitle } from "../api/eventcrud";
 import { useDebounce } from "../hooks/useDebounce";
+import { toggleBookmark } from "../api/bookmarkcrud";
 
 export default function PerformListPage() {
     const queryClient = useQueryClient();
