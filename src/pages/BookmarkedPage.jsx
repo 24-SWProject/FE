@@ -51,17 +51,8 @@ export default function BookmarkedPage() {
         try {
             await toggleBookmark("bookmark", id);
 
-            // React Query 캐시 데이터 업데이트
-            queryClient.setQueryData("bookmarkedData", (oldData) => {
-                if (!oldData || !oldData.pages) return oldData;
-                const updatedPages = oldData.pages.map((page) => ({
-                    ...page,
-                    content: page.content.map((event) =>
-                        event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
-                    ),
-                }));
-                return { ...oldData, pages: updatedPages };
-            });
+            // React Query 캐시 데이터 무효화하여 새로고침 트리거
+            queryClient.invalidateQueries("bookmarkedData");
         } catch (error) {
             console.error("북마크 상태 업데이트 중 오류 발생:", error);
         }

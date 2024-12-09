@@ -89,7 +89,7 @@ export default function PerformListPage() {
     // Bookmark toggle function
     const handleBookmarkToggle = async (id) => {
         try {
-            await toggleBookmark(activeTab, id);
+            const updatedBookmark = await toggleBookmark(activeTab, id);
 
             const queryKey = debouncedSearchTerm.trim()
                 ? ["searchResults", activeTab, debouncedSearchTerm]
@@ -101,7 +101,7 @@ export default function PerformListPage() {
                 const updatedPages = oldData.pages.map((page) => ({
                     ...page,
                     content: page.content.map((event) =>
-                        event.id === id ? { ...event, bookmarked: !event.bookmarked } : event
+                        event.id === id ? { ...event, bookmarked: updatedBookmark } : event
                     ),
                 }));
 
