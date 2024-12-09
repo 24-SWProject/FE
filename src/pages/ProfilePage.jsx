@@ -53,29 +53,83 @@ export default function ProfileSet() {
     }, [watch, profileImageFile, defaultData]);
 
     const handleImageChange = async (event) => {
-        let fileBlob = event.target.files[0];
-        if (fileBlob) {
+        const file = event.target.files[0];
+        if (file) {
             try {
-                // HEIC 확장자 확인 후 변환
-                if (/\.(heic)$/i.test(fileBlob.name)) {
-                    fileBlob = await heic2any({ blob: fileBlob, toType: "image/jpeg" });
-
-                    // Blob을 File로 변환
-                    const convertedFile = new File([fileBlob], fileBlob.name.replace(/\.heic$/i, ".jpeg"), {
+                // HEIC 파일 변환
+                let processedFile = file;
+                if (/\.(heic)$/i.test(file.name)) {
+                    const convertedBlob = await heic2any({ blob: file, toType: "image/jpeg" });
+                    processedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, ".jpeg"), {
                         type: "image/jpeg",
                     });
-
-                    setProfileImageFile(convertedFile);
-                } else {
-                    // HEIC가 아니면 그대로 파일 설정
-                    setProfileImageFile(fileBlob);
                 }
+    
+                // 이미지 해상도 줄이기
+                const resizedBlob = await resizeImage(processedFile);
+                setProfileImageBlob(resizedBlob);
+    
+                // 미리보기 설정
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setProfileImage(reader.result); // Base64 URL
+                };
+                reader.readAsDataURL(resizedBlob);
             } catch (error) {
-                console.error("HEIC 변환 실패:", error);
-                alert("HEIC 파일 변환에 실패했습니다. 다른 이미지 포맷을 사용해주세요.");
+                console.error("이미지 처리 실패:", error);
+                alert("이미지를 처리하는 데 실패했습니다.");
             }
         }
     };
+    
+    const resizeImage = async (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxWidth = 1024; // 최대 너비
+                    const maxHeight = 1024; // 최대 높이
+                    let width = img.width;
+                    let height = img.height;
+    
+                    // 비율 유지하며 크기 조정
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+    
+                    const canvas = document.createElement("canvas");
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+    
+                    canvas.toBlob(
+                        (blob) => {
+                            if (blob) {
+                                resolve(blob);
+                            } else {
+                                reject(new Error("Blob 생성 실패"));
+                            }
+                        },
+                        file.type // 원본 MIME 타입 유지
+                    );
+                };
+                img.src = reader.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    };
+    
 
     const convertBase64ToFile = (base64String, fileName) => {
         const byteString = atob(base64String.split(",")[1]);
