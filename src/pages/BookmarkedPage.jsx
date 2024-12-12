@@ -47,14 +47,14 @@ export default function BookmarkedPage() {
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // 북마크 토글 함수
-    const handleBookmarkToggle = async (id) => {
+    const handleBookmarkToggle = async (type, id) => {
         try {
             if (!id) {
                 console.error("북마크 토글 중 'id'가 누락되었습니다.");
                 return;
             }
 
-            await toggleBookmark("bookmark", id);
+            await toggleBookmark(type, id);
 
             // React Query 캐시 데이터 무효화하여 목록 새로고침
             queryClient.invalidateQueries("bookmarkedData");
