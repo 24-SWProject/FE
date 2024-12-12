@@ -90,7 +90,7 @@ export default function BookmarkedPage() {
                                 url={event.registerLink}
                                 bookmarked={event.bookmarked}
                                 type={event.type}
-                                onBookmarkToggle={() => handleBookmarkToggle(event.id)}
+                                onBookmarkToggle={() => handleBookmarkToggle(event.type, event.id)}
                             />
                         );
                     })}
