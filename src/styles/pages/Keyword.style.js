@@ -77,6 +77,6 @@ export const SetButton = styled.button`
     color: #333333;
     font-family: 'Pretendard', sans-serif;
     position: absolute;
-    bottom: 50px;
+    bottom: 90px;
     border: 2px solid white;
 `;
